@@ -32,7 +32,7 @@
 .packageValue b{display:block;font-size:18px;margin-bottom:4px}
 .packageValue span{display:block;color:#dfecff;font-size:12px}
 .packageActions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 14px 14px}
-.packageAction{border:1px solid #cdd9e8;background:#fff;color:var(--navy);border-radius:10px;padding:11px 8px;font-size:12px;font-weight:900;text-align:center}
+.packageAction{border:1px solid #cdd9e8;background:#fff;color:var(--navy);border-radius:10px;padding:11px 8px;font-size:12px;font-weight:900;text-align:center;font-family:inherit;cursor:pointer}.packageAction:disabled{opacity:.65;cursor:wait}
 .packageAction.popular{border-color:var(--blue);color:var(--blue)}
 .packageAction.plus{background:var(--navy);border-color:var(--navy);color:#fff}
 .packageFoot{padding:0 14px 14px;color:#6a7689;font-size:11px;line-height:1.45}
@@ -58,8 +58,6 @@ function renderMonthly(){
  }
  const info=monthlyPackages[cfg.value]||monthlyPackages.small,p=monthlyPrices[info.tier];
  const extrasMin=info.deep[0]+20,extrasMax=info.deep[1]+20;
- const enc=s=>encodeURIComponent(s);
- const wa=(plan,price)=>'https://wa.me/447411251361?text='+enc('Hi The Property Care Co., I am interested in the '+plan+' monthly cleaning package for my '+info.label+' at £'+price+' per month. Please can you help me get started?');
  target.innerHTML='<div class="packageWrap"><div class="packageScroll"><table class="packageTable"><thead><tr><th class="feature">What’s included</th><th><span class="planName">Essential</span><span class="planPrice">£'+p.essential+'<small>/month</small></span><span class="planSub">2 scheduled cleans</span></th><th class="popular"><span class="packageBadge">MOST POPULAR</span><span class="planName">Regular</span><span class="planPrice">£'+p.regular+'<small>/month</small></span><span class="planSub">4 scheduled cleans</span></th><th class="plusHead"><span class="packageBadge">BEST VALUE</span><span class="planName">Plus</span><span class="planPrice">£'+p.plus+'<small>/month</small></span><span class="planSub">3 regular + 1 deep clean</span></th></tr></thead><tbody>'+
  '<tr><td class="feature">Scheduled cleans</td><td>2 / month</td><td>4 / month</td><td>4 / month</td></tr>'+
  '<tr><td class="feature">Kitchen & bathroom cleaning</td><td class="pkgCheck">✓</td><td class="pkgCheck">✓</td><td class="pkgPlusCheck">✓</td></tr>'+
@@ -70,8 +68,24 @@ function renderMonthly(){
  '<tr><td class="feature">25% off carpet cleaning</td><td class="pkgDash">—</td><td class="pkgDash">—</td><td class="pkgPlusCheck">✓</td></tr>'+
  '<tr><td class="feature">25% off upholstery cleaning</td><td class="pkgDash">—</td><td class="pkgDash">—</td><td class="pkgPlusCheck">✓</td></tr>'+
  '</tbody></table></div><div class="packageValue"><b>Plus includes £'+extrasMin+'–£'+extrasMax+' of included cleaning extras each month</b><span>That value covers the monthly deep clean, fridge clean and dishwasher clean. Plus members also receive 25% off carpet and upholstery cleaning whenever those services are booked.</span></div>'+
- '<div class="packageActions"><a class="packageAction" target="_blank" href="'+wa('Essential',p.essential)+'">Choose Essential</a><a class="packageAction popular" target="_blank" href="'+wa('Regular',p.regular)+'">Choose Regular</a><a class="packageAction plus" target="_blank" href="'+wa('Plus',p.plus)+'">Choose Plus</a></div>'+
- '<div class="packageFoot">Online recurring payment will be added separately. The existing one-off estimate, appointment and payment process has not been changed.</div></div>';
+ '<div class="packageActions"><button type="button" class="packageAction monthlyCheckoutBtn" data-plan="essential">Choose Essential</button><button type="button" class="packageAction popular monthlyCheckoutBtn" data-plan="regular">Choose Regular</button><button type="button" class="packageAction plus monthlyCheckoutBtn" data-plan="plus">Choose Plus</button></div>'+
+ '<div class="packageFoot">Your first monthly payment is taken securely at signup, then automatically each month until you cancel. Cancellation takes effect at the end of your current paid billing period.</div></div>';
+ const monthlyState=new URLSearchParams(location.search).get('monthly');
+ if(monthlyState==='success') target.insertAdjacentHTML('afterbegin','<div class="emailok"><b>✓ Payment received.</b> Your monthly plan is being confirmed. Check your email for your confirmation and secure manage/cancel link.</div>');
+ if(monthlyState==='cancelled') target.insertAdjacentHTML('afterbegin','<div class="notice"><b>Checkout cancelled.</b> No monthly subscription was started.</div>');
+ target.querySelectorAll('.monthlyCheckoutBtn').forEach(btn=>btn.addEventListener('click',()=>startMonthlyCheckout(btn.dataset.plan,cfg.value,btn)));
+}
+async function startMonthlyCheckout(plan,propertyBand,btn){
+ const original=btn.textContent;
+ btn.disabled=true; btn.textContent='Opening secure checkout…';
+ try{
+  const d=await api({action:'create_monthly_checkout',plan,property_band:propertyBand});
+  if(!d.url) throw new Error('Secure checkout could not be opened.');
+  window.location.href=d.url;
+ }catch(e){
+  alert(e.message||'Secure checkout could not be opened. Please try again.');
+  btn.disabled=false; btn.textContent=original;
+ }
 }
 $('monthlyConfig')&&$('monthlyConfig').addEventListener('change',renderMonthly);renderMonthly();
-;$('monthlyHeroBtn')&&($('monthlyHeroBtn').onclick=()=>{const b=document.querySelector('.service[data-service="monthly"]');if(b)b.click();});</script></body></html>
+;$('monthlyHeroBtn')&&($('monthlyHeroBtn').onclick=()=>{const b=document.querySelector('.service[data-service="monthly"]');if(b)b.click();});const monthlyReturnState=new URLSearchParams(location.search).get('monthly');if(monthlyReturnState==='success'||monthlyReturnState==='cancelled'){const b=document.querySelector('.service[data-service="monthly"]');if(b)b.click();}</script></body></html>
