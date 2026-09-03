@@ -42,3 +42,306 @@ function renderMonthly(){
 }
 $('monthlyConfig')&&$('monthlyConfig').addEventListener('change',renderMonthly);renderMonthly();
 ;$('monthlyHeroBtn')&&($('monthlyHeroBtn').onclick=()=>{const b=document.querySelector('.service[data-service="monthly"]');if(b)b.click();});
+// Airbnb package comparison extension
+const airbnbPackagePrices={
+ studio:{clean:60,linen:80,all:90},
+ '1bed_1bath':{clean:65,linen:85,all:95},
+ '2bed_1bath':{clean:75,linen:100,all:110},
+ '2bed_2bath':{clean:80,linen:105,all:120},
+ '3bed_1bath':{clean:90,linen:120,all:158},
+ '3bed_2plus':{clean:95,linen:125,all:165},
+ '4bed_1bath':{clean:115,linen:155,all:178},
+ '4bed_2plus':{clean:120,linen:160,all:185}
+};
+
+let airbnbPackageChoice='';
+
+function airbnbMoney(n){
+ return '£'+Number(n).toFixed(Number(n)%1?2:0);
+}
+
+function airbnbField(id){
+ const el=$(id);
+ return el?el.closest('.field'):null;
+}
+
+function setAirbnbPackage(value){
+ airbnbPackageChoice=value;
+
+ const linen=$('linenRequired');
+ if(linen) linen.value=value;
+
+ document.querySelectorAll('.airbnbPkgBtn').forEach(btn=>{
+  const chosen=btn.dataset.value===value;
+  btn.classList.toggle('selected',chosen);
+  btn.textContent=chosen?'Selected ✓':btn.dataset.label;
+ });
+}
+
+function renderAirbnbPackages(){
+ const cfg=$('airbnbConfig');
+ const target=$('airbnbPackageComparison');
+
+ if(!cfg||!target)return;
+
+ const p=airbnbPackagePrices[cfg.value];
+
+ if(!p){
+  target.innerHTML='<div class="monthlyNote">Choose your property size above to compare the Airbnb turnover packages.</div>';
+  return;
+ }
+
+ target.innerHTML=
+ '<div class="packageWrap">'+
+ '<div class="packageScroll">'+
+ '<table class="packageTable">'+
+ '<thead>'+
+ '<tr>'+
+ '<th class="feature">What’s included</th>'+
+
+ '<th>'+
+ '<span class="planName">Clean Only</span>'+
+ '<span class="planPrice">'+airbnbMoney(p.clean)+'</span>'+
+ '<span class="planSub">Per turnover</span>'+
+ '</th>'+
+
+ '<th class="popular">'+
+ '<span class="planName">Clean + Host Linen</span>'+
+ '<span class="planPrice">'+airbnbMoney(p.linen)+'</span>'+
+ '<span class="planSub">We wash, dry & place your linen</span>'+
+ '</th>'+
+
+ '<th class="plusHead">'+
+ '<span class="packageBadge">ALL-INCLUSIVE</span>'+
+ '<span class="planName">All-Inclusive</span>'+
+ '<span class="planPrice">'+airbnbMoney(p.all)+'</span>'+
+ '<span class="planSub">Cleaning, linen, laundry & consumables</span>'+
+ '</th>'+
+ '</tr>'+
+ '</thead>'+
+
+ '<tbody>'+
+
+ '<tr>'+
+ '<td class="feature">Guest-ready turnover clean</td>'+
+ '<td class="pkgCheck">✓</td>'+
+ '<td class="pkgCheck">✓</td>'+
+ '<td class="pkgPlusCheck">✓</td>'+
+ '</tr>'+
+
+ '<tr>'+
+ '<td class="feature">Wash & dry host’s own linen</td>'+
+ '<td class="pkgDash">—</td>'+
+ '<td class="pkgCheck">✓</td>'+
+ '<td class="pkgDash">—</td>'+
+ '</tr>'+
+
+ '<tr>'+
+ '<td class="feature">Fresh linen placed ready for guests</td>'+
+ '<td class="pkgDash">—</td>'+
+ '<td class="pkgCheck">✓</td>'+
+ '<td class="pkgPlusCheck">✓</td>'+
+ '</tr>'+
+
+ '<tr>'+
+ '<td class="feature">Linen supplied by The Property Care Co.</td>'+
+ '<td class="pkgDash">—</td>'+
+ '<td class="pkgDash">—</td>'+
+ '<td class="pkgPlusCheck">✓</td>'+
+ '</tr>'+
+
+ '<tr>'+
+ '<td class="feature">Laundry handled between stays</td>'+
+ '<td class="pkgDash">—</td>'+
+ '<td class="pkgDash">—</td>'+
+ '<td class="pkgPlusCheck">✓</td>'+
+ '</tr>'+
+
+ '<tr>'+
+ '<td class="feature">Standard guest consumables replenished</td>'+
+ '<td class="pkgDash">—</td>'+
+ '<td class="pkgDash">—</td>'+
+ '<td class="pkgPlusCheck">✓</td>'+
+ '</tr>'+
+
+ '</tbody>'+
+ '</table>'+
+ '</div>'+
+
+ '<div class="packageValue">'+
+ '<b>All-Inclusive includes</b>'+
+ '<span>✓ Full turnover clean &nbsp; ✓ Linen supplied by The Property Care Co. &nbsp; ✓ Laundry handled between stays &nbsp; ✓ Fresh linen placed ready for guests &nbsp; ✓ Standard guest consumables replenished</span>'+
+ '</div>'+
+
+ '<div class="packageActions">'+
+
+ '<button type="button" class="packageAction airbnbPkgBtn" data-value="no" data-label="Choose Clean Only">'+
+ 'Choose Clean Only'+
+ '</button>'+
+
+ '<button type="button" class="packageAction popular airbnbPkgBtn" data-value="yes" data-label="Choose Clean + Host Linen">'+
+ 'Choose Clean + Host Linen'+
+ '</button>'+
+
+ '<button type="button" class="packageAction plus airbnbPkgBtn" data-value="all_inclusive" data-label="Choose All-Inclusive">'+
+ 'Choose All-Inclusive'+
+ '</button>'+
+
+ '</div>'+
+
+ '<div class="packageFoot">'+
+ '<b>Estimate only.</b> Prices shown are indicative and are not the final confirmed price. Your final price will be confirmed once we have reviewed your property details and requirements.'+
+ '</div>'+
+ '</div>';
+
+ document.querySelectorAll('.airbnbPkgBtn').forEach(btn=>{
+  btn.onclick=()=>setAirbnbPackage(btn.dataset.value);
+ });
+
+ if(airbnbPackageChoice){
+  setAirbnbPackage(airbnbPackageChoice);
+ }
+}
+
+function tidyAirbnbLabels(){
+
+ const airbnb=$('airbnbFields');
+ if(!airbnb)return;
+
+ const linen=$('linenRequired');
+
+ if(linen){
+  if(![...linen.options].some(o=>o.value==='all_inclusive')){
+   linen.add(new Option('All-Inclusive','all_inclusive'));
+  }
+
+  linen.value='';
+ }
+
+ const linenField=airbnbField('linenRequired');
+
+ if(linenField){
+  linenField.style.display='none';
+ }
+
+ airbnb.querySelectorAll('*').forEach(el=>{
+  if(el.childNodes.length===1&&el.firstChild?.nodeType===3){
+   el.textContent=el.textContent
+    .replace(/PCCO All-Inclusive/gi,'All-Inclusive')
+    .replace(/\bPCCO\b/gi,'The Property Care Co.');
+  }
+ });
+
+ [
+  ['hostType','2'],
+  ['portfolioSize','3'],
+  ['frequency','4'],
+  ['cleanerStatus','5']
+ ].forEach(([id,n])=>{
+
+  const field=airbnbField(id);
+  const label=field?.querySelector('label');
+
+  if(label){
+   label.textContent=label.textContent.replace(/^\s*\d+\.\s*/,n+'. ');
+  }
+ });
+
+ let target=$('airbnbPackageComparison');
+
+ if(!target){
+  target=document.createElement('div');
+  target.id='airbnbPackageComparison';
+
+  airbnbField('airbnbConfig')
+   ?.insertAdjacentElement('afterend',target);
+ }
+
+ const oldPrices=airbnb.querySelector('.airbnbPrices');
+
+ if(oldPrices){
+  oldPrices.style.display='none';
+ }
+
+ const note=airbnb.querySelector('.linenNote');
+
+ if(note){
+  note.innerHTML=
+   '<b>Choose one of the three turnover packages below.</b> All-Inclusive includes linen supplied by us, laundry between stays and standard guest consumables.';
+ }
+
+ renderAirbnbPackages();
+
+ $('airbnbConfig')
+  ?.addEventListener('change',renderAirbnbPackages);
+
+ const style=document.createElement('style');
+
+ style.textContent=
+ '.airbnbPkgBtn{cursor:pointer}'+
+ '.airbnbPkgBtn.selected{box-shadow:inset 0 0 0 2px #0a74f5;outline:3px solid rgba(10,116,245,.15)}'+
+ '.airbnbPkgBtn.plus.selected{box-shadow:inset 0 0 0 2px #25a55f;outline-color:rgba(37,165,95,.18)}';
+
+ document.head.appendChild(style);
+}
+
+const originalEstimateClick=$('estimateBtn').onclick;
+
+$('estimateBtn').onclick=async function(e){
+
+ if(service==='airbnb'&&!airbnbPackageChoice){
+
+  clearError($('formError'));
+
+  showError(
+   $('formError'),
+   'Please choose an Airbnb turnover package before unlocking your estimate.'
+  );
+
+  $('airbnbPackageComparison')
+   ?.scrollIntoView({
+    behavior:'smooth',
+    block:'center'
+   });
+
+  return;
+ }
+
+ return originalEstimateClick.call(this,e);
+};
+
+const estimateObserver=new MutationObserver(()=>{
+
+ if(service!=='airbnb')return;
+
+ const result=$('estimateResult');
+
+ if(!result)return;
+
+ result.querySelectorAll('*').forEach(el=>{
+
+  if(el.childNodes.length===1&&el.firstChild?.nodeType===3){
+
+   el.textContent=el.textContent
+    .replace(/PCCO All-Inclusive/gi,'All-Inclusive')
+    .replace(
+     /PCCO-supplied linen/gi,
+     'Linen supplied by The Property Care Co.'
+    )
+    .replace(/\bPCCO\b/gi,'The Property Care Co.');
+  }
+ });
+});
+
+if($('estimateResult')){
+ estimateObserver.observe(
+  $('estimateResult'),
+  {
+   childList:true,
+   subtree:true,
+   characterData:true
+  }
+ );
+}
+
+tidyAirbnbLabels();
