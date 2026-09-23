@@ -1,0 +1,94 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Approved PCCO property",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "town",
+    "postcode",
+    "photos",
+    "bedrooms",
+    "bathrooms",
+    "guestCapacity",
+    "propertyType",
+    "description",
+    "availability"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "town": {
+      "type": "string"
+    },
+    "postcode": {
+      "type": "string"
+    },
+    "propertyType": {
+      "type": "string"
+    },
+    "stayType": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "availability": {
+      "type": "string"
+    },
+    "bedrooms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "bathrooms": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "guestCapacity": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "photos": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "amenities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parking": {
+      "type": "string"
+    },
+    "rates": {
+      "type": "object",
+      "properties": {
+        "currency": {
+          "const": "GBP"
+        },
+        "poa": {
+          "type": "boolean"
+        },
+        "nightly": {
+          "type": "number",
+          "minimum": 0
+        },
+        "weekly": {
+          "type": "number",
+          "minimum": 0
+        },
+        "monthly": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  }
+}

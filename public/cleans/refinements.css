@@ -1,0 +1,11 @@
+/* Cleaning-only presentation. Forms, service IDs, prices and integrations remain in index.html. */
+:root{--light:#f5f7fa;--line:#e1e6ed}
+html{scroll-padding-top:100px}.top{font-weight:600;letter-spacing:.035em;padding:9px 14px;font-size:11px}
+.nav{height:88px}.links{gap:25px}.links a{font-size:13px;font-weight:600}.links a:hover,.mobile a:hover{color:var(--blue)}
+.cta,.btn,.whitebtn{border-radius:7px;font-weight:650}.hero{padding:76px 0 64px;background:linear-gradient(115deg,#f7f9fc,#edf3f9)}
+.heroGrid{gap:64px}h1{font-weight:650;letter-spacing:-.045em;line-height:1.06}.hero p{line-height:1.7;font-size:17px}.pill{padding:0;background:none;border-radius:0;letter-spacing:.13em;font-size:11px}
+.heroCard{border-radius:14px;padding:30px;box-shadow:0 16px 44px rgba(8,45,105,.07)}.bluebox{background:#082d69;border-radius:9px}.bluebox h3{font-size:21px;font-weight:600}
+h2{font-weight:650;line-height:1.12}.section{padding:66px 0}.card,.step{border-radius:10px;padding:24px}.card h3{font-weight:650}.card p{line-height:1.7}.cards{gap:18px}.altbg{background:#f5f7fa}
+.panel,.gate,.estimate{border-radius:12px}.gate{background:#082d69}.service{border-radius:8px}.service small{font-weight:400}.field label{font-weight:650}.footer h3{font-weight:600}footer{background:#062959}
+@media(max-width:920px){.heroGrid{gap:32px}.hero{padding:46px 0}.nav{height:76px}.heroCard{max-width:600px;width:100%;margin:auto}}
+@media(max-width:620px){.wrap{width:calc(100% - 36px)}.hero{padding:38px 0}.heroCard{padding:22px}h1{font-size:42px}.section{padding:44px 0}.cards{gap:12px}.card{padding:21px}.panel,.gate{padding:19px}.ticks{gap:10px}.brand b{font-size:13px}.top{font-size:10px}.nav{gap:12px}}
