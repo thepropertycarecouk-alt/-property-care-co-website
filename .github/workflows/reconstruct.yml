@@ -6,7 +6,6 @@ permissions:
   contents: write
 jobs:
   expand:
-    if: ${{ hashFiles('.pcco-source/pcco-src.part-*') != '' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
