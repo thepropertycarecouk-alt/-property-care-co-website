@@ -22,3 +22,16 @@ Completed:
 Publication rule:
 - FabAccommodation is currently accepted, so all 46 approved property records are eligible for public display through the gated feed.
 - Any future partner remains hidden until both the partner acceptance status is accepted and the individual property is marked published.
+
+
+## Partner intake update — 26 Sep 2026
+- Property browse now supports UK postcode/outward-code searches within a 50-mile radius and orders results by distance.
+- Homepage Browse Properties CTA now appears above the quick “Build my enquiry” form.
+- Fab live cover images now prefer front/exterior imagery first and bedroom imagery second when titles identify those categories; floorplans/bathrooms are not selected as covers. 586 Southmead and 32 Cotsworld floorplan covers were replaced with exterior images.
+- Staged privately (not public): Allsquare Stays 5 properties, Vellanor Ltd 4 unique properties, Lanak Property Solutions 1 property, Ceba Property 1 property.
+- New partners are pending Terms acceptance and their staged records are marked published=false and requires_partner_acceptance=true.
+- Private Terms invitations were sent from the connected partners@thepropertycareco.co.uk Gmail account to all four partners. Invitation tokens are intentionally not stored in this repository/document.
+- Ceba was explicitly told that its email mentioning 8% including VAT differs from the standard 7.85% + VAT Terms and should only accept if agreeing to the standard Terms.
+- Partner-form automated acknowledgement emails now use the visible sender PCCO Stays Partners <partners@thepropertycareco.co.uk> rather than the Quotes sender.
+- An hourly acceptance follow-up watch checks the four pending partners and, after genuine acceptance, sends a non-duplicate thank-you from the connected Partners Gmail mailbox.
+- Full photo import/publication for the new staged properties remains blocked until genuine Terms acceptance. Submitted Airbnb metadata may be staged before acceptance, but property photos are not copied for publication before acceptance.
