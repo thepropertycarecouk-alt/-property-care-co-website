@@ -18,6 +18,38 @@ document.querySelectorAll('[data-icon]').forEach(el => {el.innerHTML = `<svg ari
 const $=s=>document.querySelector(s);
 const form=$('#requirement-form');
 const error=$('#form-error');
+const CAMPAIGN_STORAGE_KEY='pcco_campaign_attribution_v1';
+const CAMPAIGN_TRACK_URL='https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-campaign-track';
+const CAMPAIGN_TTL_MS=14*24*60*60*1000;
+function readCampaignAttribution(){
+ const params=new URLSearchParams(location.search);
+ const lead_id=(params.get('ref')||'').trim().toUpperCase();
+ const variant=(params.get('variant')||'').trim().toUpperCase();
+ const campaign=(params.get('campaign')||'').trim();
+ const valid=/^[A-Z0-9]{8,16}$/.test(lead_id)&&['A','B','C'].includes(variant)&&/^[A-Za-z0-9_-]{3,80}$/.test(campaign);
+ if(valid){
+  const stored={lead_id,variant,campaign,saved_at:Date.now()};
+  try{localStorage.setItem(CAMPAIGN_STORAGE_KEY,JSON.stringify(stored));}catch{}
+  return {...stored,from_url:true};
+ }
+ try{
+  const stored=JSON.parse(localStorage.getItem(CAMPAIGN_STORAGE_KEY)||'null');
+  if(stored&&Date.now()-Number(stored.saved_at||0)<=CAMPAIGN_TTL_MS&&/^[A-Z0-9]{8,16}$/.test(stored.lead_id)&&['A','B','C'].includes(stored.variant)&&/^[A-Za-z0-9_-]{3,80}$/.test(stored.campaign))return {...stored,from_url:false};
+  localStorage.removeItem(CAMPAIGN_STORAGE_KEY);
+ }catch{}
+ return null;
+}
+const campaignAttribution=readCampaignAttribution();
+async function recordCampaignClick(){
+ if(!campaignAttribution?.from_url||document.visibilityState!=='visible')return;
+ try{
+  await fetch(CAMPAIGN_TRACK_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({lead_id:campaignAttribution.lead_id,variant:campaignAttribution.variant,campaign:campaignAttribution.campaign,landing_page:location.pathname+location.hash}),keepalive:true,signal:AbortSignal.timeout(10000)});
+ }catch{}
+}
+if(campaignAttribution?.from_url){
+ const scheduleClick=()=>setTimeout(recordCampaignClick,1200);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',scheduleClick,{once:true});else scheduleClick();
+}
 let currentStep=1, lastBrief='';
 const localDate=(date=new Date())=>`${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
 const today=localDate();
@@ -92,7 +124,7 @@ form.addEventListener('submit',async e=>{
  for(let s=1;s<=3;s++){if(!validStep(s)){const message=error.textContent;const invalid=form.querySelector('[aria-invalid=true]');showStep(s);fail(message,invalid);return;}}
  if(form.dataset.submitting==='true')return;
  const d=getData();lastBrief=buildBrief(d);
- const payload={enquiry_type:'need_accommodation',full_name:d.name,company:d.company,email:d.email,phone:d.phone,location_required:d.location,check_in_date:d.flexible?null:d.arrival,stay_length:stayDates(d).slice(0,120),guest_count:Number(d.guests),unit_count:d.units?Number(d.units):null,bedrooms_required:d.bedrooms,parking_required:d.needs.filter(n=>/parking/i.test(n)).join(', ')||'Not specified',pets:d.needs.includes('Pets considered')?'Please consider pets':'Not specified',budget:d.budget?'£'+d.budget+' — '+d.budgetBasis:'To be discussed',details:lastBrief.slice(0,3000),website:d.website||''};
+ const payload={enquiry_type:'need_accommodation',full_name:d.name,company:d.company,email:d.email,phone:d.phone,location_required:d.location,check_in_date:d.flexible?null:d.arrival,stay_length:stayDates(d).slice(0,120),guest_count:Number(d.guests),unit_count:d.units?Number(d.units):null,bedrooms_required:d.bedrooms,parking_required:d.needs.filter(n=>/parking/i.test(n)).join(', ')||'Not specified',pets:d.needs.includes('Pets considered')?'Please consider pets':'Not specified',budget:d.budget?'£'+d.budget+' — '+d.budgetBasis:'To be discussed',details:lastBrief.slice(0,3000),website:d.website||'',campaign_lead_id:campaignAttribution?.lead_id||null,campaign:campaignAttribution?.campaign||null,variant:campaignAttribution?.variant||null};
  const submit=form.querySelector('[type="submit"]');
  form.dataset.submitting='true';submit.disabled=true;submit.textContent='Sending enquiry…';form.setAttribute('aria-busy','true');
  try{
