@@ -18,7 +18,7 @@ form.addEventListener('submit',async e=>{
  const d=Object.fromEntries(new FormData(form));
  if(!/^[+()0-9 .-]+$/.test(d.phone)||d.phone.replace(/\D/g,'').length<7||d.phone.replace(/\D/g,'').length>15)return fail('Please enter a valid phone number, including the country code where possible.',form.elements.phone);
  const links=d.property_links.split(/\s+/).filter(Boolean);
- if(links.length>10||links.some(value=>{try{const u=new URL(value);return !['https:','http:'].includes(u.protocol)||!u.hostname.includes('.')||!!u.username||!!u.password;}catch{return true;}}))return fail('Please paste valid public links beginning with https:// or http://, up to 10 links separated by spaces or new lines.',form.elements.property_links);
+ if(links.length>20||links.some(value=>{try{const u=new URL(value);return !['https:','http:'].includes(u.protocol)||!u.hostname.includes('.')||!!u.username||!!u.password;}catch{return true;}}))return fail('Please paste valid public links beginning with https:// or http://, up to 20 links separated by spaces or new lines.',form.elements.property_links);
  if(d.website)return fail('Unable to submit. Please email partners@thepropertycareco.co.uk.');
  const button=form.querySelector('[type=submit]');button.disabled=true;button.textContent='Sending your property…';form.dataset.submitting='true';form.setAttribute('aria-busy','true');
  try{

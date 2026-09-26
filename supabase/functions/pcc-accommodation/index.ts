@@ -43,8 +43,8 @@ async function resend(payload:any){
   });
   if(!r.ok){ console.error('Resend error',r.status,(await r.text()).slice(0,500)); throw new Error('Email delivery failed.'); }
 }
-function row(label:string,value:unknown){
-  const val=clean(value,2000); if(!val) return '';
+function row(label:string,value:unknown,max=2000){
+  const val=clean(value,max); if(!val) return '';
   return `<tr><td style="padding:8px 10px;border-bottom:1px solid #e7edf5;color:#657287;font:13px Arial">${esc(label)}</td><td style="padding:8px 10px;border-bottom:1px solid #e7edf5;color:#10213d;font:600 13px Arial">${esc(val)}</td></tr>`;
 }
 
@@ -71,7 +71,7 @@ Deno.serve(async(req:Request)=>{
       if(!/^[+()0-9 .-]+$/.test(phone)||digits.length<7||digits.length>15) return fail('Please enter a valid phone number.');
       const raw=String(body.property_links||'').trim();
       const links=raw.split(/\s+/).filter(Boolean);
-      if(raw.length>2000||!links.length||links.length>10||links.some(value=>{
+      if(raw.length>40000||!links.length||links.length>20||links.some(value=>{
         try {const u=new URL(value);return !['https:','http:'].includes(u.protocol)||!u.hostname.includes('.')||!!u.username||!!u.password;}catch{return true;}
       })) return fail('Please enter valid public property links.');
     }
@@ -90,7 +90,7 @@ Deno.serve(async(req:Request)=>{
       property_count:Number.isFinite(Number(body.property_count))&&Number(body.property_count)>0?Math.min(10000,Number(body.property_count)):null,
       property_types:clean(body.property_types,300)||null,
       minimum_stay:clean(body.minimum_stay,120)||null,
-      property_links:clean(body.property_links,2000)||null,
+      property_links:clean(body.property_links,isPartner?40000:2000)||null,
       details:clean(body.details,3000)||null,
       status:'new', source:isPartner?'website_partners':'website_accommodation'
     };
@@ -110,7 +110,7 @@ Deno.serve(async(req:Request)=>{
       isNeed?row('Length of stay',rec.stay_length):row('Minimum stay',rec.minimum_stay),
       isNeed?row('Guests',rec.guest_count):row('Number of properties',rec.property_count),
       isNeed?row('Units required',rec.unit_count):row('Property types',rec.property_types),
-      isNeed?row('Bedrooms required',rec.bedrooms_required):row('Property links',rec.property_links),
+      isNeed?row('Bedrooms required',rec.bedrooms_required):row('Property links',rec.property_links,isPartner?40000:2000),
       row('Parking',rec.parking_required),
       isNeed?row('Pets',rec.pets):'',
       isNeed?row('Budget',rec.budget):'',
