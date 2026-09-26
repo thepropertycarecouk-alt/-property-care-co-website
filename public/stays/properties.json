@@ -2731,18 +2731,204 @@
       "Bills included"
     ],
     "bills_included": true,
-    "photos": [],
-    "cover_photo": null,
+    "photos": [
+      {
+        "drive_id": "104mANMMI2vsYPpFo8sjTFhreHcDJdXup",
+        "title": "Bedroom2_1.jpg",
+        "src": "https://drive.google.com/thumbnail?id=104mANMMI2vsYPpFo8sjTFhreHcDJdXup&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=104mANMMI2vsYPpFo8sjTFhreHcDJdXup&sz=w700",
+        "alt": "9 Sandown property photograph 1"
+      },
+      {
+        "drive_id": "14bSrz9iIy71_hX7TL48NqvEZ3g_kQTsJ",
+        "title": "Kitchen_1.jpg",
+        "src": "https://drive.google.com/thumbnail?id=14bSrz9iIy71_hX7TL48NqvEZ3g_kQTsJ&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=14bSrz9iIy71_hX7TL48NqvEZ3g_kQTsJ&sz=w700",
+        "alt": "9 Sandown property photograph 2"
+      },
+      {
+        "drive_id": "1w0IgtcaVRcMHuk0pvbpGRuOkE26bs_tZ",
+        "title": "Copy of 9 Sandown Road.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1w0IgtcaVRcMHuk0pvbpGRuOkE26bs_tZ&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1w0IgtcaVRcMHuk0pvbpGRuOkE26bs_tZ&sz=w700",
+        "alt": "9 Sandown property photograph 3"
+      },
+      {
+        "drive_id": "1tuY2wWIElKwnVloefQTvYNYdOADxnAoQ",
+        "title": "9 Sandown Road copy.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1tuY2wWIElKwnVloefQTvYNYdOADxnAoQ&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1tuY2wWIElKwnVloefQTvYNYdOADxnAoQ&sz=w700",
+        "alt": "9 Sandown property photograph 4"
+      },
+      {
+        "drive_id": "14bcHB40N_77NSKXsaqRj1tv3Dhlqm4n5",
+        "title": "Bedroom5_2_Edit_1_web.jpg",
+        "src": "https://drive.google.com/thumbnail?id=14bcHB40N_77NSKXsaqRj1tv3Dhlqm4n5&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=14bcHB40N_77NSKXsaqRj1tv3Dhlqm4n5&sz=w700",
+        "alt": "9 Sandown property photograph 5"
+      },
+      {
+        "drive_id": "1QJKf9ScVXTeau-lwvSjWyzLUeBUJHSaz",
+        "title": "WC.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1QJKf9ScVXTeau-lwvSjWyzLUeBUJHSaz&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1QJKf9ScVXTeau-lwvSjWyzLUeBUJHSaz&sz=w700",
+        "alt": "9 Sandown property photograph 6"
+      },
+      {
+        "drive_id": "110cdEbD8wTUGRm6KAemeJuQXI-y7-46M",
+        "title": "Sitting_Room_3.jpg",
+        "src": "https://drive.google.com/thumbnail?id=110cdEbD8wTUGRm6KAemeJuQXI-y7-46M&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=110cdEbD8wTUGRm6KAemeJuQXI-y7-46M&sz=w700",
+        "alt": "9 Sandown property photograph 7"
+      },
+      {
+        "drive_id": "1Dsr69Sl5uvYFHyaEWuko1HAeQAgcIMRY",
+        "title": "Sitting_Room_2.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1Dsr69Sl5uvYFHyaEWuko1HAeQAgcIMRY&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1Dsr69Sl5uvYFHyaEWuko1HAeQAgcIMRY&sz=w700",
+        "alt": "9 Sandown property photograph 8"
+      },
+      {
+        "drive_id": "1F8RMWsWSXkao3aphfS-t2b12QuZ32ILO",
+        "title": "Sitting_Room_1.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1F8RMWsWSXkao3aphfS-t2b12QuZ32ILO&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1F8RMWsWSXkao3aphfS-t2b12QuZ32ILO&sz=w700",
+        "alt": "9 Sandown property photograph 9"
+      },
+      {
+        "drive_id": "1xdRflpl7-L5-CZAZbJ0U7YO5Adly-cOa",
+        "title": "Kitchen_5.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1xdRflpl7-L5-CZAZbJ0U7YO5Adly-cOa&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1xdRflpl7-L5-CZAZbJ0U7YO5Adly-cOa&sz=w700",
+        "alt": "9 Sandown property photograph 10"
+      },
+      {
+        "drive_id": "1Ql55yab56oncliOnQu38GsPi7rH8shna",
+        "title": "Kitchen_4.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1Ql55yab56oncliOnQu38GsPi7rH8shna&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1Ql55yab56oncliOnQu38GsPi7rH8shna&sz=w700",
+        "alt": "9 Sandown property photograph 11"
+      },
+      {
+        "drive_id": "14LBdUJfeZ8H9yKdQ6v4TwLgYNDkIs1Km",
+        "title": "Kitchen_3.jpg",
+        "src": "https://drive.google.com/thumbnail?id=14LBdUJfeZ8H9yKdQ6v4TwLgYNDkIs1Km&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=14LBdUJfeZ8H9yKdQ6v4TwLgYNDkIs1Km&sz=w700",
+        "alt": "9 Sandown property photograph 12"
+      },
+      {
+        "drive_id": "16CaZcLQW0KM9rfqYtNKDPsTr3exaijO2",
+        "title": "Kitchen_2.jpg",
+        "src": "https://drive.google.com/thumbnail?id=16CaZcLQW0KM9rfqYtNKDPsTr3exaijO2&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=16CaZcLQW0KM9rfqYtNKDPsTr3exaijO2&sz=w700",
+        "alt": "9 Sandown property photograph 13"
+      },
+      {
+        "drive_id": "1YGnFrgkbWed7QKTSHknirXV5F4KOAs2Q",
+        "title": "Exterior_3.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1YGnFrgkbWed7QKTSHknirXV5F4KOAs2Q&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1YGnFrgkbWed7QKTSHknirXV5F4KOAs2Q&sz=w700",
+        "alt": "9 Sandown property photograph 14"
+      },
+      {
+        "drive_id": "1CPDSlld9grZqJQJvNFocFUeUHKyz-EtE",
+        "title": "Bedroom5_3.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1CPDSlld9grZqJQJvNFocFUeUHKyz-EtE&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1CPDSlld9grZqJQJvNFocFUeUHKyz-EtE&sz=w700",
+        "alt": "9 Sandown property photograph 15"
+      },
+      {
+        "drive_id": "1e5uj0ey77MgLEnZQoXKIMfwn56t7sK4w",
+        "title": "Bedroom5_1.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1e5uj0ey77MgLEnZQoXKIMfwn56t7sK4w&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1e5uj0ey77MgLEnZQoXKIMfwn56t7sK4w&sz=w700",
+        "alt": "9 Sandown property photograph 16"
+      },
+      {
+        "drive_id": "1PKxEiP0_RVZH9UI6Mbi8cTtVGzbYyj8j",
+        "title": "Bedroom4_1.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1PKxEiP0_RVZH9UI6Mbi8cTtVGzbYyj8j&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1PKxEiP0_RVZH9UI6Mbi8cTtVGzbYyj8j&sz=w700",
+        "alt": "9 Sandown property photograph 17"
+      },
+      {
+        "drive_id": "1ilypeXFoeQdUXHbnGtw2xDRJA43ojxQh",
+        "title": "Bedroom4_2.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1ilypeXFoeQdUXHbnGtw2xDRJA43ojxQh&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1ilypeXFoeQdUXHbnGtw2xDRJA43ojxQh&sz=w700",
+        "alt": "9 Sandown property photograph 18"
+      },
+      {
+        "drive_id": "1jxkDvzFJ7NsnN2fnnYqL0HgyNB6bHOSK",
+        "title": "Bedroom3_2.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1jxkDvzFJ7NsnN2fnnYqL0HgyNB6bHOSK&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1jxkDvzFJ7NsnN2fnnYqL0HgyNB6bHOSK&sz=w700",
+        "alt": "9 Sandown property photograph 19"
+      },
+      {
+        "drive_id": "1YbGcQuNqXTWMi_G6SdHuc4OQf-_thF5J",
+        "title": "Bedroom3_1.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1YbGcQuNqXTWMi_G6SdHuc4OQf-_thF5J&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1YbGcQuNqXTWMi_G6SdHuc4OQf-_thF5J&sz=w700",
+        "alt": "9 Sandown property photograph 20"
+      },
+      {
+        "drive_id": "1KUy5mKwsFQQ6nC5zzRuL8JyPMHZ2k1gS",
+        "title": "Bedroom2_3.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1KUy5mKwsFQQ6nC5zzRuL8JyPMHZ2k1gS&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1KUy5mKwsFQQ6nC5zzRuL8JyPMHZ2k1gS&sz=w700",
+        "alt": "9 Sandown property photograph 21"
+      },
+      {
+        "drive_id": "1acbJYl7kFUkHlAcOjD7p35hDkAVuyU30",
+        "title": "Bedroom2_2.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1acbJYl7kFUkHlAcOjD7p35hDkAVuyU30&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1acbJYl7kFUkHlAcOjD7p35hDkAVuyU30&sz=w700",
+        "alt": "9 Sandown property photograph 22"
+      },
+      {
+        "drive_id": "1-ZU_WD8_1N-_LydzqPvn6XKm0UYxBdP8",
+        "title": "Bedroom1_3.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1-ZU_WD8_1N-_LydzqPvn6XKm0UYxBdP8&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1-ZU_WD8_1N-_LydzqPvn6XKm0UYxBdP8&sz=w700",
+        "alt": "9 Sandown property photograph 23"
+      },
+      {
+        "drive_id": "13-i4oAxlEnk7aMbHZ6t2Nz3FGjKAAt_y",
+        "title": "Bedroom1_2.jpg",
+        "src": "https://drive.google.com/thumbnail?id=13-i4oAxlEnk7aMbHZ6t2Nz3FGjKAAt_y&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=13-i4oAxlEnk7aMbHZ6t2Nz3FGjKAAt_y&sz=w700",
+        "alt": "9 Sandown property photograph 24"
+      },
+      {
+        "drive_id": "1gWklPL0V5wGYRP1FanxaRFcZaIPIm36w",
+        "title": "Bedroom1_1.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1gWklPL0V5wGYRP1FanxaRFcZaIPIm36w&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1gWklPL0V5wGYRP1FanxaRFcZaIPIm36w&sz=w700",
+        "alt": "9 Sandown property photograph 25"
+      },
+      {
+        "drive_id": "1yf3ZUuCFo4ErTt0ZI36Fg53IeZ288xzr",
+        "title": "Bathroom.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1yf3ZUuCFo4ErTt0ZI36Fg53IeZ288xzr&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1yf3ZUuCFo4ErTt0ZI36Fg53IeZ288xzr&sz=w700",
+        "alt": "9 Sandown property photograph 26"
+      }
+    ],
+    "cover_photo": {
+      "drive_id": "104mANMMI2vsYPpFo8sjTFhreHcDJdXup",
+      "title": "Bedroom2_1.jpg",
+      "src": "https://drive.google.com/thumbnail?id=104mANMMI2vsYPpFo8sjTFhreHcDJdXup&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=104mANMMI2vsYPpFo8sjTFhreHcDJdXup&sz=w700",
+      "alt": "9 Sandown property photograph 1"
+    },
     "source_listing_url": "https://www.airbnb.com/rooms/1274139239387862430?guests=1&adults=1&s=67&unique_share_id=206a453b-b311-4cb5-987b-eabdbf215c67",
     "source_photo_folder_url": "https://drive.google.com/drive/folders/1E3zuPhNc8MDw0x65afT7fWcSrCNHyRML?usp=sharing",
     "featured": false,
     "published": true,
     "partner_acceptance_status": "pending",
     "requires_partner_acceptance": false,
-    "source_issues": [
-      "Photo folder contains 1 nested folder(s) not yet expanded",
-      "No direct image files found in supplied photo folder"
-    ]
+    "source_issues": []
   },
   {
     "id": "FAB-013",
@@ -3881,18 +4067,162 @@
       "Bills included"
     ],
     "bills_included": true,
-    "photos": [],
-    "cover_photo": null,
+    "photos": [
+      {
+        "drive_id": "1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8",
+        "title": "12c98e95-e1da-4f29-929d-d025967ee637.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 1"
+      },
+      {
+        "drive_id": "1GkWJbGGmGPli8-bKDCnI3JoVbNLVkLzt",
+        "title": "18 Elm Hayes.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1GkWJbGGmGPli8-bKDCnI3JoVbNLVkLzt&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1GkWJbGGmGPli8-bKDCnI3JoVbNLVkLzt&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 2"
+      },
+      {
+        "drive_id": "10N7kEnx5jAFzyFMpALW6HAGQTdykRRPz",
+        "title": "1.jpg",
+        "src": "https://drive.google.com/thumbnail?id=10N7kEnx5jAFzyFMpALW6HAGQTdykRRPz&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=10N7kEnx5jAFzyFMpALW6HAGQTdykRRPz&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 3"
+      },
+      {
+        "drive_id": "1MngRpzkYfd0hVxJE0Qcy5I5BPHmiOXIf",
+        "title": "2.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1MngRpzkYfd0hVxJE0Qcy5I5BPHmiOXIf&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1MngRpzkYfd0hVxJE0Qcy5I5BPHmiOXIf&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 4"
+      },
+      {
+        "drive_id": "1UdMbtXLrl9P4Fj8BsdHp1G6uTKMG0rqr",
+        "title": "3.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1UdMbtXLrl9P4Fj8BsdHp1G6uTKMG0rqr&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1UdMbtXLrl9P4Fj8BsdHp1G6uTKMG0rqr&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 5"
+      },
+      {
+        "drive_id": "14gHuy6JREB8A9Upj93335r399dJmikYp",
+        "title": "4.jpg",
+        "src": "https://drive.google.com/thumbnail?id=14gHuy6JREB8A9Upj93335r399dJmikYp&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=14gHuy6JREB8A9Upj93335r399dJmikYp&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 6"
+      },
+      {
+        "drive_id": "1CUZVzpYkD7nd9EAWOVFdeSKXHjc2eMPZ",
+        "title": "5.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1CUZVzpYkD7nd9EAWOVFdeSKXHjc2eMPZ&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1CUZVzpYkD7nd9EAWOVFdeSKXHjc2eMPZ&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 7"
+      },
+      {
+        "drive_id": "1z_9fAwd4vQZvHvJO_hZijHE99-SYPKnK",
+        "title": "6.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1z_9fAwd4vQZvHvJO_hZijHE99-SYPKnK&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1z_9fAwd4vQZvHvJO_hZijHE99-SYPKnK&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 8"
+      },
+      {
+        "drive_id": "1_Cdh4l5sryZ0U3sc88MPbvS5f8fYeBFB",
+        "title": "7.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1_Cdh4l5sryZ0U3sc88MPbvS5f8fYeBFB&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1_Cdh4l5sryZ0U3sc88MPbvS5f8fYeBFB&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 9"
+      },
+      {
+        "drive_id": "16SA7sYYltPUBREC_1upUdP2cfW3x-49o",
+        "title": "8.jpg",
+        "src": "https://drive.google.com/thumbnail?id=16SA7sYYltPUBREC_1upUdP2cfW3x-49o&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=16SA7sYYltPUBREC_1upUdP2cfW3x-49o&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 10"
+      },
+      {
+        "drive_id": "1G-xn59GQoE2t9xAsYEAkDvhgNDIw6yvR",
+        "title": "9.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1G-xn59GQoE2t9xAsYEAkDvhgNDIw6yvR&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1G-xn59GQoE2t9xAsYEAkDvhgNDIw6yvR&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 11"
+      },
+      {
+        "drive_id": "1il8zzq5OoeXRDs-ft4JrHSM46kwlge0Z",
+        "title": "10.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1il8zzq5OoeXRDs-ft4JrHSM46kwlge0Z&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1il8zzq5OoeXRDs-ft4JrHSM46kwlge0Z&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 12"
+      },
+      {
+        "drive_id": "1lnlKKiJcAXQ366HOlZgQ-Y0W37G4dOq7",
+        "title": "11.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1lnlKKiJcAXQ366HOlZgQ-Y0W37G4dOq7&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1lnlKKiJcAXQ366HOlZgQ-Y0W37G4dOq7&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 13"
+      },
+      {
+        "drive_id": "1pCnng0Bz-JB2JdYTRx2u7JDcTtuQCrgk",
+        "title": "12.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1pCnng0Bz-JB2JdYTRx2u7JDcTtuQCrgk&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1pCnng0Bz-JB2JdYTRx2u7JDcTtuQCrgk&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 14"
+      },
+      {
+        "drive_id": "1BLeyGN5UGEuPG1kiCu_yyRENwN5iNHEE",
+        "title": "13.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1BLeyGN5UGEuPG1kiCu_yyRENwN5iNHEE&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1BLeyGN5UGEuPG1kiCu_yyRENwN5iNHEE&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 15"
+      },
+      {
+        "drive_id": "1PIWIPd1tOkMaYqsLSyHfawpqDTMNaKhz",
+        "title": "14.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1PIWIPd1tOkMaYqsLSyHfawpqDTMNaKhz&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1PIWIPd1tOkMaYqsLSyHfawpqDTMNaKhz&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 16"
+      },
+      {
+        "drive_id": "1ChDzFYGhV_e0PSVw2flZ3np56Xju13rZ",
+        "title": "15.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1ChDzFYGhV_e0PSVw2flZ3np56Xju13rZ&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1ChDzFYGhV_e0PSVw2flZ3np56Xju13rZ&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 17"
+      },
+      {
+        "drive_id": "1c9FvtNwdWHtfTVELHH0RcOqaxVhXK27X",
+        "title": "16.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1c9FvtNwdWHtfTVELHH0RcOqaxVhXK27X&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1c9FvtNwdWHtfTVELHH0RcOqaxVhXK27X&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 18"
+      },
+      {
+        "drive_id": "1q-UKVZ0PT7V5fKvUm0gIxmY-60G06zwt",
+        "title": "17.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1q-UKVZ0PT7V5fKvUm0gIxmY-60G06zwt&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1q-UKVZ0PT7V5fKvUm0gIxmY-60G06zwt&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 19"
+      },
+      {
+        "drive_id": "1rBmuYmcFg1cEIq_ILwGBrxhJP3xQjVGU",
+        "title": "18.jpg",
+        "src": "https://drive.google.com/thumbnail?id=1rBmuYmcFg1cEIq_ILwGBrxhJP3xQjVGU&sz=w1600",
+        "thumb": "https://drive.google.com/thumbnail?id=1rBmuYmcFg1cEIq_ILwGBrxhJP3xQjVGU&sz=w700",
+        "alt": "18 Elm Hays Rd property photograph 20"
+      }
+    ],
+    "cover_photo": {
+      "drive_id": "1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8",
+      "title": "12c98e95-e1da-4f29-929d-d025967ee637.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8&sz=w700",
+      "alt": "18 Elm Hays Rd property photograph 1"
+    },
     "source_listing_url": "https://www.airbnb.co.uk/rooms/1392224423163416004?guests=1&adults=1&s=67&unique_share_id=1824dff1-6d5c-4bc3-9881-4abdddc4247d",
     "source_photo_folder_url": "https://drive.google.com/drive/folders/1Q2q0ovc5ZtpwoQ4hsD7pblMgIvRB5xAl?usp=drive_link",
     "featured": false,
     "published": true,
     "partner_acceptance_status": "pending",
     "requires_partner_acceptance": false,
-    "source_issues": [
-      "Photo folder contains 1 nested folder(s) not yet expanded",
-      "No direct image files found in supplied photo folder"
-    ]
+    "source_issues": []
   },
   {
     "id": "FAB-019",
