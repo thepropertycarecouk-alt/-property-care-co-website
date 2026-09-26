@@ -9,3 +9,13 @@
 .brand img{width:190px;height:auto;max-height:110px;object-fit:contain;mix-blend-mode:normal}.header-inner{height:116px}.site-header nav{margin-right:0}.footer-logo{display:block;width:270px;max-width:100%}.footer-logo img{display:block;width:100%;height:auto;object-fit:contain}.service-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.sourcing-section{padding-top:64px;padding-bottom:0}.sourcing-section h2{margin-bottom:20px}.sourcing-section p{max-width:780px;margin-bottom:16px}.honeypot{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}.button[disabled]{opacity:.65;cursor:wait;transform:none}
 @media(max-width:1000px){.service-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:640px){.header-inner{height:104px}.brand img{width:165px;max-height:98px}.service-grid{grid-template-columns:1fr}.sourcing-section{padding-top:42px}.footer-logo{width:240px}.site-header nav{margin-right:0}}
+/* Mobile alignment refinements preserve supplied artwork and section structure. */
+.hero-grid>*{min-width:0}
+@media(max-width:640px){
+ html{scroll-padding-top:112px}.header-inner{height:100px;gap:16px}.brand img{display:block;width:158px;max-height:94px}.menu-button{flex-shrink:0;width:44px;height:44px}.site-header nav{top:100%}
+ .hero-copy{padding-top:8px}.hero-copy h1{margin-bottom:20px}.hero-actions{flex-wrap:wrap;gap:12px 20px}.hero-actions .button{font-size:12px}.hero-actions .text-link{font-size:11px;min-height:44px}.hero-footnote{margin-top:23px;align-items:flex-start;line-height:1.6}.hero-footnote .mini-icon{flex-shrink:0}
+ .hero-visual{height:340px}.quick-form{margin-top:26px}.quick-form>*{min-width:0}.quick-submit{white-space:normal}
+ .service-card{padding:24px}.service-card h3{font-size:25px}.service-card p{font-size:13px;line-height:1.75}.service-top{margin-bottom:20px}.card-link{font-size:11px}
+ .process-strip{gap:24px;padding-block:28px 36px}.process-title{display:block}.process-title .eyebrow{margin-bottom:10px}.process-title h3{font-size:27px}.process-step{padding-top:0;gap:16px}.process-step h4{font-size:13px}.process-step p{font-size:12px}
+ .form-actions .button{scroll-margin-bottom:85px}.enquiry-panel{padding-bottom:36px}.whatsapp-control{right:10px;bottom:10px;width:44px;height:44px;padding:10px}.whatsapp-panel{right:10px;bottom:64px}
+}

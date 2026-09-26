@@ -1,4 +1,4 @@
-import {copyFile, access, cp, mkdir, readFile, writeFile} from 'node:fs/promises';
+import {copyFile, access, cp, mkdir, rm} from 'node:fs/promises';
 for (const file of [
   'public/stays/index.html','public/stays/app.js','public/stays/styles.css',
   'public/stays/marketplace.css','public/stays/marketplace.js','public/stays/property-browser.js',
@@ -7,6 +7,7 @@ for (const file of [
   'public/stays/assets/02_Transparent_Landscape_Logo.png','public/stays/assets/living-room.jpg'
 ]) await access(file);
 await copyFile('public/stays/index.html', 'public/index.html');
+await rm('dist', {recursive:true, force:true});
 await mkdir('dist', {recursive: true});
 await cp('public', 'dist', {recursive: true});
 

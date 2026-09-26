@@ -6,10 +6,12 @@
 <title>PCCO Stays | Accommodation for work, projects & relocation</title>
 <meta name="description" content="Furnished UK accommodation for contractors, relocation firms and corporate stays. Tell PCCO Stays your location, dates and requirements.">
 <link rel="stylesheet" href="/stays/styles.css">
+<link rel="stylesheet" href="/stays/marketplace.css">
 <script>/* Preserve existing cleaning email and payment return links. */
 if(location.pathname==='/'&&(new URLSearchParams(location.search).has('lead')||new URLSearchParams(location.search).has('monthly')||['#cleaningDivision','#booking','#estimate'].includes(location.hash)))location.replace('/cleans'+location.search+location.hash);
 </script>
 <script src="/stays/app.js" defer></script>
+<script src="/stays/marketplace.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -30,7 +32,7 @@ if(location.pathname==='/'&&(new URLSearchParams(location.search).has('lead')||n
 <div class="hero-actions"><a class="button button-navy" href="#enquire">Tell us what you need <span aria-hidden="true">↗</span></a><a class="text-link" href="#services">Explore our services <span aria-hidden="true">↓</span></a></div>
 <div class="hero-footnote"><span class="mini-icon" data-icon="key"></span><span>From a single apartment to a whole project team.</span></div>
 </div>
-<div class="hero-visual">
+<div class="hero-visual" id="hero-property-visual">
 <img class="hero-photo" src="/stays/assets/living-room.jpg" alt="Bright furnished living room with a sofa, dining area and large windows" width="1800" height="1200" fetchpriority="high">
 <div class="image-label"><span class="image-label-dot"></span> Space to settle in.</div>
 <div class="image-note">Illustrative interior</div>
@@ -59,7 +61,7 @@ if(location.pathname==='/'&&(new URLSearchParams(location.search).has('lead')||n
 <div id="how-it-works" class="process-strip"><div class="process-title"><p class="eyebrow">A CLEAR PROCESS</p><h3>One brief.<br>We take it from there.</h3></div><div class="process-step"><span>01</span><div><h4>Tell us the essentials</h4><p>Share your location, dates and the details that matter.</p></div></div><div class="process-step"><span>02</span><div><h4>Review suitable options</h4><p>Compare the accommodation, costs and terms we source.</p></div></div><div class="process-step"><span>03</span><div><h4>Confirm your stay</h4><p>We agree availability and booking details with you.</p></div></div></div>
 </div>
 </section>
-<section class="sourcing-section wrap" id="properties" aria-labelledby="sourcing-title"><p class="eyebrow">ACCOMMODATION SOURCING</p><h2 id="sourcing-title">Your requirement comes first.</h2><p>Can’t see what you need? Tell us your requirement — our nationwide network extends beyond the properties currently displayed online.</p><p class="field-note">No properties are currently published. We confirm suitable options and availability personally.</p><a class="text-link" href="#enquire">Tell us your requirement ↗</a><div id="property-list"></div></section>
+<section class="marketplace-section wrap" id="properties" aria-labelledby="featured-title"><div class="marketplace-heading"><div><p class="eyebrow">PCCO STAYS · UK-WIDE NETWORK</p><h2 id="featured-title">Browse our accommodation</h2><p>Browse displayed properties or tell us what you need. Our accommodation team sources suitable options from the wider network.</p></div><a class="button button-outline" href="/properties/">Browse displayed properties <span aria-hidden="true">→</span></a></div><div class="network-cta"><div><h3>Looking for something different?</h3><p>We have access to a UK-wide network of 3,000+ properties, and only a selection are displayed online. Send us your location, dates and requirements and we’ll source suitable options.</p><span class="trust-point">No sourcing fees.</span></div><a class="button button-navy" href="#enquire">Send us your requirements <span aria-hidden="true">↗</span></a></div></section>
 <section id="enquire" class="enquiry-section wrap" aria-labelledby="enquiry-title">
 <div class="enquiry-intro"><p class="eyebrow">YOUR NEXT STAY STARTS HERE</p><h2 id="enquiry-title">Tell us what<br><em>you need.</em></h2><p>A few details give us a useful starting point. Submit your brief directly to the accommodation team. Procurement teams can include a project or internal reference.</p><div class="contact-box"><span class="contact-icon" data-icon="message"></span><div><h3>Prefer a conversation?</h3><a class="phone-link" href="tel:+447411251361">+44 7411 251361</a><a class="email-link" href="mailto:thepropertycarecouk@gmail.com">Email the accommodation team <span aria-hidden="true">↗</span></a></div></div><div class="enquiry-assurance"><i data-icon="check"></i><span>No booking commitment.<br>Availability and rates confirmed personally.</span></div><details class="faq"><summary>Can you help with several properties?</summary><p>Yes. Tell us the number of guests and units, and whether the group can be split across nearby properties.</p></details><details class="faq"><summary>What if our dates are not confirmed?</summary><p>Select “Dates to be confirmed” and add an expected duration. We can work from an indicative brief.</p></details></div>
 <div class="enquiry-panel">

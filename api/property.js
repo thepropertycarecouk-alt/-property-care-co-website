@@ -24,7 +24,7 @@ export default async function handler(req, res) {
   let html = template.replaceAll('%%SLUG%%', escape(property?.slug || '')).replaceAll('%%TITLE%%', escape(title)).replaceAll('%%DESCRIPTION%%', escape(description));
   if (!property) {
     res.setHeader('X-Robots-Tag', 'noindex, nofollow');
-    html = html.replace('<script src="/stays/property-page.js" defer></script>', '<script src="/stays/property-navigation.js" defer></script>')
+    html = html.replace('https://www.thepropertycareco.co.uk/properties//', 'https://www.thepropertycareco.co.uk/properties/').replace('<script src="/stays/property-page.js" defer></script>', '<script src="/stays/property-navigation.js" defer></script>')
       .replace('<p>Loading property details…</p>', '<div class="empty-results"><h1>Let us find your next stay.</h1><p>This property is not currently displayed. Send us your location, dates and requirements and our accommodation team will source suitable options.</p><a class="button button-navy" href="/#enquire">Send us your requirements ↗</a></div>');
   }
   return res.status(failed ? 503 : 200).send(html);

@@ -1,17 +1,51 @@
 'use strict';
-(async()=>{const root=document.querySelector('#featured-property-track');if(!root)return;
- const carousel=document.querySelector('#featured-property-carousel'),prev=document.querySelector('#featured-prev'),next=document.querySelector('#featured-next');
- const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;let paused=false,raf=0,last=0,baseWidth=0;
- const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
- const fact=p=>[p.bedrooms?esc(p.bedrooms)+' bed'+(p.bedrooms===1?'':'s'):'',p.sleeps?'Sleeps '+esc(p.sleeps):'',p.parking?esc(p.parking):''].filter(Boolean).map(x=>'<span>'+x+'</span>').join('');
- const card=p=>'<a class="property-card" href="/properties/'+encodeURIComponent(p.slug)+'/">'+
-   '<div class="property-card-media">'+(p.cover_photo?'<img src="'+esc(p.cover_photo.thumb||p.cover_photo.src)+'" alt="'+esc(p.cover_photo.alt||p.name)+'" loading="lazy" width="700" height="525">':'<div class="property-card-no-photo">Photography available on request</div>')+'</div>'+
-   '<div class="property-card-body"><div><div class="property-location">'+esc(p.postcode||'UK')+'</div><h3>'+esc(p.name)+'</h3></div><div class="property-facts">'+fact(p)+'</div><span class="property-card-cta">View property →</span></div></a>';
- try{const r=await fetch('https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-property-feed?summary=1',{cache:'no-store'});const all=await r.json();const items=all.filter(p=>p.published&&p.featured&&p.cover_photo);if(!items.length){root.closest('.property-carousel-shell').hidden=true;return}
-   const markup=items.map(card).join('');root.innerHTML=markup+markup;requestAnimationFrame(()=>{baseWidth=root.scrollWidth/2});
-   const move=dir=>carousel.scrollBy({left:dir*Math.min(360,carousel.clientWidth*.85),behavior:reduce?'auto':'smooth'});prev.addEventListener('click',()=>move(-1));next.addEventListener('click',()=>move(1));
-   const stop=()=>paused=true,start=()=>paused=false;carousel.addEventListener('pointerdown',stop);carousel.addEventListener('pointerup',()=>setTimeout(start,1200));carousel.addEventListener('mouseenter',stop);carousel.addEventListener('mouseleave',start);carousel.addEventListener('focusin',stop);carousel.addEventListener('focusout',start);
-   if(!reduce){const tick=t=>{if(!paused&&t-last>20&&baseWidth){carousel.scrollLeft+=.35;if(carousel.scrollLeft>=baseWidth)carousel.scrollLeft-=baseWidth;last=t}raf=requestAnimationFrame(tick)};raf=requestAnimationFrame(tick)}
- }catch{root.closest('.property-carousel-shell').hidden=true}
- window.addEventListener('pagehide',()=>cancelAnimationFrame(raf));
+(async () => {
+  const root = document.querySelector('#hero-property-visual');
+  if (!root) return;
+  const endpoint = 'https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-property-feed?summary=1';
+  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const fallback = root.innerHTML;
+  let timer, index = 0, hover = false, focus = false, interacting = false, manualPause = false, pointer, swiped = false, stopped = false;
+  try {
+    const response = await fetch(endpoint, {cache:'no-store', signal:AbortSignal.timeout(10000)});
+    if (!response.ok) return;
+    const items = (await response.json()).filter(p => p.published && p.featured && p.cover_photo).slice(0,8);
+    if (!items.length) return;
+    const source = p => '/api/property-image?property='+encodeURIComponent(p.slug)+'&size=1600';
+    await new Promise((resolve, reject) => {const image = new Image(); const timeout=setTimeout(reject,20000); image.onload = ()=>{clearTimeout(timeout);resolve();}; image.onerror = ()=>{clearTimeout(timeout);reject();}; image.src = source(items[0]);});
+    root.classList.add('hero-has-properties');
+    root.setAttribute('role','region'); root.setAttribute('aria-label','Featured accommodation');
+    root.setAttribute('aria-roledescription','carousel');
+    root.innerHTML = '<div class="hero-property-slides">' + items.map((p,i) =>
+      '<a class="hero-property-slide'+(i===0?' is-active':'')+'" href="/properties/'+encodeURIComponent(p.slug)+'/" aria-hidden="'+(i!==0)+'" tabindex="'+(i===0?'0':'-1')+'">'+
+      '<img src="'+esc(source(p))+'" alt="'+esc(p.cover_photo.alt || p.name)+'" width="1600" height="1000" '+(i?'loading="lazy"':'fetchpriority="high"')+'>'+
+      '<div class="hero-property-caption"><span class="small-label">'+esc(p.postcode || p.city || '')+'</span><h2>'+esc(p.name)+'</h2><p>'+[p.bedrooms?esc(p.bedrooms)+' bedrooms':'',p.sleeps?'Sleeps '+esc(p.sleeps):'',p.parking?esc(p.parking):''].filter(Boolean).join(' · ')+'</p><span class="hero-property-link">View property ↗</span></div></a>'
+    ).join('')+'</div><div class="hero-carousel-bar"><span class="small-label">FEATURED ACCOMMODATION</span><div class="hero-carousel-controls"><button type="button" id="featured-prev" aria-label="Previous property">←</button><button type="button" id="featured-pause" aria-label="Pause slideshow">Ⅱ</button><button type="button" id="featured-next" aria-label="Next property">→</button></div></div><span class="sr-only" id="featured-status" aria-live="polite"></span>';
+    const slides = [...root.querySelectorAll('.hero-property-slide')], pause = root.querySelector('#featured-pause');
+    const syncPause = () => {pause.textContent = manualPause ? '▶' : 'Ⅱ'; pause.setAttribute('aria-label',manualPause ? 'Play slideshow' : 'Pause slideshow');pause.hidden=reduced.matches;};
+    const schedule = () => {clearTimeout(timer); if(!stopped && items.length>1 && !reduced.matches && !manualPause && !hover && !focus && !interacting && !document.hidden) timer=setTimeout(()=>show(index+1),6500);};
+    const show = (next, announce=false) => {
+      if(stopped)return;
+      index=(next+items.length)%items.length;
+      slides.forEach((slide,i)=>{slide.classList.toggle('is-active',i===index);slide.setAttribute('aria-hidden',String(i!==index));slide.tabIndex=i===index?0:-1;});
+      if(announce)root.querySelector('#featured-status').textContent=items[index].name+', '+(index+1)+' of '+items.length;
+      schedule();
+    };
+    root.querySelector('#featured-prev').addEventListener('click',()=>show(index-1,true));
+    root.querySelector('#featured-next').addEventListener('click',()=>show(index+1,true));
+    pause.addEventListener('click',()=>{manualPause=!manualPause;syncPause();schedule();});
+    root.addEventListener('mouseenter',()=>{hover=true;schedule();});root.addEventListener('mouseleave',()=>{hover=false;schedule();});
+    root.addEventListener('focusin',()=>{focus=true;schedule();});root.addEventListener('focusout',event=>{focus=root.contains(event.relatedTarget);schedule();});
+    root.addEventListener('pointerdown',event=>{pointer={x:event.clientX,y:event.clientY};swiped=false;interacting=true;schedule();});
+    window.addEventListener('pointerup',event=>{if(!pointer)return;const dx=event.clientX-pointer.x,dy=event.clientY-pointer.y;pointer=null;interacting=false;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)){swiped=true;show(index+(dx<0?1:-1),true);}schedule();});
+    window.addEventListener('pointercancel',()=>{pointer=null;interacting=false;schedule();});
+    root.addEventListener('click',event=>{if(swiped&&event.target.closest('a')){event.preventDefault();swiped=false;}},true);
+    root.addEventListener('keydown',event=>{if(event.key==='ArrowLeft'||event.key==='ArrowRight'){event.preventDefault();show(index+(event.key==='ArrowRight'?1:-1),true);}});
+    document.addEventListener('visibilitychange',schedule);reduced.addEventListener('change',()=>{syncPause();schedule();});
+    root.querySelectorAll('img').forEach(img=>img.addEventListener('error',()=>{stopped=true;clearTimeout(timer);root.classList.remove('hero-has-properties');root.removeAttribute('aria-roledescription');root.setAttribute('aria-label','UK-wide accommodation');root.innerHTML=fallback;},{once:true}));
+    window.addEventListener('pagehide',()=>clearTimeout(timer));
+    if(items.length===1)root.querySelector('.hero-carousel-controls').hidden=true;
+    syncPause();schedule();
+  } catch { /* Retain the approved fallback when the feed or supplied image is unavailable. */ }
 })();
