@@ -57,6 +57,23 @@ Deno.serve(async(req:Request)=>{
     if(clean(body.website,200)) return fail('Unable to submit.');
 
     const enquiry_type = clean(body.enquiry_type,40);
+    const isProperty = enquiry_type === 'need_accommodation' && body.source === 'website_property';
+    let property:any=null;
+    if(isProperty){
+      const {data,error}=await db.from('pcco_properties').select('id,name,slug,data,published,requires_partner_acceptance,partner_id').eq('id',clean(body.property_id,40)).maybeSingle();
+      if(error)throw error;
+      if(!data||!data.published)return fail('This property is not currently accepting enquiries.');
+      {const {data:partner}=await db.from('pcco_property_partners').select('acceptance_status').eq('id',data.partner_id).single();if(partner?.acceptance_status!=='accepted')return fail('This property is not currently accepting enquiries.');}
+      property=data;
+      const start=clean(body.check_in,10),end=clean(body.check_out,10);
+      const realDate=(d:string)=>/^\d{4}-\d{2}-\d{2}$/.test(d)&&!isNaN(Date.parse(d))&&new Date(d).toISOString().slice(0,10)===d;
+      const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/London',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
+      if(!realDate(start)||!realDate(end)||start<today||end<=start)return fail('Please select valid requested dates.');
+      if(!Number.isInteger(body.guest_count)||body.guest_count<1||body.guest_count>property.data.sleeps)return fail('Please check the number of guests.');
+      if(body.consent!=='on'&&body.consent!==true)return fail('Please agree to the enquiry privacy details.');
+      body.location_required=property.data.city+' '+property.data.postcode;body.check_in_date=start;body.stay_length=start+' to '+end;
+      body.details='PROPERTY ENQUIRY\nProperty: '+property.name+'\nReference: '+property.id+'\nURL: https://www.thepropertycareco.co.uk/properties/'+property.slug+'\nRequested check-in: '+start+'\nRequested check-out: '+end+'\nGuests: '+body.guest_count+'\n\nRequirements: '+clean(body.message,2000);
+    }
     const isPartner = enquiry_type === 'have_accommodation' && body.source === 'website_partners';
     const full_name = clean(body.full_name,100);
     const company = clean(body.company,140);
@@ -92,7 +109,7 @@ Deno.serve(async(req:Request)=>{
       minimum_stay:clean(body.minimum_stay,120)||null,
       property_links:clean(body.property_links,isPartner?40000:2000)||null,
       details:clean(body.details,3000)||null,
-      status:'new', source:isPartner?'website_partners':'website_accommodation'
+      status:'new', source:isProperty?'website_property':isPartner?'website_partners':'website_accommodation'
     };
     if(enquiry_type==='need_accommodation' && !rec.location_required) return fail('Please tell us where accommodation is required.');
     if(enquiry_type==='have_accommodation' && !isPartner && !rec.areas_covered) return fail('Please tell us which areas your properties cover.');
@@ -101,9 +118,10 @@ Deno.serve(async(req:Request)=>{
     if(insertError || !created) throw insertError || new Error('Could not save enquiry.');
 
     const isNeed = enquiry_type==='need_accommodation';
-    const title = isNeed ? 'New accommodation requirement' : isPartner ? 'New PARTNER / HOST enquiry' : 'New accommodation provider enquiry';
-    const recipient = isNeed ? OWNER_EMAIL : 'partners@thepropertycareco.co.uk';
+    const title = isProperty ? 'New property enquiry — '+property.name : isNeed ? 'New accommodation requirement' : isPartner ? 'New PARTNER / HOST enquiry' : 'New accommodation provider enquiry';
+    const recipient = isProperty ? 'stays@thepropertycareco.co.uk' : isNeed ? OWNER_EMAIL : 'partners@thepropertycareco.co.uk';
     const detailsRows = [
+      isProperty?row('Property',property.name):'',isProperty?row('Property reference',property.id):'',isProperty?row('Property URL','https://www.thepropertycareco.co.uk/properties/'+property.slug):'',isProperty?row('Requested check-out',body.check_out):'',
       row('Name',full_name),row('Company',company),row('Email',email),row('Phone',phone),
       isNeed?row('Location required',rec.location_required):row('Areas covered',rec.areas_covered),
       isNeed?row('Check-in date',rec.check_in_date):'',
@@ -137,3 +155,4 @@ Deno.serve(async(req:Request)=>{
     return fail('Something went wrong. Please try again or WhatsApp us.',500);
   }
 });
+
