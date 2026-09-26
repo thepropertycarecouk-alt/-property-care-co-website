@@ -8,7 +8,7 @@
  const standardFilter=(p,bed,sleep,parking)=>(!bed||Number(p.bedrooms)>=bed)&&(!sleep||Number(p.sleeps)>=sleep)&&(!parking||(parking==='yes'?p.parking_category&&p.parking_category!=='none':p.parking_category===parking));
  const render=async()=>{const my=++seq,q=filters.q.value.trim(),low=q.toLowerCase(),bed=Number(filters.bed.value||0),sleep=Number(filters.sleep.value||0),parking=filters.parking.value;
   let list=[],distanceMap=new Map(),radiusUsed=false;
-  const postcodeLike=/^[A-Za-z]{1,2}\d[A-Za-z\d]?(?:\s*\d[A-Za-z]{2})?$/.test(q.replace(/\s+/g,''));
+  const postcodeLike=/^[A-Za-z]{1,2}\d[A-Za-z\d]?(?:\s?\d[A-Za-z]{2})?$/.test(q);
   if(q&&postcodeLike&&q.replace(/\s+/g,'').length>=2){
     count.textContent='Searching within 50 miles…';
     try{
