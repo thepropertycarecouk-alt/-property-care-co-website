@@ -14,6 +14,7 @@ const cors = {
 const headers = { ...cors, 'Content-Type':'application/json; charset=utf-8', 'Cache-Control':'no-store' };
 const OWNER_EMAIL = 'thepropertycarecouk@gmail.com';
 const FROM_EMAIL = 'The Property Care Co. <quotes@thepropertycareco.co.uk>';
+const PARTNER_FROM_EMAIL = 'PCCO Stays Partners <partners@thepropertycareco.co.uk>';
 
 function clean(v:unknown,max=300){ return String(v ?? '').trim().slice(0,max); }
 function ok(data:unknown,status=200){ return new Response(JSON.stringify(data),{status,headers}); }
@@ -71,7 +72,7 @@ Deno.serve(async(req:Request)=>{
       if(!realDate(start)||!realDate(end)||start<today||end<=start)return fail('Please select valid requested dates.');
       if(!Number.isInteger(body.guest_count)||body.guest_count<1||body.guest_count>property.data.sleeps)return fail('Please check the number of guests.');
       if(body.consent!=='on'&&body.consent!==true)return fail('Please agree to the enquiry privacy details.');
-      body.location_required=property.data.city+' '+property.data.postcode;body.check_in_date=start;body.stay_length=start+' to '+end;
+      body.location_required=[property.data.city,property.data.postcode].filter(Boolean).join(' ');body.check_in_date=start;body.stay_length=start+' to '+end;
       body.details='PROPERTY ENQUIRY\nProperty: '+property.name+'\nReference: '+property.id+'\nURL: https://www.thepropertycareco.co.uk/properties/'+property.slug+'\nRequested check-in: '+start+'\nRequested check-out: '+end+'\nGuests: '+body.guest_count+'\n\nRequirements: '+clean(body.message,2000);
     }
     const isPartner = enquiry_type === 'have_accommodation' && body.source === 'website_partners';
@@ -144,9 +145,10 @@ Deno.serve(async(req:Request)=>{
       : 'Thanks for sending us your property details. Our partnerships team will review the information and contact you if we need anything else. Your property has not automatically been approved. You can email additional properties to partners@thepropertycareco.co.uk.';
     const customerHtml = `<!doctype html><html><body style="margin:0;background:#f4f8fd"><div style="max-width:600px;margin:24px auto;background:#fff;font-family:Arial,sans-serif"><div style="background:#082d69;color:#fff;padding:16px 22px;font-weight:700">THE PROPERTY CARE CO.</div><div style="padding:26px"><h1 style="color:#082d69;font-size:27px;margin:0 0 14px">${esc(customerSubject)}</h1><p style="color:#10213d;font-size:16px">Hi ${esc(full_name)},</p><p style="color:#59677d;line-height:1.65">${esc(customerCopy)}</p><p style="color:#59677d;line-height:1.65">If anything changes, simply reply to this email or call us on 07411 251361.</p><a href="https://wa.me/447411251361" style="display:inline-block;margin-top:8px;background:#25d366;color:#fff;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:700">WhatsApp us</a></div></div></body></html>`;
 
+    const outboundFrom = isPartner ? PARTNER_FROM_EMAIL : FROM_EMAIL;
     await Promise.all([
-      resend({from:FROM_EMAIL,to:[recipient],reply_to:email,subject:`${title} | ${company||full_name}`,html:ownerHtml,text:ownerText}),
-      resend({from:FROM_EMAIL,to:[email],reply_to:recipient,subject:customerSubject,html:customerHtml,text:`Hi ${full_name},\n\n${customerCopy}\n\nIf anything changes, reply to this email or call 07411 251361.\n\nThe Property Care Co.`})
+      resend({from:outboundFrom,to:[recipient],reply_to:email,subject:`${title} | ${company||full_name}`,html:ownerHtml,text:ownerText}),
+      resend({from:outboundFrom,to:[email],reply_to:recipient,subject:customerSubject,html:customerHtml,text:`Hi ${full_name},\n\n${customerCopy}\n\nIf anything changes, reply to this email or call 07411 251361.\n\nThe Property Care Co.`})
     ]);
 
     return ok({ok:true,id:created.id,message:isNeed?'Your accommodation requirement has been received.':'Your accommodation details have been received.'});
