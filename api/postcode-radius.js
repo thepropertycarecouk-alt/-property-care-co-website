@@ -27,7 +27,7 @@ export default async function handler(req,res){
   const q=String(req.query.postcode||'').trim();
   const rawLat=Number(req.query.lat),rawLon=Number(req.query.lon);
   const hasCoords=Number.isFinite(rawLat)&&Number.isFinite(rawLon)&&rawLat>=49&&rawLat<=61&&rawLon>=-9&&rawLon<=3;
-  const radius=Math.min(50,Math.max(1,Number(req.query.radius||50)));
+  const radius=Math.min(15,Math.max(1,Number(req.query.radius||15)));
   if(!hasCoords&&(!q||q.length>120))return res.status(400).json({ok:false,error:'Choose a valid UK location.'});
   try{
     const centre=hasCoords?{latitude:rawLat,longitude:rawLon,label:String(req.query.label||q||'Selected location').slice(0,160)}:await geocode(q);
