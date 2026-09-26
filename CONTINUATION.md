@@ -1,10 +1,8 @@
 # PCCO marketplace continuation — 26 Sep 2026
 
-Current production frontend commit: `2700248d36986e51402e6d30e47d4f41b29189be`.
-
 Completed:
 - Full 46-property FabAccommodation dataset remains in Supabase.
-- 44 properties have usable supplied photo galleries; 1,311 photo references are stored.
+- 45 properties have usable supplied photo galleries; 1,350 photo references are stored. 23 Charles Road is the only property without supplied usable photos because its Drive folder is currently empty.
 - Public inventory and property enquiries are gated by both `published=true` and partner `acceptance_status='accepted'`.
 - Clean dynamic `/properties/:slug/` routes are live.
 - Featured accommodation is integrated into the existing homepage hero visual and the duplicated lower carousel was removed.
@@ -12,10 +10,15 @@ Completed:
 - Partner Terms are version `2026-09-26-v1` and state 7.85% + VAT commission plus separate 1.35% eligible processing charge.
 - Partner onboarding acceptance is checkbox-based and stores an auditable acceptance record.
 - A prior internal/testing acceptance was invalidated and retained as an audit record; its invitation was revoked.
-- A replacement FabAccommodation invitation was generated and delivered privately from partners@thepropertycareco.co.uk. The private token must never be committed or exposed in project documentation.
+- A replacement FabAccommodation invitation was generated and delivered privately from partners@thepropertycareco.co.uk. FabAccommodation then genuinely accepted Terms version `2026-09-26-v1`; the private token is not committed or exposed in project documentation.
 - Invitation records now track delivery timestamp, recipient, Gmail message ID and channel.
 - New genuine acceptances record Terms version, timestamp, checkbox confirmation, user agent and an HMAC-hashed IP (never raw IP).
+- A full spreadsheet-to-database audit was completed. All 46 cancellation terms are now synced to the host-supplied 14 days.
+- 57 Summerleaze had the Drive and Airbnb links entered in opposite spreadsheet columns; the site interprets them correctly and now has a 39-image gallery.
+- 7 Calliope Cres omits parking because the spreadsheet parking cell contains bed-configuration text; clarification is required from the host.
+- 17 Ellis Court omits bedroom count because the spreadsheet says 4 bedrooms while the supplied bed description describes one bedroom plus an open-plan sleeping area; clarification is required from the host.
+- Public nightly pricing is derived only where a host monthly rate exists: `monthly rate / 30 / max sleepers`, rounded up to the next whole pound, shown as an indicative 'From £X per person per night' figure. It explicitly states that the underlying host rate includes linen and bi-weekly cleaning and that prices are subject to host approval and negotiation.
 
 Publication rule:
-- FabAccommodation properties remain hidden while its partner status is pending.
-- Once FabAccommodation accepts the replacement delivered invitation, the acceptance RPC changes the partner status to accepted and the already-approved 46 records become public automatically through the gated feed.
+- FabAccommodation is currently accepted, so all 46 approved property records are eligible for public display through the gated feed.
+- Any future partner remains hidden until both the partner acceptance status is accepted and the individual property is marked published.
