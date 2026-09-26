@@ -1,0 +1,11 @@
+{
+  "buildCommand": "node scripts/build.mjs",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/property.js": { "includeFiles": "public/stays/property-template.html" }
+  },
+  "rewrites": [
+    { "source": "/properties/:slug", "destination": "/api/property?slug=:slug" },
+    { "source": "/properties/:slug/", "destination": "/api/property?slug=:slug" }
+  ]
+}
