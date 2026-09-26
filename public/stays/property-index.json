@@ -1,0 +1,864 @@
+[
+  {
+    "id": "FAB-001",
+    "name": "Churchlane Flat 1",
+    "slug": "churchlane-flat-1",
+    "postcode": "BS1 6FR",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Paid Parking-£11/day",
+    "parking_category": "paid",
+    "featured": true,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1QBtv37XWy1GBosLt95Gzfacnme1BVWfO",
+      "title": "6U6A2585-HDR-telly.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1QBtv37XWy1GBosLt95Gzfacnme1BVWfO&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1QBtv37XWy1GBosLt95Gzfacnme1BVWfO&sz=w700",
+      "alt": "Churchlane Flat 1 property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-002",
+    "name": "Churchlane Flat 2",
+    "slug": "churchlane-flat-2",
+    "postcode": "BS1 6FR",
+    "bedrooms": 2,
+    "sleeps": 5,
+    "parking": "Paid Parking-£11/day",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1T-0hl4am2wyuXRjIv9cGvDYhIGpYKLRY",
+      "title": "Copy of DSC07187.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1T-0hl4am2wyuXRjIv9cGvDYhIGpYKLRY&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1T-0hl4am2wyuXRjIv9cGvDYhIGpYKLRY&sz=w700",
+      "alt": "Churchlane Flat 2 property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-003",
+    "name": "29 Cranborne",
+    "slug": "29-cranborne",
+    "postcode": "BS34 5DZ",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1qtBQgy-GAkO314EptJvsRxFXhXjMgqtP",
+      "title": "Cover photo OTA.png",
+      "src": "https://drive.google.com/thumbnail?id=1qtBQgy-GAkO314EptJvsRxFXhXjMgqtP&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1qtBQgy-GAkO314EptJvsRxFXhXjMgqtP&sz=w700",
+      "alt": "29 Cranborne property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-004",
+    "name": "256 Hayes",
+    "slug": "256-hayes",
+    "postcode": "CF10 1BZ",
+    "bedrooms": 1,
+    "sleeps": 2,
+    "parking": "Paid Parking-£4.8/day",
+    "parking_category": "paid",
+    "featured": true,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1PX4siQCyML1M3vwEQATPGGImBoYOtkW0",
+      "title": "4F2A4539.JPG",
+      "src": "https://drive.google.com/thumbnail?id=1PX4siQCyML1M3vwEQATPGGImBoYOtkW0&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1PX4siQCyML1M3vwEQATPGGImBoYOtkW0&sz=w700",
+      "alt": "256 Hayes property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-005",
+    "name": "304 Hayes",
+    "slug": "304-hayes",
+    "postcode": "CF10 1EF",
+    "bedrooms": 1,
+    "sleeps": 2,
+    "parking": "Paid Parking-£4.8/day",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1GqtRtdQhLGSExwZJ6SMfJxxZQWsJDoDd",
+      "title": "Copy of 33.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1GqtRtdQhLGSExwZJ6SMfJxxZQWsJDoDd&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1GqtRtdQhLGSExwZJ6SMfJxxZQWsJDoDd&sz=w700",
+      "alt": "304 Hayes property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-006",
+    "name": "Kingsdown1",
+    "slug": "kingsdown1",
+    "postcode": "BS6 5UQ",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": true,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1xWHh3uQ8iJxGp0eA5cYA7Cxd_g-Nr2HG",
+      "title": "Copy of Bedroom1_1.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1xWHh3uQ8iJxGp0eA5cYA7Cxd_g-Nr2HG&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1xWHh3uQ8iJxGp0eA5cYA7Cxd_g-Nr2HG&sz=w700",
+      "alt": "Kingsdown1 property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-007",
+    "name": "Kingsdown2",
+    "slug": "kingsdown2",
+    "postcode": "BS6 5UQ",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1FUVncfv6aCRIlkQ24NDEy820gkSJb20V",
+      "title": "Bedroom2_1.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1FUVncfv6aCRIlkQ24NDEy820gkSJb20V&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1FUVncfv6aCRIlkQ24NDEy820gkSJb20V&sz=w700",
+      "alt": "Kingsdown2 property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-008",
+    "name": "Kingsdown3",
+    "slug": "kingsdown3",
+    "postcode": "BS6 5UQ",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1TAGbDcbxLcLjGDap8m0pADRv6QOHaBop",
+      "title": "Bedroom1_1.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1TAGbDcbxLcLjGDap8m0pADRv6QOHaBop&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1TAGbDcbxLcLjGDap8m0pADRv6QOHaBop&sz=w700",
+      "alt": "Kingsdown3 property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-009",
+    "name": "Kingsdown4",
+    "slug": "kingsdown4",
+    "postcode": "BS6 5UQ",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1OShcmi2nQkbzXHyFihjy5cGKq9JYq5U5",
+      "title": "Untitled design (15).png",
+      "src": "https://drive.google.com/thumbnail?id=1OShcmi2nQkbzXHyFihjy5cGKq9JYq5U5&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1OShcmi2nQkbzXHyFihjy5cGKq9JYq5U5&sz=w700",
+      "alt": "Kingsdown4 property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-010",
+    "name": "27 Ashburton",
+    "slug": "27-ashburton",
+    "postcode": "BS10 5QN",
+    "bedrooms": 4,
+    "sleeps": 5,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": true,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1F6tVjPgxnH-sh213ORm5ONppInVALdHu",
+      "title": "27AshburtonRd_24_9.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1F6tVjPgxnH-sh213ORm5ONppInVALdHu&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1F6tVjPgxnH-sh213ORm5ONppInVALdHu&sz=w700",
+      "alt": "27 Ashburton property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-011",
+    "name": "89 Southwood",
+    "slug": "89-southwood",
+    "postcode": "BS9 2QR",
+    "bedrooms": 3,
+    "sleeps": 6,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1c9GmD-ArrdUUpWVWbNkIglxg-vSUD8tv",
+      "title": "Garden_3.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1c9GmD-ArrdUUpWVWbNkIglxg-vSUD8tv&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1c9GmD-ArrdUUpWVWbNkIglxg-vSUD8tv&sz=w700",
+      "alt": "89 Southwood property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-012",
+    "name": "9 Sandown",
+    "slug": "9-sandown",
+    "postcode": "BS34 7HY",
+    "bedrooms": 5,
+    "sleeps": 9,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "104mANMMI2vsYPpFo8sjTFhreHcDJdXup",
+      "title": "Bedroom2_1.jpg",
+      "src": "https://drive.google.com/thumbnail?id=104mANMMI2vsYPpFo8sjTFhreHcDJdXup&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=104mANMMI2vsYPpFo8sjTFhreHcDJdXup&sz=w700",
+      "alt": "9 Sandown property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-013",
+    "name": "559 Filton Ave",
+    "slug": "559-filton-ave",
+    "postcode": "BS7 0QH",
+    "bedrooms": 4,
+    "sleeps": 7,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1-5Hw38p29MuXGT7BQ6w6ev64pZSclNHH",
+      "title": "Bedroom4_2.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1-5Hw38p29MuXGT7BQ6w6ev64pZSclNHH&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1-5Hw38p29MuXGT7BQ6w6ev64pZSclNHH&sz=w700",
+      "alt": "559 Filton Ave property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-014",
+    "name": "624 Filton Ave",
+    "slug": "624-filton-ave",
+    "postcode": "BS34 7LD",
+    "bedrooms": 4,
+    "sleeps": 7,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1-Gpp-lBOXdNnsYSUA3Fhz9UmyqB74v-t",
+      "title": "Bedroom4_1.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1-Gpp-lBOXdNnsYSUA3Fhz9UmyqB74v-t&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1-Gpp-lBOXdNnsYSUA3Fhz9UmyqB74v-t&sz=w700",
+      "alt": "624 Filton Ave property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-015",
+    "name": "105 Hamilton Court",
+    "slug": "105-hamilton-court",
+    "postcode": "BS2 8NY",
+    "bedrooms": 3,
+    "sleeps": 6,
+    "parking": "Free Parking, 1 car",
+    "parking_category": "free",
+    "featured": true,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1zabIMaioXHVPUbhRoWZUw4-mssHLuPyg",
+      "title": "Reception_4.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1zabIMaioXHVPUbhRoWZUw4-mssHLuPyg&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1zabIMaioXHVPUbhRoWZUw4-mssHLuPyg&sz=w700",
+      "alt": "105 Hamilton Court property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-016",
+    "name": "5 Manila Rd",
+    "slug": "5-manila-rd",
+    "postcode": "BS8 4ED",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Parking Permit",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1bXnK8LwvaEJ7COCvRF6LgeZ2Ks0j5mWk",
+      "title": "Reception_5.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1bXnK8LwvaEJ7COCvRF6LgeZ2Ks0j5mWk&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1bXnK8LwvaEJ7COCvRF6LgeZ2Ks0j5mWk&sz=w700",
+      "alt": "5 Manila Rd property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-017",
+    "name": "161 Kellaway Ave",
+    "slug": "161-kellaway-ave",
+    "postcode": "BS6 7YJ",
+    "bedrooms": 2,
+    "sleeps": 5,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1RSu4TlWJ6I65eYT-ojUOf7Gi3pBuIuyX",
+      "title": "161 Kellaway Avenue copy.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1RSu4TlWJ6I65eYT-ojUOf7Gi3pBuIuyX&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1RSu4TlWJ6I65eYT-ojUOf7Gi3pBuIuyX&sz=w700",
+      "alt": "161 Kellaway Ave property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-018",
+    "name": "18 Elm Hays Rd",
+    "slug": "18-elm-hays-rd",
+    "postcode": "BS34 5GA",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8",
+      "title": "12c98e95-e1da-4f29-929d-d025967ee637.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1Cq8-Bnv9yECJ8gqU5UfORNknm7g52Ue8&sz=w700",
+      "alt": "18 Elm Hays Rd property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-019",
+    "name": "12 Marguerite Rd",
+    "slug": "12-marguerite-rd",
+    "postcode": "BS13 7BS",
+    "bedrooms": 3,
+    "sleeps": 7,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1n-F5A1LthAVKGSe4wPc9seNbUswTRmQW",
+      "title": "Sitting_4.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1n-F5A1LthAVKGSe4wPc9seNbUswTRmQW&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1n-F5A1LthAVKGSe4wPc9seNbUswTRmQW&sz=w700",
+      "alt": "12 Marguerite Rd property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-020",
+    "name": "33 Hillburn",
+    "slug": "33-hillburn",
+    "postcode": "BS5 7PN",
+    "bedrooms": 3,
+    "sleeps": 6,
+    "parking": "Free parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "18ONA9ePeC7kJ1zzyi9Ai5qVF0_TdWEp2",
+      "title": "Sitting_4.jpg",
+      "src": "https://drive.google.com/thumbnail?id=18ONA9ePeC7kJ1zzyi9Ai5qVF0_TdWEp2&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=18ONA9ePeC7kJ1zzyi9Ai5qVF0_TdWEp2&sz=w700",
+      "alt": "33 Hillburn property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-021",
+    "name": "23 Charles Road",
+    "slug": "23-charles-road",
+    "postcode": "BS34 7ES",
+    "bedrooms": 3,
+    "sleeps": 7,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": null
+  },
+  {
+    "id": "FAB-022",
+    "name": "194 Hayes",
+    "slug": "194-hayes",
+    "postcode": "CF10 1BN",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Pay Parking",
+    "parking_category": "available",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1plLVG0HybwnulChHtlzx6UhpX5Xrjz04",
+      "title": "4F2A8784.JPG",
+      "src": "https://drive.google.com/thumbnail?id=1plLVG0HybwnulChHtlzx6UhpX5Xrjz04&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1plLVG0HybwnulChHtlzx6UhpX5Xrjz04&sz=w700",
+      "alt": "194 Hayes property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-023",
+    "name": "911 Filton",
+    "slug": "911-filton",
+    "postcode": "BS34 7AU",
+    "bedrooms": 4,
+    "sleeps": 6,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1mhSCrDtbc1dThaBPBi1Q-SVbdwS1yqPl",
+      "title": "Sitting_2.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1mhSCrDtbc1dThaBPBi1Q-SVbdwS1yqPl&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1mhSCrDtbc1dThaBPBi1Q-SVbdwS1yqPl&sz=w700",
+      "alt": "911 Filton property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-024",
+    "name": "44 Greenlands Way",
+    "slug": "44-greenlands-way",
+    "postcode": "BS10 7PH",
+    "bedrooms": 3,
+    "sleeps": 5,
+    "parking": "Free Parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1ZqMLm2qewTnCehyImjaaRDxuC3I5iz2U",
+      "title": "6V4A7972.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1ZqMLm2qewTnCehyImjaaRDxuC3I5iz2U&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1ZqMLm2qewTnCehyImjaaRDxuC3I5iz2U&sz=w700",
+      "alt": "44 Greenlands Way property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-025",
+    "name": "64 The Philog",
+    "slug": "64-the-philog",
+    "postcode": "CF14 1EB",
+    "bedrooms": 4,
+    "sleeps": 8,
+    "parking": "Free on-street parking",
+    "parking_category": "free",
+    "featured": true,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "15wx_J02TZ8uVRpDe3S0qXNJxK43U482o",
+      "title": "IMG_6476 (1).jpg",
+      "src": "https://drive.google.com/thumbnail?id=15wx_J02TZ8uVRpDe3S0qXNJxK43U482o&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=15wx_J02TZ8uVRpDe3S0qXNJxK43U482o&sz=w700",
+      "alt": "64 The Philog property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-026",
+    "name": "55 Fremantle",
+    "slug": "55-fremantle",
+    "postcode": "BS6 5SX",
+    "bedrooms": 4,
+    "sleeps": 6,
+    "parking": "Yes, the property has a private garage that fits ONE car. The height limit is 210 cm max. The garage is numbered with 55, a white door, and this can be accessed via Fremantle Ln. Guests must collect the garage keys/remote from inside the property first. For a 2nd car, guests can pay for a visitor's permit, £5/day. This has to be paid to us and we need to register via MiPermit App",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1-i0ofFBiXcWEylECcU19tywWAbyw--41",
+      "title": "55 Freemantle Road (2).jpg",
+      "src": "https://drive.google.com/thumbnail?id=1-i0ofFBiXcWEylECcU19tywWAbyw--41&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1-i0ofFBiXcWEylECcU19tywWAbyw--41&sz=w700",
+      "alt": "55 Fremantle property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-027",
+    "name": "586 Southmead",
+    "slug": "586-southmead",
+    "postcode": "BS10 5NH",
+    "bedrooms": 5,
+    "sleeps": 7,
+    "parking": "One parking spot on the driveway, private and safe, large enugh for a van plus free on-street parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1kdHGXcVCMRi65ZmVW9C1RHN8Lrl-m9DD",
+      "title": "Floor plan WITh Garden room.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1kdHGXcVCMRi65ZmVW9C1RHN8Lrl-m9DD&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1kdHGXcVCMRi65ZmVW9C1RHN8Lrl-m9DD&sz=w700",
+      "alt": "586 Southmead property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-028",
+    "name": "32 Cotsworld",
+    "slug": "32-cotsworld",
+    "postcode": "BS3 4NL",
+    "bedrooms": 5,
+    "sleeps": 9,
+    "parking": "Free on-street parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "13ZI-DbPVgwYLSAx0dl4NeIlQ8CExNCBC",
+      "title": "Floor Plan (1).jpg",
+      "src": "https://drive.google.com/thumbnail?id=13ZI-DbPVgwYLSAx0dl4NeIlQ8CExNCBC&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=13ZI-DbPVgwYLSAx0dl4NeIlQ8CExNCBC&sz=w700",
+      "alt": "32 Cotsworld property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-029",
+    "name": "62 Jellicoe",
+    "slug": "62-jellicoe",
+    "postcode": "BS16 1WJ",
+    "bedrooms": 2,
+    "sleeps": 5,
+    "parking": "One private allocated parking space (covered too). A 2nd car could park right in front of the 1st one if needed. Maximum dimensions: 226cm wide and 250cm tall",
+    "parking_category": "free",
+    "featured": true,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1g_XbiYTvMB7JFZvBdzeGFtArpRRYQIIE",
+      "title": "62 Jellicoe Ave (2).jpg",
+      "src": "https://drive.google.com/thumbnail?id=1g_XbiYTvMB7JFZvBdzeGFtArpRRYQIIE&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1g_XbiYTvMB7JFZvBdzeGFtArpRRYQIIE&sz=w700",
+      "alt": "62 Jellicoe property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-030",
+    "name": "25 Lena St",
+    "slug": "25-lena-st",
+    "postcode": "BS5 6DB",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Free on-street parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1jS08Qtwahkrm8V1C3EHVhWfHADDq7rbE",
+      "title": "Copy of 25 Lena Street.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1jS08Qtwahkrm8V1C3EHVhWfHADDq7rbE&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1jS08Qtwahkrm8V1C3EHVhWfHADDq7rbE&sz=w700",
+      "alt": "25 Lena St property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-031",
+    "name": "87 Partition",
+    "slug": "87-partition",
+    "postcode": "BS1 5QJ",
+    "bedrooms": 1,
+    "sleeps": 2,
+    "parking": "Paid parking avaaible in the building underground car park, for £5/day, avaiable on request",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "15WR_0IbaL1eect7fG9WLKO-6795v899W",
+      "title": "Copy of 27 Partition Street.jpg",
+      "src": "https://drive.google.com/thumbnail?id=15WR_0IbaL1eect7fG9WLKO-6795v899W&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=15WR_0IbaL1eect7fG9WLKO-6795v899W&sz=w700",
+      "alt": "87 Partition property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-032",
+    "name": "88 Clive St",
+    "slug": "88-clive-st",
+    "postcode": "CF11 7JD",
+    "bedrooms": 1,
+    "sleeps": 2,
+    "parking": "Fee on street parking",
+    "parking_category": "available",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1CdtmC0JkdzncGpgHsRn0iYka2klQctO6",
+      "title": "DSZ_6550.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1CdtmC0JkdzncGpgHsRn0iYka2klQctO6&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1CdtmC0JkdzncGpgHsRn0iYka2klQctO6&sz=w700",
+      "alt": "88 Clive St property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-033",
+    "name": "78 Coronation Road",
+    "slug": "78-coronation-road",
+    "postcode": "BS3 1AT",
+    "bedrooms": 1,
+    "sleeps": 4,
+    "parking": "2 Private parking spaces are allocated with this property. This parking area can also be gated",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1yGamzwPIUm9xKycVCI-Z7g3jQpy9LLay",
+      "title": "78 Coronation Road (1).jpg",
+      "src": "https://drive.google.com/thumbnail?id=1yGamzwPIUm9xKycVCI-Z7g3jQpy9LLay&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1yGamzwPIUm9xKycVCI-Z7g3jQpy9LLay&sz=w700",
+      "alt": "78 Coronation Road property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-034",
+    "name": "104 Marsh House",
+    "slug": "104-marsh-house",
+    "postcode": "BS1 4AQ",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "No Parking",
+    "parking_category": "none",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1LHBv8BdGZo5s60kihchZBHovcHR1PIwA",
+      "title": "Sitting_2.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1LHBv8BdGZo5s60kihchZBHovcHR1PIwA&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1LHBv8BdGZo5s60kihchZBHovcHR1PIwA&sz=w700",
+      "alt": "104 Marsh House property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-035",
+    "name": "35 St. Patricks Way",
+    "slug": "35-st-patricks-way",
+    "postcode": "BS5 8FX",
+    "bedrooms": 2,
+    "sleeps": 3,
+    "parking": "One free allocated parking space for flat 35 plus visitors parking spaces (not guaranteed they will always be free)",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1f4URDJWnoXqkkMCUb-TQhLzDiNxnvXsB",
+      "title": "35 St Patricks View.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1f4URDJWnoXqkkMCUb-TQhLzDiNxnvXsB&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1f4URDJWnoXqkkMCUb-TQhLzDiNxnvXsB&sz=w700",
+      "alt": "35 St. Patricks Way property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-036",
+    "name": "57 Summerleaze",
+    "slug": "57-summerleaze",
+    "postcode": "BS16 4HL",
+    "bedrooms": 4,
+    "sleeps": 5,
+    "parking": "Free on-street parking in front of the property and nearby streets",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": null
+  },
+  {
+    "id": "FAB-037",
+    "name": "68 St Pauls-Basement",
+    "slug": "68-st-pauls-basement",
+    "postcode": "BS8 1LP",
+    "bedrooms": 2,
+    "sleeps": 4,
+    "parking": "Paid Parking, Paid parking, only with pre-booking via MiPermit for £5/day",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1kowEEjR_QdVdzExBenWByDDn_Hrd3aBP",
+      "title": "Copy of LGF, 68 St Pauls Road.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1kowEEjR_QdVdzExBenWByDDn_Hrd3aBP&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1kowEEjR_QdVdzExBenWByDDn_Hrd3aBP&sz=w700",
+      "alt": "68 St Pauls-Basement property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-038",
+    "name": "68 St. Pauls - GroundFloor",
+    "slug": "68-st-pauls-groundfloor",
+    "postcode": "BS8 1LP",
+    "bedrooms": 1,
+    "sleeps": 2,
+    "parking": "Paid Parking, Paid parking, only with pre-booking via MiPermit for £5/day",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1QXFmkTYC3g0xrsJDfmgHXGb4yjKbv0pz",
+      "title": "GF, 68 St Pauls Road.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1QXFmkTYC3g0xrsJDfmgHXGb4yjKbv0pz&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1QXFmkTYC3g0xrsJDfmgHXGb4yjKbv0pz&sz=w700",
+      "alt": "68 St. Pauls - GroundFloor property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-039",
+    "name": "68 St. Pauls - first Floor",
+    "slug": "68-st-pauls-first-floor",
+    "postcode": "BS8 1LP",
+    "bedrooms": 1,
+    "sleeps": 2,
+    "parking": "Paid Parking, Paid parking, only with pre-booking via MiPermit for £5/day",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1Z-Tho7YfRENc5zxXYfVRYs_KSL5z0efI",
+      "title": "FFF, 68 St Pauls Road.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1Z-Tho7YfRENc5zxXYfVRYs_KSL5z0efI&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1Z-Tho7YfRENc5zxXYfVRYs_KSL5z0efI&sz=w700",
+      "alt": "68 St. Pauls - first Floor property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-040",
+    "name": "111 Mackie Road",
+    "slug": "111-mackie-road",
+    "postcode": "BS34 7NB",
+    "bedrooms": 4,
+    "sleeps": 7,
+    "parking": "Free on-street parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1itltP_6nBCKo-DPXcvr3wO-Zvx_GFmLJ",
+      "title": "Reception_2.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1itltP_6nBCKo-DPXcvr3wO-Zvx_GFmLJ&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1itltP_6nBCKo-DPXcvr3wO-Zvx_GFmLJ&sz=w700",
+      "alt": "111 Mackie Road property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-041",
+    "name": "9 Hampton Park",
+    "slug": "9-hampton-park",
+    "postcode": "BS6 6LG",
+    "bedrooms": 1,
+    "sleeps": 4,
+    "parking": "£5/day, with MiPermit app",
+    "parking_category": "paid",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1rXwAKG9PwN2cDAvzwoAQajbdUOCwdjxT",
+      "title": "Street_1.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1rXwAKG9PwN2cDAvzwoAQajbdUOCwdjxT&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1rXwAKG9PwN2cDAvzwoAQajbdUOCwdjxT&sz=w700",
+      "alt": "9 Hampton Park property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-042",
+    "name": "7 Calliope Cres",
+    "slug": "7-calliope-cres",
+    "postcode": "SN2 7AJ",
+    "bedrooms": 4,
+    "sleeps": 7,
+    "parking": "2x king rooms, 1x single room, 1x twin room (can be linked into king)",
+    "parking_category": "available",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1J3RTlc2QSU3QdXsRFYPv3ukt3-aZmhNZ",
+      "title": "9.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1J3RTlc2QSU3QdXsRFYPv3ukt3-aZmhNZ&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1J3RTlc2QSU3QdXsRFYPv3ukt3-aZmhNZ&sz=w700",
+      "alt": "7 Calliope Cres property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-043",
+    "name": "17 Ellis Court",
+    "slug": "17-ellis-court",
+    "postcode": "BS15 1FR",
+    "bedrooms": 4,
+    "sleeps": 2,
+    "parking": "One private, allocated parking space",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1A1csPmfDGuGCKbbPJxS3ofJY_33rSmSE",
+      "title": "Copy of 17 Ellis Court.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1A1csPmfDGuGCKbbPJxS3ofJY_33rSmSE&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1A1csPmfDGuGCKbbPJxS3ofJY_33rSmSE&sz=w700",
+      "alt": "17 Ellis Court property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-044",
+    "name": "19 Silchester",
+    "slug": "19-silchester",
+    "postcode": "SO23 7FT",
+    "bedrooms": 4,
+    "sleeps": 8,
+    "parking": "2x parking spaces on the driveway (for normal car sizes)",
+    "parking_category": "free",
+    "featured": true,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1rklYDqf9MJM3H9oBCkVKE86OIH-fGv1y",
+      "title": "Terrace.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1rklYDqf9MJM3H9oBCkVKE86OIH-fGv1y&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1rklYDqf9MJM3H9oBCkVKE86OIH-fGv1y&sz=w700",
+      "alt": "19 Silchester property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-045",
+    "name": "16 Douglas Road",
+    "slug": "16-douglas-road",
+    "postcode": "BS7 0JD",
+    "bedrooms": 5,
+    "sleeps": 10,
+    "parking": "Free on-street parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1K7nw8xWyzKPbfEc9j-T2WZDbUrSu3HOI",
+      "title": "Sitting_1.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1K7nw8xWyzKPbfEc9j-T2WZDbUrSu3HOI&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1K7nw8xWyzKPbfEc9j-T2WZDbUrSu3HOI&sz=w700",
+      "alt": "16 Douglas Road property photograph 1"
+    }
+  },
+  {
+    "id": "FAB-046",
+    "name": "1a Shanklin Drive",
+    "slug": "1a-shanklin-drive",
+    "postcode": "BS34 7EL",
+    "bedrooms": 4,
+    "sleeps": 7,
+    "parking": "2x off-street allocated parking spaces +3rd space in front of the house+ free on-street parking",
+    "parking_category": "free",
+    "featured": false,
+    "published": true,
+    "cover_photo": {
+      "drive_id": "1zHBzMMr7H2dMlHkqgHO3acnIzB_Gj3ng",
+      "title": "Terrace.jpg",
+      "src": "https://drive.google.com/thumbnail?id=1zHBzMMr7H2dMlHkqgHO3acnIzB_Gj3ng&sz=w1600",
+      "thumb": "https://drive.google.com/thumbnail?id=1zHBzMMr7H2dMlHkqgHO3acnIzB_Gj3ng&sz=w700",
+      "alt": "1a Shanklin Drive property photograph 1"
+    }
+  }
+]
