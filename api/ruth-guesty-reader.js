@@ -53,23 +53,29 @@ export default async function handler(req,res){
       ...metaPairs.filter(([k])=>k.toLowerCase()==='og:image').map(([,v])=>v),
       ...[...flat.matchAll(/"property":"og:image","content":"(https:\/\/assets\.guesty\.com\/[^"]+)"/gi)].map(m=>m[1]),
       ...[...flat.matchAll(/https:\/\/assets\.guesty\.com\/image\/upload\/[^"'<>\\s)]+/gi)].map(m=>m[0])
-    ]).map(u=>u.replace(/\\\\/g,'')).filter(u=>u.includes('/'+id+'/'));
+    ]).map(u=>u.replace(/\\\\/g,'')).filter(u=>u.startsWith('https://assets.guesty.com/'));
 
     const probes={};
     for(const key of ['accommodates','bedrooms','bathrooms','beds','propertyType','roomType','title','nickname','city','full','address','parking']){
       probes[key+'_count']=(flat.match(new RegExp(key,'gi'))||[]).length;
     }
 
+    const description=metas['og:description'] || str(flat,'description') || '';
+    const title=metas['og:title'] || str(flat,'title') || '';
+    const numberWords={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10};
+    const bedroomMatch=(description+' '+title).match(/\\b(one|two|three|four|five|six|seven|eight|nine|ten|\\d+)\\s*[- ]bedroom\\b/i);
+    const sleepMatch=description.match(/(?:sleep(?:ing|s)?(?:\\s+up\\s+to)?|accommodat(?:e|es|ing))\\s+(?:up\\s+to\\s+)?(\\d+)\\s+guests?/i);
     const details={
-      title: metas['og:title'] || str(flat,'title'),
-      description: metas['og:description'] || str(flat,'description'),
-      accommodates: num(flat,'accommodates'),
-      bedrooms: num(flat,'bedrooms'),
+      title,
+      description,
+      accommodates: num(flat,'accommodates') ?? (sleepMatch?Number(sleepMatch[1]):null),
+      bedrooms: num(flat,'bedrooms') ?? (bedroomMatch?(numberWords[bedroomMatch[1].toLowerCase()]||Number(bedroomMatch[1])):null),
       bathrooms: num(flat,'bathrooms'),
       beds: num(flat,'beds'),
       propertyType: str(flat,'propertyType'),
       roomType: str(flat,'roomType'),
-      city: str(flat,'city')
+      city: str(flat,'city'),
+      freeParking: /free parking/i.test(title+' '+description) ? true : null
     };
 
     const snippets={};
@@ -78,9 +84,25 @@ export default async function handler(req,res){
       snippets[key]=i>=0?flat.slice(Math.max(0,i-500),Math.min(flat.length,i+2500)):null;
     }
 
+    let scriptInspection=null;
+    if(String(req.query.inspect||'')==='1'){
+      const scripts=uniq([...src.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m=>m[1]));
+      const route=scripts.find(s=>s.includes('/properties/') || s.includes('%5Bid%5D'));
+      if(route){
+        try{
+          const sr=await fetch(route,{signal:AbortSignal.timeout(15000)});
+          const js=await sr.text();
+          const paths=uniq([
+            ...[...js.matchAll(/https?:\\/\\/[^"'\\s)]+/g)].map(m=>m[0]),
+            ...[...js.matchAll(/["'`](\\/[^"'\\`]{0,180}(?:api|listing|property|booking)[^"'\\`]{0,180})["'`]/gi)].map(m=>m[1])
+          ]).filter(x=>/api|listing|property|booking|guesty/i.test(x)).slice(0,120);
+          scriptInspection={route,status:sr.status,length:js.length,paths};
+        }catch(e){scriptInspection={error:String(e?.message||e)}}
+      }
+    }
     res.status(200).json({
       status:r.status,finalUrl:r.url,length:flat.length,
-      details,metas,guestyImages:guestyImages.slice(0,150),imageCount:guestyImages.length,probes,snippets
+      details,metas,guestyImages:guestyImages.slice(0,150),imageCount:guestyImages.length,probes,snippets,scriptInspection
     });
   }catch(e){
     res.status(500).json({error:String(e?.message||e)});
