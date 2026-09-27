@@ -25,10 +25,9 @@ export default async function handler(req,res){
     for(const m of src.matchAll(/<meta[^>]+(?:property|name)=["']([^"']+)["'][^>]+content=["']([^"']*)["'][^>]*>/gi)) metaPairs.push([m[1],m[2]]);
     for(const m of src.matchAll(/<meta[^>]+content=["']([^"']*)["'][^>]+(?:property|name)=["']([^"']+)["'][^>]*>/gi)) metaPairs.push([m[2],m[1]]);
     const metas=Object.fromEntries(metaPairs);
-    const guestyImages=uniq([
-      ...metaPairs.filter(([k])=>k.toLowerCase()==='og:image').map(([,v])=>v),
-      ...[...src.matchAll(/https:\/\/assets\.guesty\.com\/image\/upload\/[^"'<>\\s)]+/gi)].map(m=>m[0])
-    ]).map(u=>u.replace(/\\\\/g,'')).filter(u=>u.startsWith('https://assets.guesty.com/'));
+    const guestyImages=uniq(
+      metaPairs.filter(([k])=>k.toLowerCase()==='og:image').map(([,v])=>v)
+    ).map(u=>u.replace(/\\\\/g,'')).filter(u=>u.startsWith('https://assets.guesty.com/'));
     return res.status(200).json({
       id,status:r.status,finalUrl:r.url,
       title:metas['og:title']||null,
