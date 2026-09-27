@@ -84,25 +84,9 @@ export default async function handler(req,res){
       snippets[key]=i>=0?flat.slice(Math.max(0,i-500),Math.min(flat.length,i+2500)):null;
     }
 
-    let scriptInspection=null;
-    if(String(req.query.inspect||'')==='1'){
-      const scripts=uniq([...src.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m=>m[1]));
-      const route=scripts.find(s=>s.includes('/properties/') || s.includes('%5Bid%5D'));
-      if(route){
-        try{
-          const sr=await fetch(route,{signal:AbortSignal.timeout(15000)});
-          const js=await sr.text();
-          const paths=uniq([
-            ...[...js.matchAll(/https?:\\/\\/[^"'\\s)]+/g)].map(m=>m[0]),
-            ...[...js.matchAll(/["'`](\\/[^"'\\`]{0,180}(?:api|listing|property|booking)[^"'\\`]{0,180})["'`]/gi)].map(m=>m[1])
-          ]).filter(x=>/api|listing|property|booking|guesty/i.test(x)).slice(0,120);
-          scriptInspection={route,status:sr.status,length:js.length,paths};
-        }catch(e){scriptInspection={error:String(e?.message||e)}}
-      }
-    }
     res.status(200).json({
       status:r.status,finalUrl:r.url,length:flat.length,
-      details,metas,guestyImages:guestyImages.slice(0,150),imageCount:guestyImages.length,probes,snippets,scriptInspection
+      details,metas,guestyImages:guestyImages.slice(0,150),imageCount:guestyImages.length,probes,snippets
     });
   }catch(e){
     res.status(500).json({error:String(e?.message||e)});
