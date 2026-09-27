@@ -1,12 +1,37 @@
 const HOST = 'ruthtophost.guestybookings.com';
 
 function clean(s='') {
-  return String(s).replace(/\\u0026/g,'&').replace(/\\u003c/g,'<').replace(/\\u003e/g,'>').replace(/\\\//g,'/');
+  return String(s)
+    .replace(/\\u0026/g,'&').replace(/\\u003c/g,'<').replace(/\\u003e/g,'>')
+    .replace(/\\\//g,'/');
+}
+function normalized(s='') {
+  return clean(s)
+    .replace(/\\\\\\\"/g,'"')
+    .replace(/\\\"/g,'"')
+    .replace(/&amp;/g,'&');
 }
 function uniq(a){return [...new Set(a.filter(Boolean))];}
+function num(src,key){
+  const patterns=[
+    new RegExp('"' + key + '"\\s*:\\s*(-?\\d+(?:\\.\\d+)?)','i'),
+    new RegExp(key + '\\\\\"\\s*:\\s*(-?\\d+(?:\\.\\d+)?)','i')
+  ];
+  for(const p of patterns){const m=src.match(p);if(m)return Number(m[1]);}
+  return null;
+}
+function str(src,key){
+  const patterns=[
+    new RegExp('"' + key + '"\\s*:\\s*"([^"]{1,500})"','i'),
+    new RegExp(key + '\\\\\"\\s*:\\s*\\\\\\"([^\\\\\"]{1,500})','i')
+  ];
+  for(const p of patterns){const m=src.match(p);if(m)return m[1];}
+  return null;
+}
 
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
+  res.setHeader('X-Robots-Tag','noindex');
   if(req.method!=='GET') return res.status(405).json({error:'method'});
   const id=String(req.query.id||'').trim();
   if(!/^[a-f0-9]{24}$/i.test(id)) return res.status(400).json({error:'bad id'});
@@ -18,18 +43,44 @@ export default async function handler(req,res){
       'accept-language':'en-GB,en;q=0.9'
     },redirect:'follow',signal:AbortSignal.timeout(20000)});
     const html=await r.text();
-    const src=clean(html);
-    const jsonld=[...src.matchAll(/<script[^>]+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)].map(m=>m[1].trim());
-    const scripts=uniq([...src.matchAll(/<script[^>]+src=["']([^"']+)["']/gi)].map(m=>m[1]));
-    const metas={};
-    for(const m of src.matchAll(/<meta[^>]+(?:property|name)=["']([^"']+)["'][^>]+content=["']([^"']*)["'][^>]*>/gi)) metas[m[1]]=m[2];
-    for(const m of src.matchAll(/<meta[^>]+content=["']([^"']*)["'][^>]+(?:property|name)=["']([^"']+)["'][^>]*>/gi)) metas[m[2]]=m[1];
-    const urls=uniq([...src.matchAll(/https?:\\?\/\\?\/[^"'<>\\s)]+/g)].map(m=>clean(m[0]).replace(/&amp;/g,'&')));
-    const images=urls.filter(u=>/\.(?:jpe?g|png|webp)(?:\?|$)/i.test(u) || /image|photo|picture|cdn/i.test(u)).slice(0,500);
-    const around=[];
-    let pos=0;
-    while((pos=src.indexOf(id,pos))!==-1 && around.length<20){around.push(src.slice(Math.max(0,pos-500),Math.min(src.length,pos+2500)));pos+=id.length;}
-    res.status(200).json({status:r.status,finalUrl:r.url,length:src.length,metas,jsonld,scripts:scripts.slice(0,100),images,around});
+    const src=clean(html), flat=normalized(html);
+    const metaPairs=[];
+    for(const m of src.matchAll(/<meta[^>]+(?:property|name)=["']([^"']+)["'][^>]+content=["']([^"']*)["'][^>]*>/gi)) metaPairs.push([m[1],m[2]]);
+    for(const m of src.matchAll(/<meta[^>]+content=["']([^"']*)["'][^>]+(?:property|name)=["']([^"']+)["'][^>]*>/gi)) metaPairs.push([m[2],m[1]]);
+    const metas=Object.fromEntries(metaPairs);
+    const guestyImages=uniq([
+      ...metaPairs.filter(([k])=>k.toLowerCase()==='og:image').map(([,v])=>v),
+      ...[...flat.matchAll(/"property":"og:image","content":"(https:\/\/assets\.guesty\.com\/[^"]+)"/gi)].map(m=>m[1]),
+      ...[...flat.matchAll(/https:\/\/assets\.guesty\.com\/image\/upload\/[^"'<>\\s)]+/gi)].map(m=>m[0])
+    ]).map(u=>u.replace(/\\\\/g,'')).filter(u=>u.includes('/'+id+'/'));
+
+    const probes={};
+    for(const key of ['accommodates','bedrooms','bathrooms','beds','propertyType','roomType','title','nickname','city','full','address','parking']){
+      probes[key+'_count']=(flat.match(new RegExp(key,'gi'))||[]).length;
+    }
+
+    const details={
+      title: metas['og:title'] || str(flat,'title'),
+      description: metas['og:description'] || str(flat,'description'),
+      accommodates: num(flat,'accommodates'),
+      bedrooms: num(flat,'bedrooms'),
+      bathrooms: num(flat,'bathrooms'),
+      beds: num(flat,'beds'),
+      propertyType: str(flat,'propertyType'),
+      roomType: str(flat,'roomType'),
+      city: str(flat,'city')
+    };
+
+    const snippets={};
+    for(const key of ['accommodates','bedrooms','bathrooms','beds','bedArrangements','amenities','address','parking']){
+      const i=flat.search(new RegExp(key,'i'));
+      snippets[key]=i>=0?flat.slice(Math.max(0,i-500),Math.min(flat.length,i+2500)):null;
+    }
+
+    res.status(200).json({
+      status:r.status,finalUrl:r.url,length:flat.length,
+      details,metas,guestyImages:guestyImages.slice(0,150),imageCount:guestyImages.length,probes,snippets
+    });
   }catch(e){
     res.status(500).json({error:String(e?.message||e)});
   }
