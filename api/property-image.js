@@ -14,8 +14,18 @@ export function imageHandler(fetcher = fetch) {
       if (!response.ok) return res.status(503).end();
       const [property] = await response.json();
       const photo = index === -1 ? property?.cover_photo : property?.photos?.[index];
-      if (!photo?.drive_id || !/^[\w-]+$/.test(photo.drive_id)) return res.status(404).end();
-      const image = await fetcher(`https://drive.google.com/thumbnail?id=${encodeURIComponent(photo.drive_id)}&sz=w${size}`, {signal:AbortSignal.timeout(15000)});
+      let imageUrl;
+      if (photo?.drive_id && /^[\w-]+$/.test(photo.drive_id)) {
+        imageUrl = `https://drive.google.com/thumbnail?id=${encodeURIComponent(photo.drive_id)}&sz=w${size}`;
+      } else if (photo?.url) {
+        let parsed;
+        try { parsed = new URL(String(photo.url)); } catch { return res.status(404).end(); }
+        if (parsed.protocol !== 'https:' || parsed.hostname !== 'assets.guesty.com') return res.status(404).end();
+        imageUrl = parsed.toString();
+      } else {
+        return res.status(404).end();
+      }
+      const image = await fetcher(imageUrl, {signal:AbortSignal.timeout(15000)});
       const type = image.headers.get('content-type') || '';
       if (!image.ok || !type.startsWith('image/')) return res.status(502).end();
       res.setHeader('Content-Type', type);
