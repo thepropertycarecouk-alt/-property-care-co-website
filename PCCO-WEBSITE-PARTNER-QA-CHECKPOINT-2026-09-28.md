@@ -56,3 +56,15 @@ Fresh Smarter Rent invitation externally tested successfully; correct company/cu
 - Each record notes that current availability and best price must be confirmed with the Smarter Rent lettings team per genuine enquiry.
 - Verified the public property-feed returns an empty result for a staged Smarter Rent slug before T&C acceptance. Publication gate therefore remains intact.
 - No Smarter Rent email was sent; the approved-review draft remains unsent.
+
+## Batch 7 — source-backed image and listing corrections
+- Re-opened the Brookland source spreadsheet and inspected the actual hyperlink cells rather than treating display text as plain text.
+- Recovered 20 Brookland Drive photos for BRO-052 (Leeds - 1 Victoria Ave) from the partner-supplied linked folder; saved a qa_photo_recovery marker.
+- Recovered 20 Brookland Drive photos for BRO-059 (Leeds - 501 Yeadon), prioritising the supplied "501 YEADON LEEDS COVER.jpg" as cover; saved a qa_photo_recovery marker.
+- Recovered exact public Brookland property galleries for BRO-007 (Church Road, Wickham Bishops) and BRO-073 (92 Watkin Lane) from the matching Brookland property pages. Added 20 and 50 images respectively and source-backed guest/bathroom facts.
+- Normalised FabAccommodation FAB-032 parking category to paid because the partner source explicitly says "Fee on street parking"; removed the now-resolved ambiguity note.
+- Recovered FAB-042 bed configuration from the partner sheet row where it had been entered into the Parking cell: 2 king rooms, 1 single room, 1 twin room linkable into a king. Parking remains omitted because the partner did not supply it.
+- FAB-043 Ellis Court remains intentionally unresolved for bedroom count because the partner sheet says 4 bedrooms while its own bed/configuration description says one full bedroom plus an open-plan sleeping area. No guess was made.
+- FAB-021 23 Charles Road still has no usable partner-supplied photo files: the linked Drive folder is empty. External web evidence confirms the property exists at the stated address but no third-party images were copied into PCCO.
+- Remaining live zero-photo records are now nine: eight Brookland Buxted Inn room rows with no photo link supplied, plus FAB-021.
+- No partner email was sent.
