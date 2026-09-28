@@ -16,7 +16,8 @@
  filters.q.setAttribute('autocomplete','off');filters.q.setAttribute('role','combobox');filters.q.setAttribute('aria-autocomplete','list');filters.q.setAttribute('aria-controls',suggestions.id);filters.q.setAttribute('aria-expanded','false');
 
  let selected=null,suggestSeq=0,suggestTimer,active=-1,renderSeq=0,activeView='list';
- let map=null,propertyLayer=null,searchLayer=null,allCoordinates=null,allCoordinatesPromise=null,lastListData=[],lastDistanceMap=new Map(),lastCoordMap=new Map();\n let render=async()=>{};
+ let map=null,propertyLayer=null,searchLayer=null,allCoordinates=null,allCoordinatesPromise=null,lastListData=[],lastDistanceMap=new Map(),lastCoordMap=new Map();
+ let render=async()=>{};
 
  const closeSuggestions=()=>{suggestions.hidden=true;suggestions.innerHTML='';active=-1;filters.q.setAttribute('aria-expanded','false');filters.q.removeAttribute('aria-activedescendant')};
  const choose=s=>{selected=s;filters.q.value=s.label;hint.textContent='Searching within 15 miles of '+s.label;closeSuggestions();render()};
