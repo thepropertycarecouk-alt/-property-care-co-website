@@ -47,3 +47,12 @@ Fresh Smarter Rent invitation externally tested successfully; correct company/cu
 - Synced all 83 Brookland nested records to partner_acceptance_status=accepted and requires_partner_acceptance=false, retaining a per-row qa_nested_acceptance_correction audit marker with the prior values.
 - Independent verification after write: zero live nested acceptance-status mismatches; zero live nested requires-partner-acceptance mismatches; 83 Brookland audit markers present.
 - No partner email was sent.
+
+## Batch 6 — Smarter Rent private staging
+- Enumerated the portfolio URL supplied by Adrian across all five pages: 114 distinct properties.
+- Privately staged all 114 in Supabase under partner_id=smarterrent with published=false, requires_partner_acceptance=true and nested partner_acceptance_status=pending.
+- All 114 staged records have a partner-hosted Guesty cover image, bedrooms, bathrooms, postcode and the source website weekly reference rate.
+- Source weekly rates are stored as reference data only; public monthly_rate_gbp remains unset and pricing_status=rfq_required so PCCO does not present the website rate as a fixed/guaranteed PCCO rate.
+- Each record notes that current availability and best price must be confirmed with the Smarter Rent lettings team per genuine enquiry.
+- Verified the public property-feed returns an empty result for a staged Smarter Rent slug before T&C acceptance. Publication gate therefore remains intact.
+- No Smarter Rent email was sent; the approved-review draft remains unsent.
