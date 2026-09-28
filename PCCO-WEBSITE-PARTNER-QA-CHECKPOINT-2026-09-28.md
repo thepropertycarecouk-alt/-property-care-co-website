@@ -202,3 +202,12 @@ Mixed-unit pages remain mixed rather than forcing a single bedroom count.
 - published properties belonging to pending/unaccepted partners: 0
 - 8 published zero-photo records remain: Brookland Buxted Inn rooms 1–8. These intentionally use the site's "photography available on request" fallback because room-specific photography was not supplied.
 - Remaining blank bathroom/sleeps fields are primarily host-source omissions in Brookland/FabAccommodation. The UI filters missing facts and does not display fabricated zeros/undefined values; these are intentionally not guessed.
+
+
+## 2026-09-28 21:45 BST — Ceba removed from partner network
+- Per Sandeep instruction, Ceba Property Ltd has been removed from the PCCO Stays onboarding/property system.
+- Deleted staged property record(s) for partner id `ceba-property`.
+- Deleted any partner invitation / acceptance records for Ceba.
+- Deleted the `pcco_property_partners` row.
+- Verification after deletion: 0 Ceba properties, 0 invitations, 0 acceptances, 0 partner records remain.
+- Historical Gmail correspondence was not deleted.
