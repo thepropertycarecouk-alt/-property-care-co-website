@@ -11,7 +11,7 @@ Deno.serve(async req=>{
   if(slug)q=q.eq('slug',slug);
   const {data,error}=await q.order('id');if(error)throw error;
   const summary=url.searchParams.get('summary')==='1';
-  const fields=summary?['postcode','bedrooms','sleeps','parking','parking_category','cover_photo']:['postcode','city','bedrooms','sleeps','parking','parking_category','cover_photo','photos','bed_configuration','monthly_rate_gbp','monthly_rate_note','security_deposit_gbp','cancellation','amenities','included_features','guest_extras','important_notes'];
+  const fields=summary?['postcode','bedrooms','sleeps','parking','parking_category','cover_photo','included_features']:['postcode','city','bedrooms','sleeps','parking','parking_category','cover_photo','photos','bed_configuration','monthly_rate_gbp','monthly_rate_note','security_deposit_gbp','cancellation','amenities','included_features','guest_extras','important_notes'];
   const result=(data||[]).map(p=>Object.assign(Object.fromEntries(fields.filter(k=>p.data[k]!=null).map(k=>[k,p.data[k]])),{id:p.id,name:p.name,slug:p.slug,published:true,featured:p.featured}));
   return new Response(JSON.stringify(result),{headers});
  }catch{return new Response(JSON.stringify({error:'Collection unavailable'}),{status:503,headers});}
