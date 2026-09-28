@@ -67,7 +67,8 @@ export function imageHandler(fetcher = fetch) {
       } else if (photo?.url) {
         let parsed;
         try { parsed = new URL(String(photo.url)); } catch { return res.status(404).end(); }
-        if (parsed.protocol !== 'https:' || parsed.hostname !== 'assets.guesty.com') return res.status(404).end();
+        const allowedHosts = new Set(['assets.guesty.com','static.wixstatic.com']);
+        if (parsed.protocol !== 'https:' || !allowedHosts.has(parsed.hostname)) return res.status(404).end();
         candidates = imageCandidates(parsed.toString());
       } else {
         return res.status(404).end();
