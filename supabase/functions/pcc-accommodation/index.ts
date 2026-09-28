@@ -49,6 +49,44 @@ function row(label:string,value:unknown,max=2000){
   return `<tr><td style="padding:8px 10px;border-bottom:1px solid #e7edf5;color:#657287;font:13px Arial">${esc(label)}</td><td style="padding:8px 10px;border-bottom:1px solid #e7edf5;color:#10213d;font:600 13px Arial">${esc(val)}</td></tr>`;
 }
 
+function slugify(v:string){
+  return v.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,48);
+}
+async function partnerIdFor(fullName:string,company:string,email:string){
+  const base=slugify(company||fullName)||'website-partner';
+  const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(email));
+  const suffix=Array.from(new Uint8Array(digest)).slice(0,4).map(b=>b.toString(16).padStart(2,'0')).join('');
+  return `${base}-${suffix}`;
+}
+async function ensurePartnerRecord(fullName:string,company:string,email:string){
+  const {data:existing,error:lookupError}=await db.from('pcco_property_partners')
+    .select('id,name,company,email,acceptance_status')
+    .ilike('email',email)
+    .limit(1);
+  if(lookupError) throw lookupError;
+  if(existing?.length){
+    const current=existing[0];
+    const patch:any={};
+    if(!current.name && fullName) patch.name=fullName;
+    if(!current.company && company) patch.company=company;
+    if(Object.keys(patch).length){
+      const {error:updateError}=await db.from('pcco_property_partners').update(patch).eq('id',current.id);
+      if(updateError) throw updateError;
+    }
+    return current.id;
+  }
+  const id=await partnerIdFor(fullName,company,email);
+  const {error:insertError}=await db.from('pcco_property_partners').upsert({
+    id,
+    name:fullName,
+    company:company||null,
+    email,
+    acceptance_status:'pending'
+  },{onConflict:'id',ignoreDuplicates:true});
+  if(insertError) throw insertError;
+  return id;
+}
+
 Deno.serve(async(req:Request)=>{
   try{
     if(req.method==='OPTIONS') return new Response('ok',{headers:cors});
@@ -90,6 +128,9 @@ Deno.serve(async(req:Request)=>{
       const raw=String(body.property_links||'').trim();
       if(!raw) return fail('Please add your property details, links or notes.');
     }
+    let partnerRecordId:string|null=null;
+    if(isPartner) partnerRecordId=await ensurePartnerRecord(full_name,company,email);
+
     const rec:any = {
       enquiry_type, full_name, company:company||null, email, phone,
       location_required:clean(body.location_required,300)||null,
@@ -120,7 +161,7 @@ Deno.serve(async(req:Request)=>{
     const recipient = isProperty ? 'stays@thepropertycareco.co.uk' : isNeed ? OWNER_EMAIL : 'partners@thepropertycareco.co.uk';
     const detailsRows = [
       isProperty?row('Property',property.name):'',isProperty?row('Property reference',property.id):'',isProperty?row('Property URL','https://www.thepropertycareco.co.uk/properties/'+property.slug):'',isProperty?row('Requested check-out',body.check_out):'',
-      row('Name',full_name),row('Company',company),row('Email',email),row('Phone',phone),
+      row('Name',full_name),row('Company',company),row('Email',email),row('Phone',phone),isPartner?row('Partner record',partnerRecordId):'',
       isNeed?row('Location required',rec.location_required):row('Areas covered',rec.areas_covered),
       isNeed?row('Check-in date',rec.check_in_date):'',
       isNeed?row('Length of stay',rec.stay_length):row('Minimum stay',rec.minimum_stay),
