@@ -6,6 +6,18 @@ function imageCandidates(url) {
     const parsed = new URL(url);
     const path = parsed.pathname;
     const last = path.split('/').pop() || '';
+
+    if (parsed.hostname === 'static.wixstatic.com' && path.includes('/media/')) {
+      const mediaPath = path.split('/v1/')[0];
+      const fileName = mediaPath.split('/').pop() || '';
+      const base = parsed.origin + mediaPath;
+      candidates.unshift(base);
+      if (fileName) {
+        candidates.unshift(base + '/v1/fit/w_1600,q_90/' + fileName);
+        candidates.unshift(base + '/v1/fit/w_700,q_90/' + fileName);
+      }
+    }
+
     if (
       parsed.hostname === 'assets.guesty.com' &&
       path.includes('/listing_images_s3/') &&
@@ -23,7 +35,8 @@ function imageCandidates(url) {
 async function fetchImage(fetcher, urls) {
   const headers = {
     'accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-    'user-agent': 'Mozilla/5.0 (compatible; PCCO-Stays-Image-Proxy/1.0)'
+    'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
+    'referer': 'https://www.brooklandstays.co.uk/'
   };
   for (const url of urls) {
     try {
