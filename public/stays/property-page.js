@@ -28,11 +28,15 @@
     const p=all.find(x=>x.slug===slug&&x.published);
     if(!p)throw new Error('not found');
 
-    const photos=(p.photos||[]).map((ph,i)=>({
-      ...ph,
-      src:'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=1600',
-      thumb:'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=700'
-    }));
+    const trustedDirectPhoto=ph=>{try{const u=new URL(String(ph?.url||''));return u.protocol==='https:'&&u.hostname==='static.wixstatic.com'?u.toString():''}catch{return ''}};
+    const photos=(p.photos||[]).map((ph,i)=>{
+      const direct=trustedDirectPhoto(ph);
+      return {
+        ...ph,
+        src:direct||'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=1600',
+        thumb:direct||'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=700'
+      };
+    });
     const gallery=photos.length
       ? '<section class="property-gallery" aria-label="Property photographs"><div class="gallery-main"><img id="gallery-main-image" src="'+esc(photos[0].src)+'" alt="'+esc(photos[0].alt||p.name)+'" width="1600" height="1000"></div><div class="gallery-thumbs">'+photos.map((ph,i)=>'<button class="gallery-thumb" type="button" data-photo="'+i+'" aria-label="View property photograph '+(i+1)+'"><img src="'+esc(ph.thumb||ph.src)+'" alt="" loading="lazy" width="500" height="375"></button>').join('')+'</div></section>'
       : '<div class="gallery-empty">Property photography is available from our accommodation team.</div>';
