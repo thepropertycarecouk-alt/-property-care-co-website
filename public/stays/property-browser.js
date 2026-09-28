@@ -114,7 +114,7 @@
    paintMap(listData,coordMap,distanceMap);
    if(mapEl&&!listData.some(p=>coordMap.has(p.slug)))mapEl.setAttribute('data-empty','true');else mapEl?.removeAttribute('data-empty');
   }
- }
+ };
 
  filters.q.addEventListener('input',()=>{selected=null;clearTimeout(suggestTimer);suggestTimer=setTimeout(fetchSuggestions,220);if(!filters.q.value.trim())hint.textContent='All UK properties are shown when no location is selected.';render()});
  filters.q.addEventListener('keydown',e=>{const opts=[...suggestions.querySelectorAll('.location-suggestion')];if(suggestions.hidden||!opts.length)return;
