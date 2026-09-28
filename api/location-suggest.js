@@ -41,16 +41,20 @@ export default async function handler(req,res){
     u.searchParams.set('limit','8');
     u.searchParams.set('lang','en');
     u.searchParams.set('countrycode','GB');
-    const r=await fetch(u,{headers:{'Accept':'application/json','User-Agent':'PCCO-Stays/1.0 (thepropertycareco.co.uk)'},signal:AbortSignal.timeout(7000)});
-    if(r.ok){
-      const j=await r.json();
-      for(const f of j.features||[]){
-        const [lon,lat]=f.geometry?.coordinates||[];
-        const p=f.properties||{};
-        if(!Number.isFinite(lat)||!Number.isFinite(lon))continue;
-        const label=photonLabel(p);
-        if(label)suggestions.push({label,lat,lon,type:p.osm_value||p.type||'place',postcode:p.postcode||null});
+    try{
+      const r=await fetch(u,{headers:{'Accept':'application/json','User-Agent':'PCCO-Stays/1.0 (thepropertycareco.co.uk)'},signal:AbortSignal.timeout(6500)});
+      if(r.ok){
+        const j=await r.json();
+        for(const f of j.features||[]){
+          const [lon,lat]=f.geometry?.coordinates||[];
+          const p=f.properties||{};
+          if(!Number.isFinite(lat)||!Number.isFinite(lon))continue;
+          const label=photonLabel(p);
+          if(label)suggestions.push({label,lat,lon,type:p.osm_value||p.type||'place',postcode:p.postcode||null});
+        }
       }
+    }catch(e){
+      console.warn('Photon location suggestions unavailable; returning postcode/empty fallback.',e?.name||e);
     }
     return res.status(200).json({ok:true,suggestions:uniq(suggestions).slice(0,8)});
   }catch(e){
