@@ -28,7 +28,6 @@
     const p=all.find(x=>x.slug===slug&&x.published);
     if(!p)throw new Error('not found');
 
-    const trustedDirectPhoto=ph=>{try{const u=new URL(String(ph?.url||''));return u.protocol==='https:'&&u.hostname==='static.wixstatic.com'?u.toString():''}catch{return ''}};
     const photos=(p.photos||[]).map((ph,i)=>{
       const direct=trustedDirectPhoto(ph);
       return {
