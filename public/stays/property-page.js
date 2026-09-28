@@ -4,7 +4,6 @@
   const root=document.querySelector('#property-content');
   const slug=document.body.dataset.propertySlug;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const money=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP',maximumFractionDigits:0}).format(n);
   const localDate=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   const menu=document.querySelector('.menu-button');
   const nav=document.querySelector('#navigation');
@@ -51,19 +50,6 @@
     const extras=(Array.isArray(p.guest_extras)?p.guest_extras:[]).filter(x=>!included.includes(x));
     const important=(Array.isArray(p.important_notes)?p.important_notes:[]).filter(Boolean);
 
-    const perPersonNight=(p.monthly_rate_gbp&&Number(p.sleeps)>0)
-      ?Math.max(1,Math.ceil(Number(p.monthly_rate_gbp)/30/Number(p.sleeps)))
-      :null;
-    const commercialNotes=[
-      perPersonNight?['From '+money(perPersonNight)+' per person per night','Indicative equivalent based on the host-supplied monthly rate, a 30-night stay and full occupancy. '+esc(p.monthly_rate_note||'Inclusions will be confirmed for each booking.')+' Prices are always subject to host approval and negotiation.']:null,
-      p.security_deposit_gbp?['Security deposit',money(p.security_deposit_gbp)+' supplied by the partner; booking-specific terms will be confirmed.']:null,
-      p.cancellation?['Cancellation information',esc(p.cancellation)+' supplied by the partner; the applicable booking terms will be confirmed before booking.']:null
-    ].filter(Boolean);
-
-    const commercialMarkup=commercialNotes.length
-      ? '<div class="property-notes">'+commercialNotes.map(x=>'<div class="property-note"><strong>'+x[0]+'</strong><span>'+x[1]+'</span></div>').join('')+'</div>'
-      : '';
-
     const extrasMarkup=extras.length
       ? '<h3 class="property-subheading">Guest extras</h3><div class="amenities guest-extras">'+featureMarkup(extras,'extra')+'</div>'
       : '';
@@ -80,7 +66,6 @@
         (p.description?'<p class="property-description">'+esc(p.description)+'</p>':'')+
         '<h2>Included features</h2><div class="amenities included-features">'+featureMarkup(included)+'</div>'+
         extrasMarkup+
-        commercialMarkup+
         importantMarkup+
         '<section class="network-cta" aria-labelledby="network-title"><div><h3 id="network-title">Looking for something different?</h3><p>We have access to a UK-wide network of 3,000+ properties, and only a selection are displayed online. Send us your location, dates and requirements and we’ll source suitable options.</p><span class="trust-point">No sourcing fees.</span></div><a class="button button-navy" href="/#enquire">Send us your requirements <span aria-hidden="true">↗</span></a></section>'+
       '</div>'+
