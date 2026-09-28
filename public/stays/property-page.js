@@ -4,6 +4,7 @@
   const root=document.querySelector('#property-content');
   const slug=document.body.dataset.propertySlug;
   const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const money=n=>new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP',maximumFractionDigits:0}).format(n);
   const localDate=(d=new Date())=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
   const menu=document.querySelector('.menu-button');
   const nav=document.querySelector('#navigation');
@@ -50,6 +51,15 @@
     const extras=(Array.isArray(p.guest_extras)?p.guest_extras:[]).filter(x=>!included.includes(x));
     const important=(Array.isArray(p.important_notes)?p.important_notes:[]).filter(Boolean);
 
+    const commercialNotes=[
+      p.per_person_night_gbp?['From '+money(p.per_person_night_gbp)+' per person per night','Indicative equivalent based on a 30-night stay and full occupancy. Final pricing is confirmed for each booking.']:null,
+      p.security_deposit_gbp?['Security deposit',money(p.security_deposit_gbp)+' supplied by the property partner; booking-specific terms will be confirmed.']:null
+    ].filter(Boolean);
+
+    const commercialMarkup=commercialNotes.length
+      ? '<div class="property-notes">'+commercialNotes.map(x=>'<div class="property-note"><strong>'+x[0]+'</strong><span>'+x[1]+'</span></div>').join('')+'</div>'
+      : '';
+
     const extrasMarkup=extras.length
       ? '<h3 class="property-subheading">Guest extras</h3><div class="amenities guest-extras">'+featureMarkup(extras,'extra')+'</div>'
       : '';
@@ -64,6 +74,7 @@
       '<div class="property-layout"><div>'+
         '<h2>Property details</h2><div class="key-facts">'+facts+'</div>'+
         (p.description?'<p class="property-description">'+esc(p.description)+'</p>':'')+
+        commercialMarkup+
         '<h2>Included features</h2><div class="amenities included-features">'+featureMarkup(included)+'</div>'+
         extrasMarkup+
         importantMarkup+
