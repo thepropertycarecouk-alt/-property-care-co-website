@@ -107,3 +107,21 @@ Fresh Smarter Rent invitation externally tested successfully; correct company/cu
 - Verified Google Drive-backed 28 Borough Rd and Guesty-backed 1 Feathers Yard detail pages render correctly with visible proxy-served galleries.
 - Full listing browser audit reported no broken images among properties with cover photos; intentional no-photo placeholders remain only for Buxted Inn rooms 1–8 and 23 Charles Road.
 - No partner emails were sent during emergency repair.
+
+
+## 2026-09-28 20:01 BST — partner form persistence fix
+
+- Root cause confirmed: `pcc-accommodation` saved website partner submissions to `accommodation_enquiries` and emailed `partners@thepropertycareco.co.uk`, but did not create a `pcco_property_partners` record.
+- Fixed in GitHub commit `9bd4f7c4dc33786332575408834d9b55363e4743`.
+- Deployed Supabase Edge Function `pcc-accommodation` version 10.
+- New website partner submissions now create/reuse a pending `pcco_property_partners` row before the enquiry is accepted, while property publication and T&C acceptance remain manual.
+- Backfilled genuine missed website forms:
+  - Borderless Properties Ltd / Sacha Mahoor / mahoor9999@gmail.com
+  - Sublime Stays LTD / info@sublime-stays.com
+- Deliberate QA form submissions remain excluded from the partner table.
+- Added pending tracking records for direct positive supplier conversations that did not originate from the website form:
+  - JG STAYS LTD / Cynthia Ebere
+  - HOMEHOSTS Management Ltd
+  - LuxEdge Real Estate
+  - Bucklehole / Ariyan Gill
+- Created private pending T&C invitations for Borderless Properties Ltd and Sublime Stays LTD. They are NOT marked as emailed yet and no partner email was sent.
