@@ -88,10 +88,7 @@ Deno.serve(async(req:Request)=>{
       const digits=phone.replace(/\D/g,'');
       if(!/^[+()0-9 .-]+$/.test(phone)||digits.length<7||digits.length>15) return fail('Please enter a valid phone number.');
       const raw=String(body.property_links||'').trim();
-      const links=raw.split(/\s+/).filter(Boolean);
-      if(raw.length>40000||!links.length||links.length>20||links.some(value=>{
-        try {const u=new URL(value);return !['https:','http:'].includes(u.protocol)||!u.hostname.includes('.')||!!u.username||!!u.password;}catch{return true;}
-      })) return fail('Please enter valid public property links.');
+      if(!raw) return fail('Please add your property details, links or notes.');
     }
     const rec:any = {
       enquiry_type, full_name, company:company||null, email, phone,
@@ -108,7 +105,7 @@ Deno.serve(async(req:Request)=>{
       property_count:Number.isFinite(Number(body.property_count))&&Number(body.property_count)>0?Math.min(10000,Number(body.property_count)):null,
       property_types:clean(body.property_types,300)||null,
       minimum_stay:clean(body.minimum_stay,120)||null,
-      property_links:clean(body.property_links,isPartner?40000:2000)||null,
+      property_links:clean(body.property_links,isPartner?200000:2000)||null,
       details:clean(body.details,3000)||null,
       status:'new', source:isProperty?'website_property':isPartner?'website_partners':'website_accommodation'
     };
