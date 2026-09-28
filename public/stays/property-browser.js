@@ -16,7 +16,7 @@
  filters.q.setAttribute('autocomplete','off');filters.q.setAttribute('role','combobox');filters.q.setAttribute('aria-autocomplete','list');filters.q.setAttribute('aria-controls',suggestions.id);filters.q.setAttribute('aria-expanded','false');
 
  let selected=null,suggestSeq=0,suggestTimer,active=-1,renderSeq=0,activeView='list';
- let map=null,propertyLayer=null,searchLayer=null,allCoordinates=null,allCoordinatesPromise=null,lastListData=[],lastDistanceMap=new Map(),lastCoordMap=new Map();
+ let map=null,propertyLayer=null,searchLayer=null,allCoordinates=null,allCoordinatesPromise=null,lastListData=[],lastDistanceMap=new Map(),lastCoordMap=new Map();\n let render=async()=>{};
 
  const closeSuggestions=()=>{suggestions.hidden=true;suggestions.innerHTML='';active=-1;filters.q.setAttribute('aria-expanded','false');filters.q.removeAttribute('aria-activedescendant')};
  const choose=s=>{selected=s;filters.q.value=s.label;hint.textContent='Searching within 15 miles of '+s.label;closeSuggestions();render()};
@@ -89,7 +89,7 @@
  const r=await fetch('https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-property-feed?summary=1',{cache:'no-store'});const all=(await r.json()).filter(p=>p.published);
  const standardFilter=(p,bed,sleep,parking)=>(!bed||Number(p.bedrooms)>=bed)&&(!sleep||Number(p.sleeps)>=sleep)&&(!parking||(parking==='yes'?['free','paid','parking'].includes(p.parking_category):p.parking_category===parking));
 
- async function render(){const my=++renderSeq,bed=Number(filters.bed.value||0),sleep=Number(filters.sleep.value||0),parking=filters.parking.value;
+ render=async function(){const my=++renderSeq,bed=Number(filters.bed.value||0),sleep=Number(filters.sleep.value||0),parking=filters.parking.value;
   let listData=all.filter(p=>standardFilter(p,bed,sleep,parking)),distanceMap=new Map(),coordMap=new Map(),radiusUsed=false;
   if(selected){
     count.textContent='Searching within 15 miles…';
