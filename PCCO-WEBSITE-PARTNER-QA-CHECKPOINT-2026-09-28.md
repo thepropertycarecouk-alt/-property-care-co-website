@@ -28,8 +28,14 @@ Private invitation tokens and partner email contents must never be committed to 
 - Next: fresh Smarter Rent invitation with documented activation for pre-send QA, external test, draft only; then source-backed display fixes and complete image/detail audit.
 
 ## Batch 3 — 2026-09-28 13:20 UTC
-- Generated a fresh Smarter Rent invitation. Previous unsent invitation revoked as superseded.
-- Existing backend requires sent_at to inspect. Per explicit user authorisation, fresh invitation activated for pre-send QA; delivery_channel explicitly records EMAIL-NOT-SENT. This is activation, not evidence of email delivery.
-- External browser test passed: Smarter Rent Limited identity, current 2026-09-26-v1 Terms, checkbox and Accept control visible; no expired/revoked/undelivered error. No checkbox or Accept action performed. Database accepted_at remains null.
-- Saved reply in existing Smarter Rent Gmail thread as DRAFT to Adrian, CC lettings. Private link remains in Gmail draft only. No email sent.
-- Remaining: data/text corrections, full page/image tests, source recovery, Smarter Rent staging and other partner email review.
+Fresh Smarter Rent invitation externally tested successfully; correct company/current Terms/controls; not accepted. Activated per user request with delivery_channel explicitly EMAIL-NOT-SENT. Gmail reply saved as draft only, to Adrian and CC lettings. No email sent. Previous unsent invitation superseded.
+
+## Batch 4 — 2026-09-28 13:24 UTC
+- Corrected and re-queried eight typo/format records: BRO-005/006/070/074; FAB-031/037/038/039. Slugs preserved; previous names/parking in row audit metadata.
+- Nestays supplied postcode MK42 6FR in new partner email. Updated NST-001; verified live feed returns it.
+- Found Nestays image cause: img1.wsimg.com missing from image proxy allowlist. Fix committed in 6b3f1d417c709f43026b2ece14bfe2340a97de8e with city fallback, bathrooms/description display, studio detail handling, amenity dedupe, unknown-parking filter and source-specific pricing notes.
+- Deployed property feed v4, enforcing full valid acceptance rather than status alone. HTTP verification: 200, 158 properties; Nestays postcode correct. Frontend production build initiated; final browser/image verification pending.
+- Synced 70 nested JSON acceptance metadata records (46 Fab +24 Ruth) with row audit history; independent verification pending.
+- Data baseline across 158: 13 no cover/gallery; 115 missing bathrooms; 129 missing description; 69 missing sleeps; 71 missing bed configuration; 129 without monthly rate; 5 missing postcode before Nestays correction; 1 missing parking; 1 missing bedroom count. Missing values not invented.
+- New actionable emails: Nestays postcode/images; Vellanor four rates supplied but address-to-listing mapping needs confirmation; HOMEHOSTS questions; D3 supplied five Airbnb links. Replies still to draft.
+- Next: verify deployed Nestays gallery and all public pages/images, finish host-source recovery; save detailed report and Smarter Rent staging in batches. Emails sent remains ZERO.
