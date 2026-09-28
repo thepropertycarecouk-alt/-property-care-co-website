@@ -88,7 +88,8 @@ export function imageHandler(fetcher = fetch) {
   'img1.wsimg.com',
   'l.icdbcdn.com',
   'bookingenginecdn.hostaway.com',
-  'www.comfyworkers.com'
+  'www.comfyworkers.com',
+  'cf.bstatic.com'
 ]);
         if (parsed.protocol !== 'https:' || !allowedHosts.has(parsed.hostname)) return res.status(404).end();
         candidates = imageCandidates(parsed.toString());
