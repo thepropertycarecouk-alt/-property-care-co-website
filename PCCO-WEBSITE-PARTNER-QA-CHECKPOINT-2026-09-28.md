@@ -125,3 +125,80 @@ Fresh Smarter Rent invitation externally tested successfully; correct company/cu
   - LuxEdge Real Estate
   - Bucklehole / Ariyan Gill
 - Created private pending T&C invitations for Borderless Properties Ltd and Sublime Stays LTD. They are NOT marked as emailed yet and no partner email was sent.
+
+
+## 2026-09-28 evening — property data / image / postcode integrity pass
+
+Completed a source-backed integrity pass across live and staged PCCO Stays inventory.
+
+### System fixes
+- Repaired `api/property-image.js` allowlist for verified partner/source image hosts:
+  - `bookingenginecdn.hostaway.com`
+  - `www.comfyworkers.com`
+  - `cf.bstatic.com`
+  - `londonexecapartments.com`
+  - `images.squarespace-cdn.com`
+- Existing approved hosts remain supported.
+- Automatically repaired missing `cover_photo` objects across properties that already had valid photo arrays by using the first stored photo.
+- No property with photos now lacks a cover image.
+
+### New/missed partner staging
+- Borderless Properties: BOR-001 privately staged from supplied ComfyWorkers + Booking sources. SW18 retained because full postcode is not publicly verified. 5 bedrooms / 3 bathrooms / sleeps 5. Source gallery visually verified.
+- Sublime Stays: SUB-578298 privately staged from supplied direct Hostaway listing. Stratford, East London retained; exact postcode left blank because source does not expose it. 1 bedroom / 1 bathroom / sleeps 4. Source gallery visually verified.
+- Both remain unpublished and the public feed was tested to return [] while Partner Terms are pending.
+
+### Live listing repair
+- FAB-021 23 Charles Road corrected from source-backed Booking.com data:
+  - postcode BS34 7ES
+  - 4 bedrooms
+  - 2 bathrooms
+  - sleeps 7
+  - verified parking wording
+  - 8 property photos + cover
+- Actual PCCO live page visually QA-tested: location, facts, parking, enquiry form, main image and all 8 thumbnails passed.
+
+### Vellanor
+- Filled previously missing live postcodes from verified sources:
+  - VEL-001 M15 4UU
+  - VEL-002 CV5 6HT
+  - VEL-003 CV5 (outward only; exact full postcode not exposed)
+  - VEL-004 CV5 6HL
+- Result: no published property now has a blank postcode.
+
+### London Executive Apartments
+All 13 pending listings now have direct-source photography and location data:
+- LEX-001 HA9 0NR
+- LEX-002 HA9 0FT
+- LEX-003 HA9 0QG
+- LEX-004 HA1 1AR
+- LEX-005 HA1 3NH
+- LEX-006 WD17 1DS
+- LEX-007 WD17 1AP
+- LEX-008 HA4 8PQ
+- LEX-009 HA4 8QH
+- LEX-010 NW9 4EN
+- LEX-011 NW9 only because partner source covers multiple Colindale addresses/postcodes
+- LEX-012 HA7 1FD
+- LEX-013 UB9 4BS
+Mixed-unit pages remain mixed rather than forcing a single bedroom count.
+
+### Other pending partner repairs
+- SRK-001..004: direct-source images added; bed configuration and secure gated parking verified.
+- LAN-001 Crystal Unit: 8 direct Squarespace property images added from a 39-image direct gallery.
+- STK-008 Railway Terrace: 5 property-specific Airbnb images recovered using alternate Airbnb rendering.
+- STK-009 Maplin Park: 5 property-specific Airbnb images added.
+- Allsquare ALL-001..005: direct Hostaway/Booking sources mapped; property-specific photos and verified facts added. Locations improved to Hayes/Harlington UB3 5BJ; London Bridge/Southwark SE1; Staines TW18 1PE; Teddington TW11 8UD; New Bedfont/Feltham (exact postcode not publicly confirmed).
+- ROSE-002: property-specific Airbnb images recovered.
+- CEB-001: property-specific Airbnb images recovered, but listing remains unpublished/commercial hold.
+
+### Final structural audit after repairs
+- 343 total properties
+- 158 published
+- 185 staged/unpublished
+- published missing postcode: 0
+- published generic UK/England/Greater London location: 0
+- staged properties with zero photos: 0
+- properties with photo arrays but missing cover: 0
+- published properties belonging to pending/unaccepted partners: 0
+- 8 published zero-photo records remain: Brookland Buxted Inn rooms 1–8. These intentionally use the site's "photography available on request" fallback because room-specific photography was not supplied.
+- Remaining blank bathroom/sleeps fields are primarily host-source omissions in Brookland/FabAccommodation. The UI filters missing facts and does not display fabricated zeros/undefined values; these are intentionally not guessed.
