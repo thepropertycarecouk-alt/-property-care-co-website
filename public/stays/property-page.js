@@ -42,13 +42,14 @@
       : '<div class="gallery-empty">Property photography is available from our accommodation team.</div>';
 
     const facts=[
-      ['Bedrooms',p.bedrooms],
+      ['Bedrooms',p.bedrooms===0?'Studio':p.bedrooms],
+      ['Bathrooms',p.bathrooms],
       ['Sleeps',p.sleeps],
       ['Bed configuration',p.bed_configuration],
       ['Parking',p.parking]
-    ].filter(x=>x[1]).map(x=>'<div class="fact"><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>').join('');
+    ].filter(x=>x[1]!=null&&x[1]!=='').map(x=>'<div class="fact"><span>'+esc(x[0])+'</span><strong>'+esc(x[1])+'</strong></div>').join('');
 
-    const included=(Array.isArray(p.included_features)&&p.included_features.length)?p.included_features:(p.amenities||[]);
+    const included=[...new Set(((Array.isArray(p.included_features)&&p.included_features.length)?p.included_features:(p.amenities||[])).filter(Boolean))];
     const extras=(Array.isArray(p.guest_extras)?p.guest_extras:[]).filter(x=>!included.includes(x));
     const important=(Array.isArray(p.important_notes)?p.important_notes:[]).filter(Boolean);
 
@@ -56,7 +57,7 @@
       ?Math.max(1,Math.ceil(Number(p.monthly_rate_gbp)/30/Number(p.sleeps)))
       :null;
     const commercialNotes=[
-      perPersonNight?['From '+money(perPersonNight)+' per person per night','Indicative equivalent based on the host-supplied monthly rate, a 30-night stay and full occupancy. The underlying host rate includes linen and bi-weekly cleaning. Prices are always subject to host approval and negotiation.']:null,
+      perPersonNight?['From '+money(perPersonNight)+' per person per night','Indicative equivalent based on the host-supplied monthly rate, a 30-night stay and full occupancy. '+esc(p.monthly_rate_note||'Inclusions will be confirmed for each booking.')+' Prices are always subject to host approval and negotiation.']:null,
       p.security_deposit_gbp?['Security deposit',money(p.security_deposit_gbp)+' supplied by the partner; booking-specific terms will be confirmed.']:null,
       p.cancellation?['Cancellation information',esc(p.cancellation)+' supplied by the partner; the applicable booking terms will be confirmed before booking.']:null
     ].filter(Boolean);
@@ -74,10 +75,11 @@
       : '';
 
     root.innerHTML=
-      '<div class="property-title-block"><p class="eyebrow">PCCO STAYS · '+esc(p.id)+'</p><h1>'+esc(p.name)+'</h1><p>'+esc(p.postcode||'UK accommodation')+' · Furnished accommodation supplied by a PCCO property partner</p></div>'+
+      '<div class="property-title-block"><p class="eyebrow">PCCO STAYS · '+esc(p.id)+'</p><h1>'+esc(p.name)+'</h1><p>'+esc([p.city,p.postcode].filter(Boolean).join(' · ')||'Location available on request')+' · Furnished accommodation supplied by a PCCO property partner</p></div>'+
       gallery+
       '<div class="property-layout"><div>'+
         '<h2>Property details</h2><div class="key-facts">'+facts+'</div>'+
+        (p.description?'<p class="property-description">'+esc(p.description)+'</p>':'')+
         '<h2>Included features</h2><div class="amenities included-features">'+featureMarkup(included)+'</div>'+
         extrasMarkup+
         commercialMarkup+
