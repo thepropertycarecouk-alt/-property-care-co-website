@@ -68,3 +68,17 @@ Fresh Smarter Rent invitation externally tested successfully; correct company/cu
 - FAB-021 23 Charles Road still has no usable partner-supplied photo files: the linked Drive folder is empty. External web evidence confirms the property exists at the stated address but no third-party images were copied into PCCO.
 - Remaining live zero-photo records are now nine: eight Brookland Buxted Inn room rows with no photo link supplied, plus FAB-021.
 - No partner email was sent.
+
+## Batch 8 — final operational completion pass
+- Final acceptance/publication integrity query: 158 live, 183 staged, zero live without valid Terms, zero live nested acceptance mismatches, zero staged properties belonging to already-accepted partners, zero duplicate slugs.
+- Live no-photo count is now 9: Brookland Buxted Inn rooms 1–8 plus FabAccommodation 23 Charles Road. These are explicit source gaps, not broken-image records.
+- Public feed leakage test passed: D3, Stay Zen, Smarter Rent and Ceba staged slugs each returned [] while Nestays returned its live accepted record.
+- Smarter Rent: 114 privately staged properties remain unpublished/T&C-gated. Existing unsent Gmail draft refreshed to state that all 114 are prepared privately and to ask Adrian to test the verified fresh Terms link.
+- D3 Short Stay: 5 properties privately staged, unpublished and T&C-gated. Private invitation externally verified against D3 Short Stay and current Terms version. Unsent reply draft saved.
+- Stay Zen Apartments / Queen Anne Cottage: 4 properties privately staged, unpublished and T&C-gated. Private invitation externally verified against the correct partner identity and current Terms version. Unsent reply draft saved.
+- Added l.icdbcdn.com to the authorised image proxy host list for partner-supplied Lodgify images; production deployment is READY.
+- Vellanor host-supplied 30-night rates mapped and stored as indicative only: Kirby Road £2,000; Shakleton Road £2,200; Coniston Road £3,200; Sky Garden/Manchester £2,700. Each row has qa_rate_mapping audit metadata.
+- Ceba property intentionally placed on commercial_terms_hold. Standard Terms must NOT be issued because Abraham proposed 8% commission including VAT, which conflicts with the standard 7.85% + VAT Terms. Current £2,900 supplier context moved to source_monthly_rate_gbp and public monthly rate cleared. Property remains unpublished.
+- Location search code confirmed to use a selected-place 15-mile radius automatically. No separate radius control is required. Current provider is UK postcode data + Photon/OpenStreetMap, not Google Places. No Google Places key/reference exists in the repository.
+- Hardened location-suggest endpoint so Photon provider timeouts fall back cleanly instead of returning a production 503; production deployment READY.
+- Unsent drafts saved for HOMEHOSTS commercial questions, LuxEdge onboarding, Brookland missing Buxted data/photos, and FabAccommodation remaining source gaps. No outbound partner email was sent in this pass.
