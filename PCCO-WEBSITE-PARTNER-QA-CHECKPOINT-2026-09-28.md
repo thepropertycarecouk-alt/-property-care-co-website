@@ -82,3 +82,13 @@ Fresh Smarter Rent invitation externally tested successfully; correct company/cu
 - Location search code confirmed to use a selected-place 15-mile radius automatically. No separate radius control is required. Current provider is UK postcode data + Photon/OpenStreetMap, not Google Places. No Google Places key/reference exists in the repository.
 - Hardened location-suggest endpoint so Photon provider timeouts fall back cleanly instead of returning a production 503; production deployment READY.
 - Unsent drafts saved for HOMEHOSTS commercial questions, LuxEdge onboarding, Brookland missing Buxted data/photos, and FabAccommodation remaining source gaps. No outbound partner email was sent in this pass.
+
+## Batch 9 — final live production verification
+- Final browser QA completed against production after the latest deployment.
+- Public property count confirmed at 158.
+- Recovered-image properties verified live with real cover images/galleries: BRO-007 Church Road, BRO-052 1 Victoria Ave, BRO-059 501 Yeadon, BRO-073 92 Watkin Lane.
+- Intentional placeholders verified for FAB-021 23 Charles Road and Brookland Buxted Inn rooms 1–8; no broken-image icons were visible.
+- Location autocomplete successfully returned a UK postcode suggestion and accepted the selection. The browse code confirms selected locations call /api/postcode-radius with radius=15 and sort/filter matching public properties by distance. The automated browser did not reliably expose the transient "within 15 miles" status text, but no location-search errors occurred after the timeout-hardening deployment.
+- Final public-feed leakage test passed: staged D3, Stay Zen, Smarter Rent and Ceba slugs each returned empty results; accepted Nestays returned its live property.
+- Production deployment for location timeout hardening is READY.
+- No partner email was sent during completion.
