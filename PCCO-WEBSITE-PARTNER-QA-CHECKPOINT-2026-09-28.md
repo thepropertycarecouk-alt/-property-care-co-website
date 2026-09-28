@@ -39,3 +39,11 @@ Fresh Smarter Rent invitation externally tested successfully; correct company/cu
 - Data baseline across 158: 13 no cover/gallery; 115 missing bathrooms; 129 missing description; 69 missing sleeps; 71 missing bed configuration; 129 without monthly rate; 5 missing postcode before Nestays correction; 1 missing parking; 1 missing bedroom count. Missing values not invented.
 - New actionable emails: Nestays postcode/images; Vellanor four rates supplied but address-to-listing mapping needs confirmation; HOMEHOSTS questions; D3 supplied five Airbnb links. Replies still to draft.
 - Next: verify deployed Nestays gallery and all public pages/images, finish host-source recovery; save detailed report and Smarter Rent staging in batches. Emails sent remains ZERO.
+
+## Batch 5 — final audit continuation
+- Re-ran live database integrity checks after the Astra checkpoint.
+- Publication gate remains clean: 158 live / 60 staged; zero live properties without a valid non-invalidated acceptance; zero duplicate or missing slugs detected in the acceptance/publication check.
+- Found 83 Brookland live records whose top-level flags were already correct but nested JSON acceptance metadata was still absent/stale.
+- Synced all 83 Brookland nested records to partner_acceptance_status=accepted and requires_partner_acceptance=false, retaining a per-row qa_nested_acceptance_correction audit marker with the prior values.
+- Independent verification after write: zero live nested acceptance-status mismatches; zero live nested requires-partner-acceptance mismatches; 83 Brookland audit markers present.
+- No partner email was sent.
