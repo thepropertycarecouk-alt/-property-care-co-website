@@ -92,3 +92,18 @@ Fresh Smarter Rent invitation externally tested successfully; correct company/cu
 - Final public-feed leakage test passed: staged D3, Stay Zen, Smarter Rent and Ceba slugs each returned empty results; accepted Nestays returned its live property.
 - Production deployment for location timeout hardening is READY.
 - No partner email was sent during completion.
+
+## Batch 10 — emergency mobile image/detail-page repair
+- User supplied an iPhone screenshot showing Brookland Brighton cards with broken images/alt text.
+- Root cause 1: marketplace cards hotlinked static.wixstatic.com directly. The exact Flat 7 source returned HTTP 403 externally.
+- Root cause 2: the PCCO proxy did not have robust Wix canonical/original fallbacks for malformed/transformed Wix URLs.
+- Repaired api/property-image.js: Wix assets now try canonical/original candidates and are fetched server-side with browser-like request headers.
+- Repaired marketplace cards: all cover photos now use PCCO /api/property-image rather than direct Wix hotlinks.
+- Repaired property galleries: all gallery main/thumb images now use PCCO /api/property-image.
+- Found and fixed a secondary detail-page bug caused by a stale trustedDirectPhoto() call after the helper was removed; this had caused valid properties to show a misleading “Property not found”.
+- Added cache-busting query versions to property-browser.js and property-page.js so iPhone/Safari clients reload the repaired scripts.
+- Production verification: exact Brighton B Block Flat 6/7 card images now use /api/property-image and render; Flat 7 detail page renders actual property data plus all 18 gallery images.
+- Representative production image endpoints all returned HTTP 200 for Google Drive, Guesty, Airbnb, Nestays and Wix-backed properties.
+- Verified Google Drive-backed 28 Borough Rd and Guesty-backed 1 Feathers Yard detail pages render correctly with visible proxy-served galleries.
+- Full listing browser audit reported no broken images among properties with cover photos; intentional no-photo placeholders remain only for Buxted Inn rooms 1–8 and 23 Charles Road.
+- No partner emails were sent during emergency repair.
