@@ -29,11 +29,10 @@
     if(!p)throw new Error('not found');
 
     const photos=(p.photos||[]).map((ph,i)=>{
-      const direct=trustedDirectPhoto(ph);
       return {
         ...ph,
-        src:direct||'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=1600',
-        thumb:direct||'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=700'
+        src:'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=1600',
+        thumb:'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=700'
       };
     });
     const gallery=photos.length
