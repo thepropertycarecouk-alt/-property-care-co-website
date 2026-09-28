@@ -10,7 +10,22 @@ function haversineMiles(aLat,aLon,bLat,bLon){
   return 2*R*Math.asin(Math.sqrt(s));
 }
 function outwardCode(value){
-  return String(value||'').trim().toUpperCase().replace(/\s+/g,'').match(/^[A-Z]{1,2}\d[A-Z\d]?/)?.[0]||null;
+  const cleaned=String(value||'').trim().toUpperCase().replace(/\s+/g,' ');
+  if(!cleaned)return null;
+  const first=cleaned.split(' ')[0];
+  if(/^[A-Z]{1,2}\d[A-Z\d]?$/.test(first))return first;
+  return cleaned.replace(/\s+/g,'').match(/^[A-Z]{1,2}\d[A-Z\d]?/)?.[0]||null;
+}
+function fallbackPlaceLabel(property){
+  let city=String(property?.city||property?.area||property?.location||'').trim().replace(/\s+/g,' ');
+  if(!city)return '';
+  city=city.replace(/South[- ]East London/ig,'London');
+  const name=String(property?.name||'').trim();
+  if(/^Berkshire$/i.test(city)&&name.includes(' - ')){
+    const prefix=name.split(' - ')[0].trim();
+    if(prefix)return prefix+', '+city;
+  }
+  return city;
 }
 async function geocode(q){
   const cleaned=String(q||'').trim().toUpperCase().replace(/\s+/g,' ');
@@ -90,7 +105,7 @@ async function buildPropertyLocations(properties){
     if(g?.latitude!=null&&g?.longitude!=null)located.set(p.slug,{latitude:Number(g.latitude),longitude:Number(g.longitude)});
   }
   const missing=properties.filter(p=>!located.has(p.slug));
-  const placeLabels=[...new Set(missing.map(p=>String(p.city||p.area||p.location||'').trim()).filter(Boolean))];
+  const placeLabels=[...new Set(missing.map(fallbackPlaceLabel).filter(Boolean))];
   const placeGeo=new Map();
   for(let i=0;i<placeLabels.length;i+=8){
     await Promise.all(placeLabels.slice(i,i+8).map(async label=>{
@@ -99,7 +114,7 @@ async function buildPropertyLocations(properties){
     }));
   }
   for(const p of missing){
-    const label=String(p.city||p.area||p.location||'').trim();
+    const label=fallbackPlaceLabel(p);
     const g=placeGeo.get(label);
     if(g)located.set(p.slug,g);
   }
