@@ -26,3 +26,10 @@ Private invitation tokens and partner email contents must never be committed to 
 - Known spelling/formatting issues confirmed on live cards. 88 Clive free/paid remains ambiguous in host-derived data. Calliope parking/bed configuration and Ellis bedroom count have existing source-conflict notes; do not guess.
 - Nested JSON partner_acceptance_status still stale on some accepted listings; review and sync safely.
 - Next: fresh Smarter Rent invitation with documented activation for pre-send QA, external test, draft only; then source-backed display fixes and complete image/detail audit.
+
+## Batch 3 — 2026-09-28 13:20 UTC
+- Generated a fresh Smarter Rent invitation. Previous unsent invitation revoked as superseded.
+- Existing backend requires sent_at to inspect. Per explicit user authorisation, fresh invitation activated for pre-send QA; delivery_channel explicitly records EMAIL-NOT-SENT. This is activation, not evidence of email delivery.
+- External browser test passed: Smarter Rent Limited identity, current 2026-09-26-v1 Terms, checkbox and Accept control visible; no expired/revoked/undelivered error. No checkbox or Accept action performed. Database accepted_at remains null.
+- Saved reply in existing Smarter Rent Gmail thread as DRAFT to Adrian, CC lettings. Private link remains in Gmail draft only. No email sent.
+- Remaining: data/text corrections, full page/image tests, source recovery, Smarter Rent staging and other partner email review.
