@@ -17,3 +17,12 @@ Inspect backend invitation delivery gating and property feed; persist detailed p
 
 ## Security
 Private invitation tokens and partner email contents must never be committed to this public repository.
+
+## Batch 2 — 2026-09-28 13:18 UTC
+- Corrected 153 stale top-level acceptance flags (Fab 46, Ruth 24, Brookland 83). Each changed row retains timestamp/reason/previous value in data.qa_acceptance_flag_correction.
+- Verification: 158 published remain; zero stale top-level flags; 153 audit markers present.
+- Public collection confirms all 158 cards render. 13 cards use the explicit photography-on-request state. Five cards have UK-only location fallback.
+- Source review: onboarding rejects invitations with null sent_at; current unsent Smarter Rent replacement cannot work. Public feed currently checks partner status, not full acceptance validity; hardening remains outstanding.
+- Known spelling/formatting issues confirmed on live cards. 88 Clive free/paid remains ambiguous in host-derived data. Calliope parking/bed configuration and Ellis bedroom count have existing source-conflict notes; do not guess.
+- Nested JSON partner_acceptance_status still stale on some accepted listings; review and sync safely.
+- Next: fresh Smarter Rent invitation with documented activation for pre-send QA, external test, draft only; then source-backed display fixes and complete image/detail audit.
