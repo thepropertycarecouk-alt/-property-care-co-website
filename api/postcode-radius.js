@@ -1,5 +1,6 @@
 const feed = 'https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-property-feed';
 const POSTCODE_API = 'https://api.postcodes.io';
+const PHOTON_API = 'https://photon.komoot.io/api/';
 
 function haversineMiles(aLat,aLon,bLat,bLon){
   const toRad=v=>v*Math.PI/180;
@@ -8,17 +9,43 @@ function haversineMiles(aLat,aLon,bLat,bLon){
   const s=Math.sin(dLat/2)**2+Math.cos(toRad(aLat))*Math.cos(toRad(bLat))*Math.sin(dLon/2)**2;
   return 2*R*Math.asin(Math.sqrt(s));
 }
+function outwardCode(value){
+  return String(value||'').trim().toUpperCase().replace(/\s+/g,'').match(/^[A-Z]{1,2}\d[A-Z\d]?/)?.[0]||null;
+}
 async function geocode(q){
   const cleaned=String(q||'').trim().toUpperCase().replace(/\s+/g,' ');
   if(!cleaned) return null;
   const full=await fetch(POSTCODE_API+'/postcodes/'+encodeURIComponent(cleaned),{signal:AbortSignal.timeout(8000)});
   if(full.ok){const j=await full.json();if(j?.result?.latitude!=null&&j?.result?.longitude!=null)return {latitude:j.result.latitude,longitude:j.result.longitude,label:j.result.postcode||cleaned};}
-  const outcode=cleaned.replace(/\s+/g,'').match(/^[A-Z]{1,2}\d[A-Z\d]?/)?.[0];
+  const outcode=outwardCode(cleaned);
   if(!outcode)return null;
   const out=await fetch(POSTCODE_API+'/outcodes/'+encodeURIComponent(outcode),{signal:AbortSignal.timeout(8000)});
   if(!out.ok)return null;
   const j=await out.json();
   return j?.result?.latitude!=null&&j?.result?.longitude!=null?{latitude:j.result.latitude,longitude:j.result.longitude,label:j.result.outcode||outcode}:null;
+}
+async function geocodePlace(label){
+  const q=String(label||'').trim().replace(/\s+/g,' ');
+  if(!q)return null;
+  const country=/\bjersey\b/i.test(q)?'JE':'GB';
+  const attempts=[country,null];
+  for(const countrycode of attempts){
+    if(!countrycode&&country!=='JE')continue;
+    try{
+      const u=new URL(PHOTON_API);
+      u.searchParams.set('q',q);
+      u.searchParams.set('limit','1');
+      u.searchParams.set('lang','en');
+      if(countrycode)u.searchParams.set('countrycode',countrycode);
+      const r=await fetch(u,{headers:{'Accept':'application/json','User-Agent':'PCCO-Stays/1.0 (thepropertycareco.co.uk)'},signal:AbortSignal.timeout(6500)});
+      if(!r.ok)continue;
+      const j=await r.json();
+      const f=j?.features?.[0];
+      const [lon,lat]=f?.geometry?.coordinates||[];
+      if(Number.isFinite(lat)&&Number.isFinite(lon))return {latitude:lat,longitude:lon};
+    }catch{}
+  }
+  return null;
 }
 async function buildPostcodeMap(properties){
   const unique=[...new Set(properties.map(p=>String(p.postcode||'').trim().toUpperCase()).filter(Boolean))];
@@ -31,16 +58,52 @@ async function buildPostcodeMap(properties){
     const j=await r.json();
     for(const item of j?.result||[]){const g=item?.result;if(g?.postcode&&g.latitude!=null&&g.longitude!=null)geo.set(String(item.query).trim().toUpperCase(),g);}
   }
-  const outcodes=unique.filter(pc=>/^[A-Z]{1,2}\d[A-Z\d]?$/.test(pc));
+  const byOutcode=new Map();
+  for(const pc of unique){
+    if(geo.has(pc))continue;
+    const outcode=outwardCode(pc);
+    if(!outcode)continue;
+    if(!byOutcode.has(outcode))byOutcode.set(outcode,[]);
+    byOutcode.get(outcode).push(pc);
+  }
+  const outcodes=[...byOutcode.keys()];
   for(let i=0;i<outcodes.length;i+=20){
-    await Promise.all(outcodes.slice(i,i+20).map(async pc=>{
+    await Promise.all(outcodes.slice(i,i+20).map(async outcode=>{
       try{
-        const r=await fetch(POSTCODE_API+'/outcodes/'+encodeURIComponent(pc),{signal:AbortSignal.timeout(6000)});
-        if(r.ok){const j=await r.json();if(j?.result?.latitude!=null&&j?.result?.longitude!=null)geo.set(pc,j.result);}
+        const r=await fetch(POSTCODE_API+'/outcodes/'+encodeURIComponent(outcode),{signal:AbortSignal.timeout(6000)});
+        if(r.ok){
+          const j=await r.json(),g=j?.result;
+          if(g?.latitude!=null&&g?.longitude!=null)for(const pc of byOutcode.get(outcode)||[])geo.set(pc,g);
+        }
       }catch{}
     }));
   }
   return geo;
+}
+async function buildPropertyLocations(properties){
+  const postcodeProperties=properties.filter(p=>p?.postcode);
+  const geo=await buildPostcodeMap(postcodeProperties);
+  const located=new Map();
+  for(const p of properties){
+    const key=String(p.postcode||'').trim().toUpperCase();
+    const g=key?geo.get(key):null;
+    if(g?.latitude!=null&&g?.longitude!=null)located.set(p.slug,{latitude:Number(g.latitude),longitude:Number(g.longitude)});
+  }
+  const missing=properties.filter(p=>!located.has(p.slug));
+  const placeLabels=[...new Set(missing.map(p=>String(p.city||p.area||p.location||'').trim()).filter(Boolean))];
+  const placeGeo=new Map();
+  for(let i=0;i<placeLabels.length;i+=8){
+    await Promise.all(placeLabels.slice(i,i+8).map(async label=>{
+      const g=await geocodePlace(label);
+      if(g)placeGeo.set(label,g);
+    }));
+  }
+  for(const p of missing){
+    const label=String(p.city||p.area||p.location||'').trim();
+    const g=placeGeo.get(label);
+    if(g)located.set(p.slug,g);
+  }
+  return located;
 }
 export default async function handler(req,res){
   res.setHeader('Cache-Control','private, no-store');
@@ -58,10 +121,9 @@ export default async function handler(req,res){
     const feedRes=await fetch(feed+'?summary=1',{cache:'no-store',signal:AbortSignal.timeout(10000)});
     if(!feedRes.ok)throw new Error('Property feed unavailable');
     const published=(await feedRes.json()).filter(p=>p?.published);
-    const properties=published.filter(p=>p?.postcode);
-    const geo=await buildPostcodeMap(properties);
-    const located=properties.map(p=>{
-      const g=geo.get(String(p.postcode).trim().toUpperCase());
+    const locationMap=await buildPropertyLocations(published);
+    const located=published.map(p=>{
+      const g=locationMap.get(p.slug);
       if(!g)return null;
       return {slug:p.slug,lat:Number(g.latitude),lon:Number(g.longitude)};
     }).filter(Boolean);
