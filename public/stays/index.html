@@ -6,12 +6,12 @@
 <title>PCCO Stays | Accommodation for work, projects & relocation</title>
 <meta name="description" content="Furnished UK accommodation for contractors, relocation firms and corporate stays. Tell PCCO Stays your location, dates and requirements.">
 <link rel="stylesheet" href="/stays/styles.css">
-<link rel="stylesheet" href="/stays/marketplace.css">
+<link rel="stylesheet" href="/stays/marketplace.css?v=20260929-featured-first">
 <script>/* Preserve existing cleaning email and payment return links. */
 if(location.pathname==='/'&&(new URLSearchParams(location.search).has('lead')||new URLSearchParams(location.search).has('monthly')||['#cleaningDivision','#booking','#estimate'].includes(location.hash)))location.replace('/cleans'+location.search+location.hash);
 </script>
 <script src="/stays/app.js" defer></script>
-<script src="/stays/marketplace.js" defer></script>
+<script src="/stays/marketplace.js?v=20260929-featured-first" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
@@ -24,19 +24,20 @@ if(location.pathname==='/'&&(new URLSearchParams(location.search).has('lead')||n
 </header>
 <main id="main">
 <section class="hero wrap" aria-labelledby="hero-title">
-<div class="hero-grid">
+<div class="hero-visual hero-featured-visual" id="hero-property-visual">
+<div class="featured-property-fallback">
+<span class="small-label">FEATURED ACCOMMODATION</span>
+<strong>Explore our featured stays</strong>
+<a href="/properties/">Browse properties <span aria-hidden="true">→</span></a>
+</div>
+</div>
+<div class="hero-grid hero-grid-after-featured">
 <div class="hero-copy">
 <p class="eyebrow"><span class="gold-rule"></span> UK-WIDE ACCOMMODATION</p>
 <h1 id="hero-title">The right stay.<br>For the <em>work ahead.</em></h1>
 <p class="hero-description">Furnished accommodation for your people, wherever they need to be. One point of contact for project teams, business travel and relocation.</p>
 <div class="hero-actions"><a class="button button-navy" href="#enquire">Tell us what you need <span aria-hidden="true">↗</span></a><a class="text-link" href="#services">Explore our services <span aria-hidden="true">↓</span></a></div>
 <div class="hero-footnote"><span class="mini-icon" data-icon="key"></span><span>From a single apartment to a whole project team.</span></div>
-</div>
-<div class="hero-visual" id="hero-property-visual">
-<img class="hero-photo" src="/stays/assets/living-room.jpg" alt="Bright furnished living room with a sofa, dining area and large windows" width="1800" height="1200" fetchpriority="high">
-<div class="image-label"><span class="image-label-dot"></span> Space to settle in.</div>
-<div class="image-note">Illustrative interior</div>
-<div class="coverage-card"><span class="coverage-icon" data-icon="pin"></span><div><span class="small-label">ONE BRIEF. UK-WIDE.</span><strong>Your location.<br>Our starting point.</strong></div><span aria-hidden="true" class="coverage-arrow">↗</span></div>
 </div>
 </div>
 <div class="hero-browse-strip"><div><span class="small-label">BROWSE AVAILABLE STAYS</span><strong>Prefer to explore properties first?</strong></div><a class="button button-outline" href="/properties/">Browse properties <span aria-hidden="true">→</span></a></div>
