@@ -10,7 +10,15 @@
   try {
     const response = await fetch(endpoint, {cache:'no-store', signal:AbortSignal.timeout(10000)});
     if (!response.ok) return;
-    const items = (await response.json()).filter(p => p.published && p.featured && p.cover_photo).slice(0,8);
+    const items = (await response.json())
+      .filter(p => p.published && p.featured && p.cover_photo)
+      .sort((a,b) => {
+        const aBedrooms=Number(a.bedrooms)||0, bBedrooms=Number(b.bedrooms)||0;
+        const aSleeps=Number(a.sleeps)||0, bSleeps=Number(b.sleeps)||0;
+        const aLarge=(aBedrooms>=6||aSleeps>=6)?1:0, bLarge=(bBedrooms>=6||bSleeps>=6)?1:0;
+        return (bLarge-aLarge) || (bSleeps-aSleeps) || (bBedrooms-aBedrooms) || String(a.name||'').localeCompare(String(b.name||''));
+      })
+      .slice(0,12);
     if (!items.length) return;
     const source = p => '/api/property-image?property='+encodeURIComponent(p.slug)+'&size=1600';
     await new Promise((resolve, reject) => {const image = new Image(); const timeout=setTimeout(reject,20000); image.onload = ()=>{clearTimeout(timeout);resolve();}; image.onerror = ()=>{clearTimeout(timeout);reject();}; image.src = source(items[0]);});
