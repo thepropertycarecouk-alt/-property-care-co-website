@@ -17,6 +17,10 @@ export default async function handler(req, res) {
       [property] = await response.json();
     } catch { failed = true; }
   }
+  if (property?.slug && property.slug !== slug) {
+    res.setHeader('Location', `/properties/${encodeURIComponent(property.slug)}/`);
+    return res.status(301).end();
+  }
   const template = await readFile(new URL('../public/stays/property-template.html', import.meta.url), 'utf8');
   const facts = property ? [property.postcode, property.bedrooms ? `${property.bedrooms} bedrooms` : '', property.sleeps ? `sleeps ${property.sleeps}` : ''].filter(Boolean).join(', ') : '';
   const title = property ? `${property.name} | PCCO Stays` : 'Accommodation sourcing | PCCO Stays';
