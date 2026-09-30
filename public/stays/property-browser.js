@@ -48,12 +48,30 @@
  const fetchAllCoordinates=async()=>{
   if(allCoordinates)return allCoordinates;
   if(allCoordinatesPromise)return allCoordinatesPromise;
-  allCoordinatesPromise=(async()=>{
+  const toMap=data=>new Map((data?.matches||[]).map(x=>[x.slug,{lat:Number(x.lat),lon:Number(x.lon)}]).filter(x=>Number.isFinite(x[1].lat)&&Number.isFinite(x[1].lon)));
+  const refresh=async()=>{
    const r=await fetch('/api/postcode-radius?all=1');
    if(!r.ok)throw new Error('Map locations unavailable');
-   const data=await r.json();
-   allCoordinates=new Map((data.matches||[]).map(x=>[x.slug,{lat:Number(x.lat),lon:Number(x.lon)}]).filter(x=>Number.isFinite(x[1].lat)&&Number.isFinite(x[1].lon)));
+   const fresh=toMap(await r.json());
+   if(fresh.size){
+    allCoordinates=fresh;
+    if(activeView==='map'&&!selected)paintMap(lastListData,allCoordinates,lastDistanceMap);
+   }
    return allCoordinates;
+  };
+  allCoordinatesPromise=(async()=>{
+   try{
+    const sr=await fetch('/stays/property-coordinates.json',{cache:'force-cache'});
+    if(sr.ok){
+     const snapshot=toMap(await sr.json());
+     if(snapshot.size){
+      allCoordinates=snapshot;
+      refresh().catch(()=>{});
+      return allCoordinates;
+     }
+    }
+   }catch{}
+   return await refresh();
   })();
   try{return await allCoordinatesPromise}finally{allCoordinatesPromise=null}
  };
