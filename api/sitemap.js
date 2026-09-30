@@ -10,7 +10,7 @@ export default async function handler(req,res){
     const r=await fetch(feed,{cache:'no-store',signal:AbortSignal.timeout(10000)});
     if(!r.ok)throw new Error('feed unavailable');
     const props=(await r.json()).filter(p=>p&&p.published&&p.slug);
-    const fixed=['/','/properties/','/partners/'];
+    const fixed=['/','/properties/','/partners/','/contractor-accommodation/','/corporate-accommodation/','/relocation-accommodation/'];
     const locationPaths=['/locations/bristol/','/locations/brighton/','/locations/bracknell/','/locations/woking/','/locations/wokingham/','/locations/leeds/','/locations/manchester/','/locations/cardiff/','/locations/coventry/','/locations/london/','/locations/windsor/'];
     const urls=[
       ...fixed.map(path=>({loc:base+path,priority:path==='/'?'1.0':'0.8'})),
