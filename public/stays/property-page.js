@@ -28,11 +28,12 @@
     const p=all.find(x=>x.slug===slug&&x.published);
     if(!p)throw new Error('not found');
 
+    const photoVersion=p.photo_version?'&v='+encodeURIComponent(p.photo_version):'';
     const photos=(p.photos||[]).map((ph,i)=>{
       return {
         ...ph,
-        src:'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=1600',
-        thumb:'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=700'
+        src:'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=1600'+photoVersion,
+        thumb:'/api/property-image?property='+encodeURIComponent(p.slug)+'&photo='+i+'&size=700'+photoVersion
       };
     });
     const gallery=photos.length
