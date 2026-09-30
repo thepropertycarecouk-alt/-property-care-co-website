@@ -37,9 +37,16 @@ function ssrContent(p){
   const featureHtml=features.length
     ? '<h2>Included features</h2><div class="amenities included-features">'+features.map(x=>'<div class="amenity"><span aria-hidden="true">✓</span> '+escape(x)+'</div>').join('')+'</div>'
     : '';
+  const locationText=p.city||p.postcode||'the local area';
+  const details=[
+    p.bedrooms!=null ? (Number(p.bedrooms)===0?'a studio layout':p.bedrooms+' bedroom'+(Number(p.bedrooms)===1?'':'s')) : '',
+    p.sleeps ? 'space for up to '+p.sleeps+' guests' : ''
+  ].filter(Boolean);
+  const overview='<h2>About this stay</h2><p class="property-description">'+escape(p.name)+' is furnished accommodation in '+escape(locationText)+(details.length?', with '+escape(details.join(' and ')):'')+'. It can be considered for contractor, corporate, relocation and longer-stay requirements, subject to availability for your dates.</p>';
+  const stayTypes='<h2>Stay types</h2><p class="property-description"><a href="/contractor-accommodation/">Contractor accommodation</a> · <a href="/corporate-accommodation/">Corporate accommodation</a> · <a href="/relocation-accommodation/">Relocation accommodation</a></p>';
   const location=escape(p.postcode||p.city||'Location available on request');
   return '<div class="property-title-block"><p class="eyebrow">PCCO STAYS · '+escape(p.id)+'</p><h1>'+escape(p.name)+'</h1><p>'+location+' · Furnished accommodation supplied by a PCCO property partner</p></div>'
-    +'<div class="property-layout"><div><h2>Property details</h2><div class="key-facts">'+factHtml+'</div>'+description+featureHtml
+    +'<div class="property-layout"><div><h2>Property details</h2><div class="key-facts">'+factHtml+'</div>'+description+overview+featureHtml+stayTypes
     +'<section class="network-cta" aria-labelledby="network-title"><div><h3 id="network-title">Enquire about this stay</h3><p>Send PCCO Stays your dates, guest numbers and requirements. Availability and booking details are confirmed by our accommodation team.</p><span class="trust-point">No sourcing fees.</span></div><a class="button button-navy" href="/#enquire">Send us your requirements <span aria-hidden="true">↗</span></a></section>'
     +'</div></div>';
 }
