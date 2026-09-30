@@ -55,7 +55,8 @@ async function fetchImage(fetcher, urls) {
 // Only images from currently authorised properties can be served. No arbitrary URL proxying.
 export function imageHandler(fetcher = fetch) {
   return async function handler(req, res) {
-    res.setHeader('Cache-Control', 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');
+    const version = String(req.query.v || '');
+    res.setHeader('Cache-Control', version ? 'private, no-store, max-age=0' : 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');
     if (req.method !== 'GET' && req.method !== 'HEAD') return res.status(405).end();
 
     const slug = String(req.query.property || '');
