@@ -10,16 +10,16 @@
   const outward = v => { const s=String(v||'').trim().toUpperCase().replace(/\s+/g,' '); return s?s.split(' ')[0]:''; };
 
   const fallbackItems = [
-    {slug:'stay-stz-004',name:'5-bedroom Cottage · Jacobs Well',bedrooms:5,sleeps:12,postcode:'GU4',city:'Jacobs Well',cover_photo:{alt:'5-bedroom cottage in Jacobs Well'}},
-    {slug:'stay-d3-003',name:'3-bedroom Property',bedrooms:3,sleeps:11,cover_photo:{alt:'3-bedroom property'}},
-    {slug:'stay-rth-022',name:'6-bedroom Property · Oxfordshire',bedrooms:6,sleeps:11,postcode:'OX1',city:'Oxfordshire',cover_photo:{alt:'6-bedroom property in Oxfordshire'}},
-    {slug:'stay-fab-045',name:'5-bedroom House',bedrooms:5,sleeps:10,cover_photo:{alt:'5-bedroom house'}},
-    {slug:'stay-vel-003',name:'4-bedroom Property · Coventry',bedrooms:4,sleeps:10,postcode:'CV5',city:'Coventry',cover_photo:{alt:'4-bedroom Coventry property'}},
-    {slug:'stay-bro-007',name:'4-bedroom House · Wickham Bishops',bedrooms:4,sleeps:9,postcode:'CM8',city:'Wickham Bishops',cover_photo:{alt:'4-bedroom house in Wickham Bishops'}},
-    {slug:'stay-jgs-004',name:'4-bedroom Apartment · Belvedere',bedrooms:4,sleeps:9,cover_photo:{alt:'4-bedroom apartment in Belvedere'}},
-    {slug:'stay-stk-009',name:'4-bedroom House · Langley',bedrooms:4,postcode:'SL3',city:'Langley',cover_photo:{alt:'4-bedroom house in Langley'}},
-    {slug:'stay-lex-007',name:'3-bedroom Apartment · Watford',bedrooms:3,postcode:'WD17',city:'Watford',cover_photo:{alt:'3-bedroom apartment in Watford'}},
-    {slug:'stay-nst-001',name:'2-bedroom Home · Wixams',bedrooms:2,sleeps:4,postcode:'MK42',city:'Wixams, Bedford',cover_photo:{alt:'2-bedroom home in Wixams'}}
+    {slug:'stay-stz-004',name:'Queen Anne Cottage · Jacobs Well',bedrooms:5,sleeps:12,postcode:'GU4',city:'Jacobs Well',cover_photo:{alt:'5-bedroom cottage in Jacobs Well'}},
+    {slug:'stay-d3-003',name:"St Paul's Road",bedrooms:3,sleeps:11,cover_photo:{alt:'3-bedroom property'}},
+    {slug:'stay-rth-022',name:'Overshot',bedrooms:6,sleeps:11,postcode:'OX1',city:'Oxfordshire',cover_photo:{alt:'6-bedroom property in Oxfordshire'}},
+    {slug:'stay-fab-045',name:'16 Douglas Road',bedrooms:5,sleeps:10,cover_photo:{alt:'5-bedroom house'}},
+    {slug:'stay-vel-003',name:'4BR · Coventry · Sleeps 10',bedrooms:4,sleeps:10,postcode:'CV5',city:'Coventry',cover_photo:{alt:'4-bedroom Coventry property'}},
+    {slug:'stay-bro-007',name:'Brentwood - 10 Church Road, Wickham Bishops',bedrooms:4,sleeps:9,postcode:'CM8',city:'Wickham Bishops',cover_photo:{alt:'4-bedroom house in Wickham Bishops'}},
+    {slug:'stay-jgs-004',name:'Belvedere – Nuxley Residence 4 Bedroom Apartment',bedrooms:4,sleeps:9,cover_photo:{alt:'4-bedroom apartment in Belvedere'}},
+    {slug:'stay-stk-009',name:'Maplin Park – 4 Bed Detached House',bedrooms:4,postcode:'SL3',city:'Langley',cover_photo:{alt:'4-bedroom house in Langley'}},
+    {slug:'stay-lex-007',name:'Watford 3 Bedroom Apartments',bedrooms:3,postcode:'WD17',city:'Watford',cover_photo:{alt:'3-bedroom apartment in Watford'}},
+    {slug:'stay-nst-001',name:'Nestays 2 Bedroom Home - Wixams, Bedford',bedrooms:2,sleeps:4,postcode:'MK42',city:'Wixams, Bedford',cover_photo:{alt:'2-bedroom home in Wixams'}}
   ].map(p => Object.assign({published:true,featured:true},p));
 
   const sortItems = items => items
