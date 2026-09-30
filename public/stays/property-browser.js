@@ -5,10 +5,12 @@
  const mapEl=document.querySelector('#property-map');
  const listBtn=document.querySelector('#view-list');
  const mapBtn=document.querySelector('#view-map');
- const filters={q:document.querySelector('#filter-location'),bed:document.querySelector('#filter-bedrooms'),sleep:document.querySelector('#filter-sleeps'),parking:document.querySelector('#filter-parking')};
+ const filters={q:document.querySelector('#filter-location'),radius:document.querySelector('#filter-radius'),bed:document.querySelector('#filter-bedrooms'),sleep:document.querySelector('#filter-sleeps'),parking:document.querySelector('#filter-parking')};
  const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
- const card=(p,distance)=>{const facts=[p.bedrooms!=null?(Number(p.bedrooms)===0?'Studio':esc(p.bedrooms)+' bed'+(Number(p.bedrooms)===1?'':'s')):'',p.sleeps?'Sleeps '+esc(p.sleeps):'',p.parking?esc(p.parking):''].filter(Boolean);const features=(Array.isArray(p.included_features)?p.included_features:[]).slice(0,3);const cover='/api/property-image?property='+encodeURIComponent(p.slug)+'&size=700'+(p.photo_version?'&v='+encodeURIComponent(p.photo_version):'');return '<a class="property-card" href="/properties/'+encodeURIComponent(p.slug)+'/"><div class="property-card-media">'+(p.cover_photo?'<img src="'+esc(cover)+'" alt="'+esc(p.cover_photo.alt||p.name)+'" loading="lazy" width="700" height="525">':'<div class="property-card-no-photo">Photography available on request</div>')+'</div><div class="property-card-body"><div><div class="property-location">'+esc(p.postcode||p.city||'Location available on request')+(distance!=null?' · '+esc(distance)+' miles away':'')+'</div><h3>'+esc(p.name)+'</h3></div><div class="property-facts">'+facts.map(x=>'<span>'+x+'</span>').join('')+'</div>'+(features.length?'<div class="property-card-features">'+features.map(x=>'<span>✓ '+esc(x)+'</span>').join('')+'</div>':'')+'<span class="property-card-cta">View property →</span></div></a>'};
- const popup=(p,distance)=>{const facts=[p.bedrooms!=null?(Number(p.bedrooms)===0?'Studio':esc(p.bedrooms)+' bed'+(Number(p.bedrooms)===1?'':'s')):'',p.sleeps?'Sleeps '+esc(p.sleeps):'',p.parking?esc(p.parking):''].filter(Boolean);const cover='/api/property-image?property='+encodeURIComponent(p.slug)+'&size=700';return '<div class="map-property-popup">'+(p.cover_photo?'<img src="'+esc(cover)+'" alt="" loading="lazy">':'')+'<div class="map-property-popup-body"><div class="property-location">'+esc(p.postcode||p.city||'UK')+(distance!=null?' · '+esc(distance)+' miles away':'')+'</div><strong>'+esc(p.name)+'</strong>'+(facts.length?'<span>'+facts.join(' · ')+'</span>':'')+'<a href="/properties/'+encodeURIComponent(p.slug)+'/">View property →</a></div></div>'};
+ const outward=v=>{const s=String(v||'').trim().toUpperCase().replace(/\s+/g,' ');return s?s.split(' ')[0]:''};
+ const radiusMiles=()=>Math.max(2,Math.min(25,Number(filters.radius?.value||15)));
+ const card=(p,distance)=>{const facts=[p.bedrooms!=null?(Number(p.bedrooms)===0?'Studio':esc(p.bedrooms)+' bed'+(Number(p.bedrooms)===1?'':'s')):'',p.sleeps?'Sleeps '+esc(p.sleeps):'',p.parking?esc(p.parking):''].filter(Boolean);const features=(Array.isArray(p.included_features)?p.included_features:[]).slice(0,3);const cover='/api/property-image?property='+encodeURIComponent(p.slug)+'&size=700'+(p.photo_version?'&v='+encodeURIComponent(p.photo_version):'');return '<a class="property-card" href="/properties/'+encodeURIComponent(p.slug)+'/"><div class="property-card-media">'+(p.cover_photo?'<img src="'+esc(cover)+'" alt="'+esc(p.cover_photo.alt||p.name)+'" loading="lazy" width="700" height="525">':'<div class="property-card-no-photo">Photography available on request</div>')+'</div><div class="property-card-body"><div><div class="property-location">'+esc(outward(p.postcode)||p.city||'Location available on request')+(distance!=null?' · '+esc(distance)+' miles away':'')+'</div><h3>'+esc(p.name)+'</h3></div><div class="property-facts">'+facts.map(x=>'<span>'+x+'</span>').join('')+'</div>'+(features.length?'<div class="property-card-features">'+features.map(x=>'<span>✓ '+esc(x)+'</span>').join('')+'</div>':'')+'<span class="property-card-cta">View property →</span></div></a>'};
+ const popup=(p,distance)=>{const facts=[p.bedrooms!=null?(Number(p.bedrooms)===0?'Studio':esc(p.bedrooms)+' bed'+(Number(p.bedrooms)===1?'':'s')):'',p.sleeps?'Sleeps '+esc(p.sleeps):'',p.parking?esc(p.parking):''].filter(Boolean);const cover='/api/property-image?property='+encodeURIComponent(p.slug)+'&size=700';return '<div class="map-property-popup">'+(p.cover_photo?'<img src="'+esc(cover)+'" alt="" loading="lazy">':'')+'<div class="map-property-popup-body"><div class="property-location">'+esc(outward(p.postcode)||p.city||'UK')+(distance!=null?' · '+esc(distance)+' miles away':'')+'</div><strong>'+esc(p.name)+'</strong>'+(facts.length?'<span>'+facts.join(' · ')+'</span>':'')+'<a href="/properties/'+encodeURIComponent(p.slug)+'/">View property →</a></div></div>'};
 
  const wrap=document.createElement('div');wrap.className='location-autocomplete';filters.q.parentNode.insertBefore(wrap,filters.q);wrap.appendChild(filters.q);
  const suggestions=document.createElement('div');suggestions.id='location-suggestions';suggestions.className='location-suggestions';suggestions.setAttribute('role','listbox');suggestions.hidden=true;wrap.appendChild(suggestions);
@@ -20,7 +22,7 @@
  let render=async()=>{};
 
  const closeSuggestions=()=>{suggestions.hidden=true;suggestions.innerHTML='';active=-1;filters.q.setAttribute('aria-expanded','false');filters.q.removeAttribute('aria-activedescendant')};
- const choose=s=>{selected=s;filters.q.value=s.label;hint.textContent='Searching within 15 miles of '+s.label;closeSuggestions();render()};
+ const choose=s=>{selected=s;filters.q.value=s.label;hint.textContent='Searching within '+radiusMiles()+' miles of '+s.label;closeSuggestions();render()};
  const paintSuggestions=items=>{suggestions.innerHTML='';active=-1;if(!items.length){suggestions.innerHTML='<div class="location-no-result">No matching UK place found. Check the spelling and try again.</div>';suggestions.hidden=false;filters.q.setAttribute('aria-expanded','true');return}
   items.forEach((s,i)=>{const b=document.createElement('button');b.type='button';b.className='location-suggestion';b.id='location-option-'+i;b.setAttribute('role','option');b.innerHTML='<strong>'+esc(s.label)+'</strong><span>'+esc(s.type||'Place')+'</span>';b.addEventListener('mousedown',e=>e.preventDefault());b.addEventListener('click',()=>choose(s));suggestions.appendChild(b)});
   suggestions.hidden=false;filters.q.setAttribute('aria-expanded','true');
@@ -61,7 +63,7 @@
   listData.forEach(p=>{const c=coordMap.get(p.slug);if(!c||!Number.isFinite(c.lat)||!Number.isFinite(c.lon))return;points.push([c.lat,c.lon]);L.marker([c.lat,c.lon],{icon:pinIcon(),title:p.name}).bindPopup(popup(p,distanceMap.get(p.slug)),{maxWidth:260,minWidth:220}).addTo(propertyLayer)});
   if(selected){
    const style=getComputedStyle(document.documentElement),navy=style.getPropertyValue('--navy').trim()||'#021B3C',gold=style.getPropertyValue('--gold').trim()||'#c6a15b';
-   L.circle([selected.lat,selected.lon],{radius:24140,color:navy,weight:1,opacity:.45,fillColor:navy,fillOpacity:.035,interactive:false}).addTo(searchLayer);
+   L.circle([selected.lat,selected.lon],{radius:radiusMiles()*1609.344,color:navy,weight:1,opacity:.45,fillColor:navy,fillOpacity:.035,interactive:false}).addTo(searchLayer);
    L.circleMarker([selected.lat,selected.lon],{radius:7,color:navy,weight:3,fillColor:gold,fillOpacity:1}).bindTooltip('Searched location',{direction:'top'}).addTo(searchLayer);
    points.push([selected.lat,selected.lon]);
   }
@@ -93,9 +95,10 @@
  render=async function(){const my=++renderSeq,bed=Number(filters.bed.value||0),sleep=Number(filters.sleep.value||0),parking=filters.parking.value;
   let listData=all.filter(p=>standardFilter(p,bed,sleep,parking)),distanceMap=new Map(),coordMap=new Map(),radiusUsed=false;
   if(selected){
-    count.textContent='Searching within 15 miles…';
+    const radius=radiusMiles();
+    count.textContent='Searching within '+radius+' miles…';
     try{
-      const pr=await fetch('/api/postcode-radius?lat='+encodeURIComponent(selected.lat)+'&lon='+encodeURIComponent(selected.lon)+'&label='+encodeURIComponent(selected.label)+'&radius=15',{cache:'no-store'});
+      const pr=await fetch('/api/postcode-radius?lat='+encodeURIComponent(selected.lat)+'&lon='+encodeURIComponent(selected.lon)+'&label='+encodeURIComponent(selected.label)+'&radius='+encodeURIComponent(radius)',{cache:'no-store'});
       if(pr.ok){const data=await pr.json();if(my!==renderSeq)return;distanceMap=new Map((data.matches||[]).map(x=>[x.slug,x.distance_miles]));coordMap=new Map((data.matches||[]).map(x=>[x.slug,{lat:Number(x.lat),lon:Number(x.lon)}]));listData=listData.filter(p=>distanceMap.has(p.slug)).sort((a,b)=>distanceMap.get(a.slug)-distanceMap.get(b.slug));radiusUsed=true;}
     }catch{}
   }else if(activeView==='map'){
@@ -104,10 +107,10 @@
 
   if(my!==renderSeq)return;
   const q=filters.q.value.trim();
-  if(q&&!selected)count.textContent='Choose a location from the suggestions to search within 15 miles. Showing the UK-wide collection for now.';
+  if(q&&!selected)count.textContent='Choose a location from the suggestions, then choose your distance. Showing the UK-wide collection for now.';
   else{
     const mapped=activeView==='map'?listData.filter(p=>coordMap.has(p.slug)).length:null;
-    count.textContent=listData.length+' '+(listData.length===1?'property':'properties')+(radiusUsed?' within 15 miles':'')+' displayed'+(mapped!=null&&mapped<listData.length?' · '+mapped+' mapped':'');
+    count.textContent=listData.length+' '+(listData.length===1?'property':'properties')+(radiusUsed?' within '+radiusMiles()+' miles':'')+' displayed'+(mapped!=null&&mapped<listData.length?' · '+mapped+' mapped':'');
   }
   grid.innerHTML=listData.length?listData.map(p=>card(p,distanceMap.get(p.slug))).join(''):'<div class="empty-results">No displayed properties match those filters. Send us your requirements and we can source beyond the online collection.</div>';
   lastListData=listData;lastDistanceMap=distanceMap;lastCoordMap=coordMap;
@@ -125,7 +128,7 @@
  });
  filters.q.addEventListener('focus',()=>{if(filters.q.value.trim().length>=2&&!selected)fetchSuggestions()});
  filters.q.addEventListener('blur',()=>setTimeout(closeSuggestions,120));
- [filters.bed,filters.sleep,filters.parking].forEach(el=>el.addEventListener('change',render));
+ [filters.radius,filters.bed,filters.sleep,filters.parking].filter(Boolean).forEach(el=>el.addEventListener('change',()=>{if(selected)hint.textContent='Searching within '+radiusMiles()+' miles of '+selected.label;render()}));
  listBtn?.addEventListener('click',()=>setView('list'));
  mapBtn?.addEventListener('click',()=>setView('map'));
  await render();
