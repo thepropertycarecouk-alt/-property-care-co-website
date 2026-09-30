@@ -6,7 +6,7 @@
   const endpoint = 'https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-property-feed?summary=1';
   const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const reduced = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : {matches:false,addEventListener(){}};
-  const source = p => '/api/property-image?property='+encodeURIComponent(p.slug)+'&size=1600';
+  const source = p => '/api/property-image?property='+encodeURIComponent(p.slug)+'&size=1600'+(p.photo_version?'&v='+encodeURIComponent(p.photo_version):'');
 
   const fallbackItems = [
     {slug:'queen-anne-cottage-jacobs-well',name:'Queen Anne Cottage · Jacobs Well',bedrooms:5,sleeps:12,postcode:'GU4 7PA',city:'Jacobs Well',cover_photo:{alt:'Queen Anne Cottage · Jacobs Well'}},
