@@ -36,7 +36,8 @@ async function fetchImage(fetcher, urls) {
   for (const url of urls) {
     try {
       const hostname = new URL(url).hostname;
-      const referer = hostname === 'www.brightlogic-estateagents.co.uk'
+      const referer = hostname === 'www.brightlogic-estateagents.co.uk',
+  'www.krrelocationsgroup.com'
         ? 'https://www.hillview.co.uk/'
         : 'https://www.brooklandstays.co.uk/';
       const headers = {
