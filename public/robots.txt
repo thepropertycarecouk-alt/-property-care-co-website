@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+
+Sitemap: https://www.thepropertycareco.co.uk/sitemap.xml
