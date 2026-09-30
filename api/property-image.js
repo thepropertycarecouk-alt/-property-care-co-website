@@ -62,7 +62,7 @@ async function fetchImage(fetcher, urls) {
 export function imageHandler(fetcher = fetch) {
   return async function handler(req, res) {
     const version = String(req.query.v || '');
-    res.setHeader('Cache-Control', version ? 'private, no-store, max-age=0' : 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');
+    res.setHeader('Cache-Control', version ? 'public, max-age=31536000, s-maxage=31536000, immutable' : 'public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800');
     if (req.method !== 'GET' && req.method !== 'HEAD') return res.status(405).end();
 
     const slug = String(req.query.property || '');
@@ -104,6 +104,11 @@ export function imageHandler(fetcher = fetch) {
   'www.krrelocationsgroup.com'
 ]);
         if (parsed.protocol !== 'https:' || !allowedHosts.has(parsed.hostname)) return res.status(404).end();
+        if (parsed.hostname === 'a0.muscache.com') {
+          res.statusCode = 302;
+          res.setHeader('Location', parsed.toString());
+          return res.end();
+        }
         candidates = imageCandidates(parsed.toString());
       } else {
         return res.status(404).end();
