@@ -98,7 +98,7 @@
     const radius=radiusMiles();
     count.textContent='Searching within '+radius+' miles…';
     try{
-      const pr=await fetch('/api/postcode-radius?lat='+encodeURIComponent(selected.lat)+'&lon='+encodeURIComponent(selected.lon)+'&label='+encodeURIComponent(selected.label)+'&radius='+encodeURIComponent(radius)',{cache:'no-store'});
+      const pr=await fetch('/api/postcode-radius?lat='+encodeURIComponent(selected.lat)+'&lon='+encodeURIComponent(selected.lon)+'&label='+encodeURIComponent(selected.label)+'&radius='+encodeURIComponent(radius),{cache:'no-store'});
       if(pr.ok){const data=await pr.json();if(my!==renderSeq)return;distanceMap=new Map((data.matches||[]).map(x=>[x.slug,x.distance_miles]));coordMap=new Map((data.matches||[]).map(x=>[x.slug,{lat:Number(x.lat),lon:Number(x.lon)}]));listData=listData.filter(p=>distanceMap.has(p.slug)).sort((a,b)=>distanceMap.get(a.slug)-distanceMap.get(b.slug));radiusUsed=true;}
     }catch{}
   }else if(activeView==='map'){
