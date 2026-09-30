@@ -71,7 +71,7 @@
       : '';
 
     root.innerHTML=
-      '<div class="property-title-block"><p class="eyebrow">PCCO STAYS · '+esc(p.id)+'</p><h1>'+esc(p.name)+'</h1><p>'+esc(p.display_location||p.address||[p.city,p.postcode].filter(Boolean).join(' · ')||'Location available on request')+' · Furnished accommodation supplied by a PCCO property partner</p></div>'+
+      '<div class="property-title-block"><p class="eyebrow">PCCO STAYS · '+esc(p.id)+'</p><h1>'+esc(p.name)+'</h1><p>'+esc(p.postcode||p.city||'Location available on request')+' · Furnished accommodation supplied by a PCCO property partner</p></div>'+
       gallery+
       '<div class="property-layout"><div>'+
         '<h2>Property details</h2><div class="key-facts">'+facts+'</div>'+
