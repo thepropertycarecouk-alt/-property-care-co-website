@@ -92,7 +92,8 @@ export function imageHandler(fetcher = fetch) {
   'www.comfyworkers.com',
   'cf.bstatic.com',
   'images.squarespace-cdn.com',
-  'londonexecapartments.com'
+  'londonexecapartments.com',
+  'img.hostify.com'
 ]);
         if (parsed.protocol !== 'https:' || !allowedHosts.has(parsed.hostname)) return res.status(404).end();
         candidates = imageCandidates(parsed.toString());
