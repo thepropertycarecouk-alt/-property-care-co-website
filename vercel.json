@@ -18,6 +18,14 @@
     {
       "source": "/properties/:slug/",
       "destination": "/api/property?slug=:slug"
+    },
+    {
+      "source": "/locations/:slug",
+      "destination": "/api/location?slug=:slug"
+    },
+    {
+      "source": "/locations/:slug/",
+      "destination": "/api/location?slug=:slug"
     }
   ]
 }
