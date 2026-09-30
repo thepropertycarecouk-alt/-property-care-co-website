@@ -14,7 +14,9 @@ Deno.serve(async req=>{
   if(ae)throw ae;
   const valid=new Set((acceptances||[]).filter(a=>{const i=a.pcco_partner_invitations,p=a.pcco_property_partners;return i&&p&&p.acceptance_status==='accepted'&&i.partner_id===a.partner_id&&!i.revoked_at&&a.terms_version==='2026-09-26-v1'&&i.terms_version===a.terms_version&&i.sent_at&&new Date(i.sent_at)<=new Date(a.accepted_at)&&new Date(a.accepted_at)<=new Date(i.expires_at)&&a.email.toLowerCase()===p.email.toLowerCase()}).map(a=>a.partner_id));
   const summary=url.searchParams.get('summary')==='1';
-  const fields=summary?['postcode','city','bedrooms','sleeps','parking','parking_category','cover_photo','included_features']:['postcode','city','bathrooms','description','bedrooms','sleeps','parking','parking_category','cover_photo','photos','bed_configuration','amenities','included_features','guest_extras','important_notes'];
+  const fields=summary
+    ?['postcode','city','bedrooms','sleeps','parking','parking_category','cover_photo','included_features','photo_version']
+    :['postcode','city','address','floor_area_sqft','bathrooms','description','bedrooms','sleeps','parking','parking_category','cover_photo','photos','photo_version','bed_configuration','amenities','included_features','guest_extras','important_notes'];
   const result=(data||[]).filter(p=>valid.has(p.partner_id)).map(p=>{
    const publicData=Object.fromEntries(fields.filter(k=>p.data[k]!=null).map(k=>[k,p.data[k]]));
    if(!summary){
@@ -27,4 +29,3 @@ Deno.serve(async req=>{
   return new Response(JSON.stringify(result),{headers});
  }catch{return new Response(JSON.stringify({error:'Collection unavailable'}),{status:503,headers});}
 });
-
