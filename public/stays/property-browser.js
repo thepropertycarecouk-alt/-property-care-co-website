@@ -90,7 +90,8 @@
 
  try{
  const r=await fetch('https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-property-feed?summary=1',{cache:'no-store'});const all=(await r.json()).filter(p=>p.published);
- const standardFilter=(p,bed,sleep,parking)=>(!bed||Number(p.bedrooms)>=bed)&&(!sleep||Number(p.sleeps)>=sleep)&&(!parking||(parking==='yes'?['free','paid','parking'].includes(p.parking_category):p.parking_category===parking));
+ const hasParking=p=>{const cat=String(p.parking_category||'').toLowerCase();const text=String(p.parking||'').toLowerCase();if(cat==='none'||/\b(no parking|parking unavailable|no on-site parking)\b/.test(text))return false;return ['free','paid','parking','yes','available','street','permit','private','driveway','garage','included'].includes(cat)||/\b(parking|driveway|garage|permit)\b/.test(text)};
+ const standardFilter=(p,bed,sleep,parking)=>(!bed||Number(p.bedrooms)>=bed)&&(!sleep||Number(p.sleeps)>=sleep)&&((parking==='yes'&&hasParking(p))||(parking==='none'&&!hasParking(p)));
 
  render=async function(){const my=++renderSeq,bed=Number(filters.bed.value||0),sleep=Number(filters.sleep.value||0),parking=filters.parking.value;
   let listData=all.filter(p=>standardFilter(p,bed,sleep,parking)),distanceMap=new Map(),coordMap=new Map(),radiusUsed=false;
