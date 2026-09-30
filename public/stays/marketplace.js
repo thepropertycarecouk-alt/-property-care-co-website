@@ -7,18 +7,19 @@
   const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const reduced = window.matchMedia ? matchMedia('(prefers-reduced-motion: reduce)') : {matches:false,addEventListener(){}};
   const source = p => '/api/property-image?property='+encodeURIComponent(p.slug)+'&size=1600'+(p.photo_version?'&v='+encodeURIComponent(p.photo_version):'');
+  const outward = v => { const s=String(v||'').trim().toUpperCase().replace(/\s+/g,' '); return s?s.split(' ')[0]:''; };
 
   const fallbackItems = [
-    {slug:'queen-anne-cottage-jacobs-well',name:'Queen Anne Cottage · Jacobs Well',bedrooms:5,sleeps:12,postcode:'GU4 7PA',city:'Jacobs Well',cover_photo:{alt:'Queen Anne Cottage · Jacobs Well'}},
-    {slug:'d3-st-pauls-road',name:"St Paul's Road",bedrooms:3,sleeps:11,cover_photo:{alt:"St Paul's Road"}},
-    {slug:'ruth-top-host-overshot',name:'Overshot',bedrooms:6,sleeps:11,postcode:'OX1 5BL',city:'Oxfordshire',cover_photo:{alt:'Overshot'}},
-    {slug:'16-douglas-road',name:'16 Douglas Road',bedrooms:5,sleeps:10,cover_photo:{alt:'16 Douglas Road'}},
-    {slug:'4br-coventry-sleeps-10',name:'4BR · Coventry · Sleeps 10',bedrooms:4,sleeps:10,postcode:'CV5',city:'Coventry',cover_photo:{alt:'4BR Coventry property'}},
-    {slug:'brentwood-10-church-road-wickham-bishops',name:'Brentwood - 10 Church Road, Wickham Bishops',bedrooms:4,sleeps:9,postcode:'CM8 3LA',city:'Wickham Bishops',cover_photo:{alt:'10 Church Road, Wickham Bishops'}},
-    {slug:'jg-stays-belvedere-nuxley-residence',name:'Belvedere – Nuxley Residence 4 Bedroom Apartment',bedrooms:4,sleeps:9,cover_photo:{alt:'Belvedere Nuxley Residence'}},
-    {slug:'maplin-park-langley',name:'Maplin Park – 4 Bed Detached House',bedrooms:4,postcode:'SL3 8XY',city:'Langley',cover_photo:{alt:'Maplin Park 4 Bed Detached House'}},
-    {slug:'watford-3-bedroom-apartments',name:'Watford 3 Bedroom Apartments',bedrooms:3,postcode:'WD17 1DS',city:'Watford',cover_photo:{alt:'Watford 3 Bedroom Apartments'}},
-    {slug:'nestays-wixams-bedford-2-bedroom-home',name:'Nestays 2 Bedroom Home - Wixams, Bedford',bedrooms:2,sleeps:4,postcode:'MK42 6FR',city:'Wixams, Bedford',cover_photo:{alt:'Nestays 2 Bedroom Home in Wixams, Bedford'}}
+    {slug:'queen-anne-cottage-jacobs-well',name:'5-bedroom Cottage · Jacobs Well',bedrooms:5,sleeps:12,postcode:'GU4',city:'Jacobs Well',cover_photo:{alt:'5-bedroom cottage in Jacobs Well'}},
+    {slug:'d3-st-pauls-road',name:'3-bedroom Property',bedrooms:3,sleeps:11,cover_photo:{alt:'3-bedroom property'}},
+    {slug:'ruth-top-host-overshot',name:'6-bedroom Property · Oxfordshire',bedrooms:6,sleeps:11,postcode:'OX1',city:'Oxfordshire',cover_photo:{alt:'6-bedroom property in Oxfordshire'}},
+    {slug:'16-douglas-road',name:'5-bedroom House',bedrooms:5,sleeps:10,cover_photo:{alt:'5-bedroom house'}},
+    {slug:'4br-coventry-sleeps-10',name:'4-bedroom Property · Coventry',bedrooms:4,sleeps:10,postcode:'CV5',city:'Coventry',cover_photo:{alt:'4-bedroom Coventry property'}},
+    {slug:'brentwood-10-church-road-wickham-bishops',name:'4-bedroom House · Wickham Bishops',bedrooms:4,sleeps:9,postcode:'CM8',city:'Wickham Bishops',cover_photo:{alt:'4-bedroom house in Wickham Bishops'}},
+    {slug:'jg-stays-belvedere-nuxley-residence',name:'4-bedroom Apartment · Belvedere',bedrooms:4,sleeps:9,cover_photo:{alt:'4-bedroom apartment in Belvedere'}},
+    {slug:'maplin-park-langley',name:'4-bedroom House · Langley',bedrooms:4,postcode:'SL3',city:'Langley',cover_photo:{alt:'4-bedroom house in Langley'}},
+    {slug:'watford-3-bedroom-apartments',name:'3-bedroom Apartment · Watford',bedrooms:3,postcode:'WD17',city:'Watford',cover_photo:{alt:'3-bedroom apartment in Watford'}},
+    {slug:'nestays-wixams-bedford-2-bedroom-home',name:'2-bedroom Home · Wixams',bedrooms:2,sleeps:4,postcode:'MK42',city:'Wixams, Bedford',cover_photo:{alt:'2-bedroom home in Wixams'}}
   ].map(p => Object.assign({published:true,featured:true},p));
 
   const sortItems = items => items
@@ -57,7 +58,7 @@
       items.map((p,i) =>
         '<a class="hero-property-slide'+(i===0?' is-active':'')+'" href="/properties/'+encodeURIComponent(p.slug)+'/" aria-hidden="'+(i!==0)+'" tabindex="'+(i===0?'0':'-1')+'">'+
           '<img src="'+esc(source(p))+'" alt="'+esc((p.cover_photo&&p.cover_photo.alt)||p.name)+'" width="1600" height="1000" '+(i?'loading="lazy"':'fetchpriority="high"')+'>'+
-          '<div class="hero-property-caption"><span class="small-label">'+esc(p.postcode || p.city || '')+'</span><h2>'+esc(p.name)+'</h2><p>'+
+          '<div class="hero-property-caption"><span class="small-label">'+esc(outward(p.postcode) || p.city || '')+'</span><h2>'+esc(p.name)+'</h2><p>'+
             [p.bedrooms!=null?(Number(p.bedrooms)===0?'Studio':esc(p.bedrooms)+' bedrooms'):'',p.sleeps?'Sleeps '+esc(p.sleeps):'',p.parking?esc(p.parking):''].filter(Boolean).join(' · ')+
           '</p><span class="hero-property-link">View property ↗</span></div>'+
         '</a>'
