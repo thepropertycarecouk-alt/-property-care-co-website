@@ -48,7 +48,7 @@ async function checkPhoto(photo){
   let last='';
   for(const url of urls){
     try{
-      const r=await fetch(url,{headers:headersFor(url),redirect:'follow',signal:AbortSignal.timeout(10000)});
+      const r=await fetch(url,{headers:headersFor(url),redirect:'follow',signal:AbortSignal.timeout(5000)});
       const type=(r.headers.get('content-type')||'').toLowerCase();
       if((r.ok||r.status===206)&&type.startsWith('image/')){
         try{await r.body?.cancel()}catch{}
@@ -76,19 +76,24 @@ export default async function handler(req,res){
     if(!fr.ok)return res.status(503).json({ok:false,error:'feed_'+fr.status});
     const all=await fr.json();
     const slice=all.slice(start,start+limit);
-    const results=[];
-    for(const p of slice){
+    const jobs=[];
+    slice.forEach((p,pi)=>{
       const photos=Array.isArray(p.photos)?p.photos:[];
-      const tasks=[{kind:'cover',index:-1,photo:p.cover_photo||photos[0]||null},...photos.map((photo,index)=>({kind:'photo',index,photo}))];
-      const checked=await mapLimit(tasks,12,async t=>({...t,...await checkPhoto(t.photo)}));
-      results.push({
+      jobs.push({pi,kind:'cover',index:-1,photo:p.cover_photo||photos[0]||null});
+      photos.forEach((photo,index)=>jobs.push({pi,kind:'photo',index,photo}));
+    });
+    const checks=await mapLimit(jobs,80,async j=>({...j,...await checkPhoto(j.photo)}));
+    const results=slice.map((p,pi)=>{
+      const photos=Array.isArray(p.photos)?p.photos:[];
+      const checked=checks.filter(x=>x.pi===pi);
+      return {
         id:p.id,slug:p.slug,name:p.name,photo_count:photos.length,
-        cover_ok:checked[0]?.ok===true,
+        cover_ok:checked.find(x=>x.kind==='cover')?.ok===true,
         failed:checked.filter(x=>!x.ok).map(x=>({kind:x.kind,index:x.index,reason:x.reason})),
         ok_count:checked.filter(x=>x.ok).length,
         checked_count:checked.length
-      });
-    }
+      };
+    });
     return res.status(200).json({ok:true,start,limit,total:all.length,results});
   }catch(e){return res.status(500).json({ok:false,error:String(e?.message||e)})}
 }
