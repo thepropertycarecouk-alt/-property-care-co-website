@@ -2,6 +2,8 @@ const feed = 'https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-property
 const POSTCODE_API = 'https://api.postcodes.io';
 const PHOTON_API = 'https://photon.komoot.io/api/';
 
+let locationCache = {signature:'', expires:0, located:null};
+
 function haversineMiles(aLat,aLon,bLat,bLon){
   const toRad=v=>v*Math.PI/180;
   const R=3958.7613;
@@ -82,10 +84,10 @@ async function buildPostcodeMap(properties){
     byOutcode.get(outcode).push(pc);
   }
   const outcodes=[...byOutcode.keys()];
-  for(let i=0;i<outcodes.length;i+=20){
-    await Promise.all(outcodes.slice(i,i+20).map(async outcode=>{
+  for(let i=0;i<outcodes.length;i+=40){
+    await Promise.all(outcodes.slice(i,i+40).map(async outcode=>{
       try{
-        const r=await fetch(POSTCODE_API+'/outcodes/'+encodeURIComponent(outcode),{signal:AbortSignal.timeout(6000)});
+        const r=await fetch(POSTCODE_API+'/outcodes/'+encodeURIComponent(outcode),{signal:AbortSignal.timeout(4500)});
         if(r.ok){
           const j=await r.json(),g=j?.result;
           if(g?.latitude!=null&&g?.longitude!=null)for(const pc of byOutcode.get(outcode)||[])geo.set(pc,g);
@@ -107,8 +109,8 @@ async function buildPropertyLocations(properties){
   const missing=properties.filter(p=>!located.has(p.slug));
   const placeLabels=[...new Set(missing.map(fallbackPlaceLabel).filter(Boolean))];
   const placeGeo=new Map();
-  for(let i=0;i<placeLabels.length;i+=8){
-    await Promise.all(placeLabels.slice(i,i+8).map(async label=>{
+  for(let i=0;i<placeLabels.length;i+=20){
+    await Promise.all(placeLabels.slice(i,i+20).map(async label=>{
       const g=await geocodePlace(label);
       if(g)placeGeo.set(label,g);
     }));
@@ -120,11 +122,20 @@ async function buildPropertyLocations(properties){
   }
   return located;
 }
+async function getPropertyLocations(properties){
+  const signature=properties.map(p=>[p.slug,p.postcode||'',fallbackPlaceLabel(p)].join('|')).join(';');
+  if(locationCache.located&&locationCache.signature===signature&&locationCache.expires>Date.now())return locationCache.located;
+  const located=await buildPropertyLocations(properties);
+  locationCache={signature,expires:Date.now()+30*60*1000,located};
+  return located;
+}
 export default async function handler(req,res){
-  res.setHeader('Cache-Control','private, no-store');
   res.setHeader('Content-Type','application/json; charset=utf-8');
   if(req.method!=='GET') return res.status(405).json({ok:false,error:'Method not allowed'});
   const allMode=String(req.query.all||'')==='1';
+  res.setHeader('Cache-Control',allMode
+    ? 'public, max-age=300, s-maxage=3600, stale-while-revalidate=86400'
+    : 'public, max-age=120, s-maxage=600, stale-while-revalidate=3600');
   const q=String(req.query.postcode||'').trim();
   const rawLat=Number(req.query.lat),rawLon=Number(req.query.lon);
   const hasCoords=Number.isFinite(rawLat)&&Number.isFinite(rawLon)&&rawLat>=49&&rawLat<=61&&rawLon>=-9&&rawLon<=3;
@@ -136,7 +147,7 @@ export default async function handler(req,res){
     const feedRes=await fetch(feed+'?summary=1',{cache:'no-store',signal:AbortSignal.timeout(10000)});
     if(!feedRes.ok)throw new Error('Property feed unavailable');
     const published=(await feedRes.json()).filter(p=>p?.published);
-    const locationMap=await buildPropertyLocations(published);
+    const locationMap=await getPropertyLocations(published);
     const located=published.map(p=>{
       const g=locationMap.get(p.slug);
       if(!g)return null;
