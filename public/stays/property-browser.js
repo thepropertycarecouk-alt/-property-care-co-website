@@ -49,7 +49,7 @@
   if(allCoordinates)return allCoordinates;
   if(allCoordinatesPromise)return allCoordinatesPromise;
   allCoordinatesPromise=(async()=>{
-   const r=await fetch('/api/postcode-radius?all=1',{cache:'no-store'});
+   const r=await fetch('/api/postcode-radius?all=1');
    if(!r.ok)throw new Error('Map locations unavailable');
    const data=await r.json();
    allCoordinates=new Map((data.matches||[]).map(x=>[x.slug,{lat:Number(x.lat),lon:Number(x.lon)}]).filter(x=>Number.isFinite(x[1].lat)&&Number.isFinite(x[1].lon)));
@@ -82,6 +82,7 @@
    return;
   }
   activeView=view;
+  if(view==='map'&&count)count.textContent='Loading map…';
   if(listBtn)listBtn.setAttribute('aria-pressed',String(view==='list'));
   if(mapBtn)mapBtn.setAttribute('aria-pressed',String(view==='map'));
   grid.hidden=view==='map';
@@ -100,7 +101,7 @@
     const radius=radiusMiles();
     count.textContent='Searching within '+radius+' miles…';
     try{
-      const pr=await fetch('/api/postcode-radius?lat='+encodeURIComponent(selected.lat)+'&lon='+encodeURIComponent(selected.lon)+'&label='+encodeURIComponent(selected.label)+'&radius='+encodeURIComponent(radius),{cache:'no-store'});
+      const pr=await fetch('/api/postcode-radius?lat='+encodeURIComponent(selected.lat)+'&lon='+encodeURIComponent(selected.lon)+'&label='+encodeURIComponent(selected.label)+'&radius='+encodeURIComponent(radius));
       if(pr.ok){const data=await pr.json();if(my!==renderSeq)return;distanceMap=new Map((data.matches||[]).map(x=>[x.slug,x.distance_miles]));coordMap=new Map((data.matches||[]).map(x=>[x.slug,{lat:Number(x.lat),lon:Number(x.lon)}]));listData=listData.filter(p=>distanceMap.has(p.slug)).sort((a,b)=>distanceMap.get(a.slug)-distanceMap.get(b.slug));radiusUsed=true;}
     }catch{}
   }else if(activeView==='map'){
@@ -134,5 +135,7 @@
  listBtn?.addEventListener('click',()=>setView('list'));
  mapBtn?.addEventListener('click',()=>setView('map'));
  await render();
+ if('requestIdleCallback' in window)requestIdleCallback(()=>fetchAllCoordinates().catch(()=>{}),{timeout:1200});
+ else setTimeout(()=>fetchAllCoordinates().catch(()=>{}),250);
  }catch{grid.innerHTML='<div class="empty-results">The property collection could not be loaded. Please send us your requirements instead.</div>';if(mapBtn)mapBtn.disabled=true}
 })();
