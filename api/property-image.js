@@ -33,13 +33,17 @@ function imageCandidates(url) {
 }
 
 async function fetchImage(fetcher, urls) {
-  const headers = {
-    'accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
-    'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
-    'referer': 'https://www.brooklandstays.co.uk/'
-  };
   for (const url of urls) {
     try {
+      const hostname = new URL(url).hostname;
+      const referer = hostname === 'www.brightlogic-estateagents.co.uk'
+        ? 'https://www.hillview.co.uk/'
+        : 'https://www.brooklandstays.co.uk/';
+      const headers = {
+        'accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+        'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
+        'referer': referer
+      };
       const image = await fetcher(url, {
         headers,
         redirect: 'follow',
@@ -93,7 +97,8 @@ export function imageHandler(fetcher = fetch) {
   'cf.bstatic.com',
   'images.squarespace-cdn.com',
   'londonexecapartments.com',
-  'img.hostify.com'
+  'img.hostify.com',
+  'www.brightlogic-estateagents.co.uk'
 ]);
         if (parsed.protocol !== 'https:' || !allowedHosts.has(parsed.hostname)) return res.status(404).end();
         candidates = imageCandidates(parsed.toString());
