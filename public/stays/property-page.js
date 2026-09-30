@@ -37,7 +37,7 @@
       };
     });
     const gallery=photos.length
-      ? '<section class="property-gallery" aria-label="Property photographs"><div class="gallery-main"><img id="gallery-main-image" src="'+esc(photos[0].src)+'" alt="'+esc(photos[0].alt||p.name)+'" width="1600" height="1000"></div><div class="gallery-thumbs">'+photos.map((ph,i)=>'<button class="gallery-thumb" type="button" data-photo="'+i+'" aria-label="View property photograph '+(i+1)+'"><img src="'+esc(ph.thumb||ph.src)+'" alt="" loading="lazy" width="500" height="375"></button>').join('')+'</div></section>'
+      ? '<section class="property-gallery" aria-label="Property photographs"><div class="gallery-main"><img id="gallery-main-image" src="'+esc(photos[0].src)+'" alt="'+esc(photos[0].alt||p.name)+'" width="1600" height="1000"><span class="gallery-photo-count">'+photos.length+' photos</span></div><div class="gallery-thumbs">'+photos.map((ph,i)=>'<button class="gallery-thumb" type="button" data-photo="'+i+'" aria-label="View property photograph '+(i+1)+'"><img src="'+esc(ph.thumb||ph.src)+'" alt="" loading="lazy" width="500" height="375"></button>').join('')+'</div></section>'
       : '<div class="gallery-empty">Property photography is available from our accommodation team.</div>';
 
     const facts=[
