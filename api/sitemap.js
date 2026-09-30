@@ -11,8 +11,10 @@ export default async function handler(req,res){
     if(!r.ok)throw new Error('feed unavailable');
     const props=(await r.json()).filter(p=>p&&p.published&&p.slug);
     const fixed=['/','/properties/','/partners/'];
+    const locationPaths=['/locations/bristol/','/locations/brighton/','/locations/bracknell/','/locations/woking/','/locations/wokingham/','/locations/leeds/','/locations/manchester/','/locations/cardiff/','/locations/coventry/','/locations/london/','/locations/windsor/'];
     const urls=[
       ...fixed.map(path=>({loc:base+path,priority:path==='/'?'1.0':'0.8'})),
+      ...locationPaths.map(path=>({loc:base+path,priority:'0.8'})),
       ...props.map(p=>({loc:base+'/properties/'+encodeURIComponent(p.slug)+'/',priority:'0.7'}))
     ];
     const body='<?xml version="1.0" encoding="UTF-8"?>\n'
