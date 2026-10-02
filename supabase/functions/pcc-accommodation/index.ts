@@ -13,8 +13,6 @@ const cors = {
 };
 const headers = { ...cors, 'Content-Type':'application/json; charset=utf-8', 'Cache-Control':'no-store' };
 const OWNER_EMAIL = 'stays@thepropertycareco.co.uk';
-const FROM_EMAIL = 'The Property Care Co. <quotes@thepropertycareco.co.uk>';
-const PARTNER_FROM_EMAIL = 'PCCO Stays Partners <partners@thepropertycareco.co.uk>';
 
 function clean(v:unknown,max=300){ return String(v ?? '').trim().slice(0,max); }
 function ok(data:unknown,status=200){ return new Response(JSON.stringify(data),{status,headers}); }
@@ -34,15 +32,36 @@ async function rateLimit(req:Request){
   else await db.from('web_rate_limits').insert({key,window_start:new Date().toISOString(),request_count:1});
   return true;
 }
-async function resend(payload:any){
-  const {data:apiKey,error} = await db.rpc('pcc_get_server_secret',{secret_name:'pcc_resend_api_key'});
-  if(error || !apiKey) throw new Error('Email service is unavailable.');
-  const r = await fetch('https://api.resend.com/emails',{
+async function sendFreeFormMail(target:string,customerEmail:string,fields:Record<string,string>){
+  const endpoint='https://formsubmit.co/ajax/'+encodeURIComponent(target);
+  const form=new URLSearchParams();
+  form.set('_subject',fields.Subject||'PCCO Stays enquiry received');
+  form.set('_template','table');
+  form.set('_captcha','false');
+  form.set('_cc',customerEmail);
+  form.set('_url','https://www.thepropertycareco.co.uk/stays');
+  for(const [key,value] of Object.entries(fields)){
+    if(key==='Subject'||!value) continue;
+    form.set(key,value.slice(0,3000));
+  }
+  const r=await fetch(endpoint,{
     method:'POST',
-    headers:{'Authorization':`Bearer ${apiKey}`,'Content-Type':'application/json'},
-    body:JSON.stringify(payload)
+    headers:{
+      'Content-Type':'application/x-www-form-urlencoded',
+      'Accept':'application/json',
+      'Origin':'https://www.thepropertycareco.co.uk',
+      'Referer':'https://www.thepropertycareco.co.uk/stays'
+    },
+    body:form.toString()
   });
-  if(!r.ok){ console.error('Resend error',r.status,(await r.text()).slice(0,500)); throw new Error('Email delivery failed.'); }
+  const raw=await r.text();
+  let data:any=null;
+  try{data=JSON.parse(raw);}catch{}
+  if(!r.ok||data?.success===false||data?.success==='false'){
+    console.error('Form mail error',r.status,raw.slice(0,500));
+    throw new Error('Email notification failed.');
+  }
+  return data||{success:true};
 }
 function row(label:string,value:unknown,max=2000){
   const val=clean(value,max); if(!val) return '';
@@ -183,23 +202,40 @@ Deno.serve(async(req:Request)=>{
       : 'Thanks for sending us your property details. Our partnerships team will review the information and contact you if we need anything else. Your property has not automatically been approved. You can email additional properties to partners@thepropertycareco.co.uk.';
     const customerHtml = `<!doctype html><html><body style="margin:0;background:#f4f8fd"><div style="max-width:600px;margin:24px auto;background:#fff;font-family:Arial,sans-serif"><div style="background:#082d69;color:#fff;padding:16px 22px;font-weight:700">THE PROPERTY CARE CO.</div><div style="padding:26px"><h1 style="color:#082d69;font-size:27px;margin:0 0 14px">${esc(customerSubject)}</h1><p style="color:#10213d;font-size:16px">Hi ${esc(full_name)},</p><p style="color:#59677d;line-height:1.65">${esc(customerCopy)}</p><p style="color:#59677d;line-height:1.65">If anything changes, simply reply to this email or call us on 07411 251361.</p><a href="https://wa.me/447411251361" style="display:inline-block;margin-top:8px;background:#25d366;color:#fff;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:700">WhatsApp us</a></div></div></body></html>`;
 
-    const outboundFrom = isPartner ? PARTNER_FROM_EMAIL : FROM_EMAIL;
-    const emailResults = await Promise.allSettled([
-      resend({from:outboundFrom,to:[recipient],reply_to:email,subject:`${title} | ${company||full_name}`,html:ownerHtml,text:ownerText}),
-      resend({from:outboundFrom,to:[email],reply_to:recipient,subject:customerSubject,html:customerHtml,text:`Hi ${full_name},\n\n${customerCopy}\n\nIf anything changes, reply to this email or call 07411 251361.\n\nThe Property Care Co.`})
-    ]);
-    const notificationStatus = {
-      owner: emailResults[0].status === 'fulfilled',
-      customer: emailResults[1].status === 'fulfilled'
-    };
-    emailResults.forEach((result,index)=>{
-      if(result.status==='rejected') console.error('Enquiry email notification failed',index===0?'owner':'customer',result.reason);
-    });
+    const mailTarget=isPartner?'partners@thepropertycareco.co.uk':OWNER_EMAIL;
+    const subject=isPartner
+      ? `PCCO Stays partner enquiry received — ${company||full_name}`
+      : `PCCO Stays accommodation enquiry received — ${rec.location_required||full_name}`;
+    let notificationSent=false;
+    try{
+      await sendFreeFormMail(mailTarget,email,{
+        Subject:subject,
+        Confirmation:customerCopy,
+        'Enquiry reference':created.id,
+        Name:full_name,
+        Company:company,
+        Email:email,
+        Phone:phone,
+        'Location required':rec.location_required||'',
+        'Check-in':rec.check_in_date||'',
+        'Stay / dates':rec.stay_length||'',
+        Guests:rec.guest_count?String(rec.guest_count):'',
+        Units:rec.unit_count?String(rec.unit_count):'',
+        Bedrooms:rec.bedrooms_required||'',
+        Parking:rec.parking_required||'',
+        Budget:rec.budget||'',
+        Details:rec.details||'',
+        'Reply / help':'Reply to PCCO Stays or call +44 7411 251361'
+      });
+      notificationSent=true;
+    }catch(mailError){
+      console.error('Enquiry notification failed after database save',mailError);
+    }
 
     return ok({
       ok:true,
       id:created.id,
-      notification_sent:notificationStatus,
+      notification_sent:{owner:notificationSent,customer:notificationSent},
       message:isNeed?'Your accommodation requirement has been received.':'Your accommodation details have been received.'
     });
   }catch(err){
