@@ -12,7 +12,7 @@ const cors = {
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 const headers = { ...cors, 'Content-Type':'application/json; charset=utf-8', 'Cache-Control':'no-store' };
-const OWNER_EMAIL = 'thepropertycarecouk@gmail.com';
+const OWNER_EMAIL = 'stays@thepropertycareco.co.uk';
 const FROM_EMAIL = 'The Property Care Co. <quotes@thepropertycareco.co.uk>';
 const PARTNER_FROM_EMAIL = 'PCCO Stays Partners <partners@thepropertycareco.co.uk>';
 
@@ -184,12 +184,24 @@ Deno.serve(async(req:Request)=>{
     const customerHtml = `<!doctype html><html><body style="margin:0;background:#f4f8fd"><div style="max-width:600px;margin:24px auto;background:#fff;font-family:Arial,sans-serif"><div style="background:#082d69;color:#fff;padding:16px 22px;font-weight:700">THE PROPERTY CARE CO.</div><div style="padding:26px"><h1 style="color:#082d69;font-size:27px;margin:0 0 14px">${esc(customerSubject)}</h1><p style="color:#10213d;font-size:16px">Hi ${esc(full_name)},</p><p style="color:#59677d;line-height:1.65">${esc(customerCopy)}</p><p style="color:#59677d;line-height:1.65">If anything changes, simply reply to this email or call us on 07411 251361.</p><a href="https://wa.me/447411251361" style="display:inline-block;margin-top:8px;background:#25d366;color:#fff;text-decoration:none;padding:13px 18px;border-radius:10px;font-weight:700">WhatsApp us</a></div></div></body></html>`;
 
     const outboundFrom = isPartner ? PARTNER_FROM_EMAIL : FROM_EMAIL;
-    await Promise.all([
+    const emailResults = await Promise.allSettled([
       resend({from:outboundFrom,to:[recipient],reply_to:email,subject:`${title} | ${company||full_name}`,html:ownerHtml,text:ownerText}),
       resend({from:outboundFrom,to:[email],reply_to:recipient,subject:customerSubject,html:customerHtml,text:`Hi ${full_name},\n\n${customerCopy}\n\nIf anything changes, reply to this email or call 07411 251361.\n\nThe Property Care Co.`})
     ]);
+    const notificationStatus = {
+      owner: emailResults[0].status === 'fulfilled',
+      customer: emailResults[1].status === 'fulfilled'
+    };
+    emailResults.forEach((result,index)=>{
+      if(result.status==='rejected') console.error('Enquiry email notification failed',index===0?'owner':'customer',result.reason);
+    });
 
-    return ok({ok:true,id:created.id,message:isNeed?'Your accommodation requirement has been received.':'Your accommodation details have been received.'});
+    return ok({
+      ok:true,
+      id:created.id,
+      notification_sent:notificationStatus,
+      message:isNeed?'Your accommodation requirement has been received.':'Your accommodation details have been received.'
+    });
   }catch(err){
     console.error(err);
     return fail('Something went wrong. Please try again or WhatsApp us.',500);
