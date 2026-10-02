@@ -40,7 +40,15 @@ async function fetchImage(fetcher, urls) {
         ? 'https://www.hillview.co.uk/'
         : hostname === 'www.krrelocationsgroup.com'
           ? 'https://www.krrelocationsgroup.com/'
-          : 'https://www.brooklandstays.co.uk/';
+          : hostname.endsWith('.googleusercontent.com')
+            ? 'https://www.google.com/travel/'
+            : hostname === 'media.vrbo.com'
+              ? 'https://www.vrbo.com/'
+              : hostname === 'nezt-property-images.s3.eu-west-2.amazonaws.com'
+                ? 'https://www.nezt.com/'
+                : hostname === 'cf.bstatic.com'
+                  ? 'https://www.booking.com/'
+                  : 'https://www.brooklandstays.co.uk/';
       const headers = {
         'accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
@@ -101,7 +109,13 @@ export function imageHandler(fetcher = fetch) {
   'londonexecapartments.com',
   'img.hostify.com',
   'www.brightlogic-estateagents.co.uk',
-  'www.krrelocationsgroup.com'
+  'www.krrelocationsgroup.com',
+  'lh3.googleusercontent.com',
+  'lh4.googleusercontent.com',
+  'lh5.googleusercontent.com',
+  'lh6.googleusercontent.com',
+  'media.vrbo.com',
+  'nezt-property-images.s3.eu-west-2.amazonaws.com'
 ]);
         if (parsed.protocol !== 'https:' || !allowedHosts.has(parsed.hostname)) return res.status(404).end();
         if (parsed.hostname === 'a0.muscache.com') {
