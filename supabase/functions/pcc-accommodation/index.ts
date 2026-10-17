@@ -137,6 +137,8 @@ Deno.serve(async(req:Request)=>{
     const company = clean(body.company,140);
     const email = clean(body.email,160).toLowerCase();
     const phone = clean(body.phone,40);
+    const discovery_source = isPartner ? clean(body.discovery_source,80) : '';
+    const discovery_source_other = isPartner ? clean(body.discovery_source_other,140) : '';
     if(!['need_accommodation','have_accommodation'].includes(enquiry_type)) return fail('Please choose the type of enquiry.');
     if(full_name.length<2 || !phone || !email) return fail('Please complete your name, phone number and email address.');
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return fail('Please enter a valid email address.');
@@ -146,6 +148,8 @@ Deno.serve(async(req:Request)=>{
       if(!/^[+()0-9 .-]+$/.test(phone)||digits.length<7||digits.length>15) return fail('Please enter a valid phone number.');
       const raw=String(body.property_links||'').trim();
       if(!raw) return fail('Please add your property details, links or notes.');
+      if(!discovery_source) return fail('Please tell us how you found PCCO Stays.');
+      if(discovery_source==='Other'&&!discovery_source_other) return fail('Please tell us where you found PCCO Stays.');
     }
     let partnerRecordId:string|null=null;
     if(isPartner) partnerRecordId=await ensurePartnerRecord(full_name,company,email);
@@ -167,6 +171,8 @@ Deno.serve(async(req:Request)=>{
       minimum_stay:clean(body.minimum_stay,120)||null,
       property_links:clean(body.property_links,isPartner?200000:2000)||null,
       details:clean(body.details,3000)||null,
+      discovery_source:discovery_source||null,
+      discovery_source_other:discovery_source_other||null,
       status:'new', source:isProperty?'website_property':isPartner?'website_partners':'website_accommodation'
     };
     if(enquiry_type==='need_accommodation' && !rec.location_required) return fail('Please tell us where accommodation is required.');
@@ -176,11 +182,13 @@ Deno.serve(async(req:Request)=>{
     if(insertError || !created) throw insertError || new Error('Could not save enquiry.');
 
     const isNeed = enquiry_type==='need_accommodation';
+    const discoveryDisplay = discovery_source==='Other' ? `Other: ${discovery_source_other}` : discovery_source;
     const title = isProperty ? 'New property enquiry — '+property.name : isNeed ? 'New accommodation requirement' : isPartner ? 'New PARTNER / HOST enquiry' : 'New accommodation provider enquiry';
     const recipient = isProperty ? 'stays@thepropertycareco.co.uk' : isNeed ? OWNER_EMAIL : 'partners@thepropertycareco.co.uk';
     const detailsRows = [
       isProperty?row('Property',property.name):'',isProperty?row('Property reference',property.id):'',isProperty?row('Property URL','https://www.thepropertycareco.co.uk/properties/'+property.slug):'',isProperty?row('Requested check-out',body.check_out):'',
       row('Name',full_name),row('Company',company),row('Email',email),row('Phone',phone),isPartner?row('Partner record',partnerRecordId):'',
+      isPartner?row('How did you find us?',discoveryDisplay):'',
       isNeed?row('Location required',rec.location_required):row('Areas covered',rec.areas_covered),
       isNeed?row('Check-in date',rec.check_in_date):'',
       isNeed?row('Length of stay',rec.stay_length):row('Minimum stay',rec.minimum_stay),
@@ -194,7 +202,7 @@ Deno.serve(async(req:Request)=>{
     ].join('');
 
     const ownerHtml = `<!doctype html><html><body style="margin:0;background:#f4f8fd"><div style="max-width:640px;margin:24px auto;background:#fff;border:1px solid #dce6f2;font-family:Arial,sans-serif"><div style="background:#082d69;color:#fff;padding:18px 22px;font-weight:700">THE PROPERTY CARE CO. · ACCOMMODATION</div><div style="padding:24px"><h1 style="margin:0 0 8px;color:#082d69;font-size:26px">${esc(title)}</h1><p style="color:#657287;margin:0 0 18px">Website enquiry reference: ${esc(created.id)}</p><table style="width:100%;border-collapse:collapse">${detailsRows}</table></div></div></body></html>`;
-    const ownerText = `${title}\n\nName: ${full_name}\nCompany: ${company}\nEmail: ${email}\nPhone: ${phone}\n${isNeed?`Location required: ${rec.location_required}\nCheck-in: ${rec.check_in_date||''}\nStay: ${rec.stay_length||''}\nUnits: ${rec.unit_count||''}\nGuests: ${rec.guest_count||''}`:`Areas covered: ${rec.areas_covered}\nProperties: ${rec.property_count||''}\nProperty types: ${rec.property_types||''}\nLinks: ${rec.property_links||''}`}\n\nDetails: ${rec.details||''}`;
+    const ownerText = `${title}\n\nName: ${full_name}\nCompany: ${company}\nEmail: ${email}\nPhone: ${phone}\n${isPartner?`How did you find us: ${discoveryDisplay}\n`:''}${isNeed?`Location required: ${rec.location_required}\nCheck-in: ${rec.check_in_date||''}\nStay: ${rec.stay_length||''}\nUnits: ${rec.unit_count||''}\nGuests: ${rec.guest_count||''}`:`Areas covered: ${rec.areas_covered}\nProperties: ${rec.property_count||''}\nProperty types: ${rec.property_types||''}\nLinks: ${rec.property_links||''}`}\n\nDetails: ${rec.details||''}`;
 
     const customerSubject = isNeed ? 'We received your accommodation requirement' : 'Thanks — we have received your property';
     const customerCopy = isNeed
@@ -216,6 +224,7 @@ Deno.serve(async(req:Request)=>{
         Company:company,
         Email:email,
         Phone:phone,
+        'How did you find us?':isPartner?discoveryDisplay:'',
         'Location required':rec.location_required||'',
         'Check-in':rec.check_in_date||'',
         'Stay / dates':rec.stay_length||'',
@@ -243,4 +252,3 @@ Deno.serve(async(req:Request)=>{
     return fail('Something went wrong. Please try again or WhatsApp us.',500);
   }
 });
-
