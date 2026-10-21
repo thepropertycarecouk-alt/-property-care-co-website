@@ -44,11 +44,13 @@ async function fetchImage(fetcher, urls) {
             ? 'https://www.google.com/travel/'
             : hostname === 'media.vrbo.com'
               ? 'https://www.vrbo.com/'
-              : hostname === 'nezt-property-images.s3.eu-west-2.amazonaws.com'
-                ? 'https://www.nezt.com/'
-                : hostname === 'cf.bstatic.com'
-                  ? 'https://www.booking.com/'
-                  : 'https://www.brooklandstays.co.uk/';
+              : hostname === 'ak-d.tripcdn.com' || hostname === 'aw-d.tripcdn.com'
+                ? 'https://uk.trip.com/'
+                : hostname === 'nezt-property-images.s3.eu-west-2.amazonaws.com'
+                  ? 'https://www.nezt.com/'
+                  : hostname === 'cf.bstatic.com'
+                    ? 'https://www.booking.com/'
+                    : 'https://www.brooklandstays.co.uk/';
       const headers = {
         'accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
         'user-agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Version/18.0 Mobile/15E148 Safari/604.1',
@@ -115,6 +117,8 @@ export function imageHandler(fetcher = fetch) {
   'lh5.googleusercontent.com',
   'lh6.googleusercontent.com',
   'media.vrbo.com',
+  'ak-d.tripcdn.com',
+  'aw-d.tripcdn.com',
   'nezt-property-images.s3.eu-west-2.amazonaws.com'
 ]);
         if (parsed.protocol !== 'https:' || !allowedHosts.has(parsed.hostname)) return res.status(404).end();
