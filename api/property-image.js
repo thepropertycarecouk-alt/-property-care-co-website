@@ -63,7 +63,10 @@ async function fetchImage(fetcher, urls) {
       });
       const type = image.headers.get('content-type') || '';
       if (image.ok && type.startsWith('image/')) return { image, type };
-    } catch {}
+      console.error('property-image upstream rejected', { hostname, status: image.status, type });
+    } catch (error) {
+      console.error('property-image upstream exception', String(error));
+    }
   }
   return null;
 }
@@ -86,9 +89,17 @@ export function imageHandler(fetcher = fetch) {
       const response = await fetcher(`${feed}?slug=${encodeURIComponent(slug)}`, {
         signal: AbortSignal.timeout(10000)
       });
-      if (!response.ok) return res.status(503).end();
+      if (!response.ok) {
+        console.error('property-image feed rejected', response.status);
+        return res.status(503).end();
+      }
 
-      const [property] = await response.json();
+      const payload = await response.json();
+      if (!Array.isArray(payload)) {
+        console.error('property-image feed not array', payload);
+        return res.status(503).end();
+      }
+      const [property] = payload;
       const photo = index === -1 ? property?.cover_photo : property?.photos?.[index];
       let candidates = [];
 
@@ -138,8 +149,10 @@ export function imageHandler(fetcher = fetch) {
       res.setHeader('Content-Type', result.type);
       res.setHeader('X-Content-Type-Options', 'nosniff');
       if (req.method === 'HEAD') return res.status(200).end();
-      return res.status(200).send(Buffer.from(await result.image.arrayBuffer()));
-    } catch {
+      const bytes = Buffer.from(await result.image.arrayBuffer());
+      return res.status(200).send(bytes);
+    } catch (error) {
+      console.error('property-image handler exception', error?.stack || String(error));
       return res.status(503).end();
     }
   };
