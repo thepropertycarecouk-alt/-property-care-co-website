@@ -10,7 +10,7 @@
     .pcco-ai-launch{position:fixed;left:18px;bottom:18px;z-index:9990;display:flex;align-items:center;gap:9px;padding:12px 17px;border:1px solid #c99e51;border-radius:50px;background:#021b3c;color:#fff;box-shadow:0 8px 30px #01152c50;font:600 14px Arial,sans-serif;cursor:pointer}
     .pcco-ai-launch:hover{background:#123456}.pcco-ai-launch:focus-visible,.pcco-ai-panel :focus-visible{outline:3px solid #c99e51;outline-offset:3px}
     .pcco-ai-panel{position:fixed;left:18px;bottom:79px;width:min(410px,calc(100vw - 32px));height:min(670px,calc(100dvh - 112px));z-index:9991;border:1px solid #c8d0d4;border-radius:15px;background:#fff;box-shadow:0 18px 55px #01152c45;overflow:hidden;display:flex;flex-direction:column;color:#172e3d;font:14px/1.5 Arial,sans-serif}
-    .pcco-ai-panel[hidden]{display:none!important}.pcco-ai-header{padding:15px 16px;background:#021b3c;color:#fff;display:flex;align-items:center;gap:10px}
+    .pcco-ai-panel[hidden],.pcco-ai-actions[hidden],.pcco-ai-send[hidden],.pcco-ai-messages[hidden]{display:none!important}.pcco-ai-header{padding:15px 16px;background:#021b3c;color:#fff;display:flex;align-items:center;gap:10px}
     .pcco-ai-header strong{font:600 16px Arial,sans-serif}.pcco-ai-header small{display:block;color:#e3d1b4;font-size:11px}.pcco-ai-header button{margin-left:auto;color:white;border:0;background:none;font-size:25px;cursor:pointer;line-height:1}
     .pcco-ai-preview{padding:7px 14px;background:#fbf1da;font-size:11px;color:#654b23;border-bottom:1px solid #e4d6b4}
     .pcco-ai-messages{padding:16px 14px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;background:#fbfaf7}
