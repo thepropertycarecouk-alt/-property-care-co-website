@@ -320,3 +320,94 @@ test("unconfigured Stripe notification endpoint fails closed without sending mes
   await stripeNotify(req,res);
   assert.equal(res.code,503);
 });
+
+test("production lead configuration requires all security settings", () => {
+  const fixture={
+    VERCEL_ENV:"production",HOST_SOLUTIONS_LEADS_ENABLED:"approved",
+    HOST_SOLUTIONS_ORIGIN:"https://www.thepropertycareco.co.uk",
+    HOST_SOLUTIONS_RESEND_KEY:"re_fixture_key_not_real",
+    HOST_SOLUTIONS_FORM_SIGNING_SECRET:"a".repeat(64),
+    HOST_SOLUTIONS_EMAIL_FROM:"PCCO Host Solutions <partners@thepropertycareco.co.uk>",
+  };
+  assert.equal(formConfigured(fixture),true);
+  assert.equal(formConfigured({...fixture,HOST_SOLUTIONS_ORIGIN:"https://evil.example"}),false);
+  assert.equal(formConfigured({...fixture,VERCEL_ENV:"preview"}),false);
+  assert.equal(formConfigured({...fixture,HOST_SOLUTIONS_RESEND_KEY:undefined}),false);
+});
+
+test("signed customer enquiry delivers only to the verified PCCO inbox in mock", async () => {
+  const originalFetch=global.fetch;
+  const names=["VERCEL_ENV","HOST_SOLUTIONS_LEADS_ENABLED","HOST_SOLUTIONS_ORIGIN","HOST_SOLUTIONS_RESEND_KEY","HOST_SOLUTIONS_FORM_SIGNING_SECRET","HOST_SOLUTIONS_EMAIL_FROM"];
+  const prior=Object.fromEntries(names.map(k=>[k,process.env[k]]));
+  let sent=null;
+  try {
+    Object.assign(process.env,{
+      VERCEL_ENV:"production",HOST_SOLUTIONS_LEADS_ENABLED:"approved",
+      HOST_SOLUTIONS_ORIGIN:"https://www.thepropertycareco.co.uk",
+      HOST_SOLUTIONS_RESEND_KEY:"re_fixture_key_not_real",
+      HOST_SOLUTIONS_FORM_SIGNING_SECRET:"a".repeat(64),
+      HOST_SOLUTIONS_EMAIL_FROM:"PCCO Host Solutions <partners@thepropertycareco.co.uk>",
+    });
+    global.fetch=async (url,options)=>{
+      sent={url,options};
+      return {ok:true,status:200,json:async()=>({id:"email_fixture"})};
+    };
+    const cookie=issueChallenge(process.env.HOST_SOLUTIONS_FORM_SIGNING_SECRET,Date.now()-2300,"b".repeat(32));
+    const req={method:"POST",headers:{origin:process.env.HOST_SOLUTIONS_ORIGIN,cookie:"hs_form="+cookie},body:brief};
+    const res=response();
+    await consultation(req,res);
+    assert.equal(res.code,200);
+    assert.deepEqual(res.body,{received:true});
+    assert.equal(sent.url,"https://api.resend.com/emails");
+    const payload=JSON.parse(sent.options.body);
+    assert.deepEqual(payload.to,["partners@thepropertycareco.co.uk"]);
+    assert.equal(payload.reply_to,"test@example.com");
+    assert.equal(sent.options.headers["Idempotency-Key"],"pcco-host-lead-"+"b".repeat(32));
+    assert.equal(payload.text.includes("Marketing opt-in"),false);
+  } finally {
+    global.fetch=originalFetch;
+    for(const [k,v] of Object.entries(prior))if(v===undefined)delete process.env[k];else process.env[k]=v;
+  }
+});
+
+test("verified Stripe event sends one internal alert with provider idempotency", async () => {
+  const priorEnv={
+    enabled:process.env.HOST_SOLUTIONS_WEBHOOK_ENABLED,
+    secret:process.env.HOST_SOLUTIONS_STRIPE_NOTIFY_SECRET,
+    key:process.env.HOST_SOLUTIONS_RESEND_KEY,
+    from:process.env.HOST_SOLUTIONS_EMAIL_FROM,
+  };
+  const originalFetch=global.fetch;
+  const secret="whsec_test_fixture_not_real";
+  const ts=Math.floor(Date.now()/1000);
+  const body=Buffer.from(JSON.stringify({id:"evt_TESTALERT",object:"event",livemode:true,type:"checkout.session.completed",data:{object:{
+    object:"checkout.session",id:"cs_TESTALERT",livemode:true,payment_link:"plink_1UaJtCAuxFu0m9QL1E6Bp2BH",currency:"gbp",amount_total:9900,payment_status:"paid",customer_details:{email:"sample@example.com"}
+  }}}));
+  const signature="t="+ts+",v1="+createHmac("sha256",secret).update(String(ts)+".").update(body).digest("hex");
+  let send=null;
+  try {
+    process.env.HOST_SOLUTIONS_WEBHOOK_ENABLED="approved";
+    process.env.HOST_SOLUTIONS_STRIPE_NOTIFY_SECRET=secret;
+    process.env.HOST_SOLUTIONS_RESEND_KEY="re_fixture_key_not_real";
+    process.env.HOST_SOLUTIONS_EMAIL_FROM="PCCO Host Solutions <partners@thepropertycareco.co.uk>";
+    global.fetch=async (url,options)=>{send={url,options};return {ok:true};};
+    const req=Readable.from([body]);
+    req.method="POST";req.headers={"stripe-signature":signature};
+    const res=response();
+    await stripeNotify(req,res);
+    assert.equal(res.code,200);
+    const payload=JSON.parse(send.options.body);
+    assert.deepEqual(payload.to,["partners@thepropertycareco.co.uk"]);
+    assert.equal(payload.subject,"PCCO Host Solutions — payment received");
+    assert.equal(send.options.headers["Idempotency-Key"],"pcco-host-stripe-evt_TESTALERT");
+  } finally {
+    global.fetch=originalFetch;
+    const map={
+      HOST_SOLUTIONS_WEBHOOK_ENABLED:priorEnv.enabled,
+      HOST_SOLUTIONS_STRIPE_NOTIFY_SECRET:priorEnv.secret,
+      HOST_SOLUTIONS_RESEND_KEY:priorEnv.key,
+      HOST_SOLUTIONS_EMAIL_FROM:priorEnv.from,
+    };
+    for(const [k,v] of Object.entries(map))if(v===undefined)delete process.env[k];else process.env[k]=v;
+  }
+});

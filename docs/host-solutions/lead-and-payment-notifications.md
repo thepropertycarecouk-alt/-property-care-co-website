@@ -25,3 +25,9 @@ Do not commit or expose keys; store only as sensitive Vercel production environm
 
 ## Hobby deployment limit compatibility
 The Vercel Hobby plan permits 12 serverless functions. Legacy disabled prototype endpoints were deleted: /api/host-checkout, /api/host-checkout-config, /api/host-payment-status, /api/host-stripe-webhook. Their Stripe-key/Redis workflow never had production credentials or a live web UI. The consultation form GET and POST now share one /api/host-consultation endpoint. /api/host-stripe-notify is the single new webhook route. Active checkout remains Stripe-hosted, with no dependency on the removed routes.
+
+## Actual connected production resources — 10 Nov 2026
+- Verified transactional email sender: thepropertycareco.co.uk (Resend, EU region), with a new sending-only, domain-restricted credential saved in Vercel sensitive production env. Do not copy the credential into this repository.
+- Production variables HOST_SOLUTIONS_ORIGIN, HOST_SOLUTIONS_RESEND_KEY, HOST_SOLUTIONS_FORM_SIGNING_SECRET, HOST_SOLUTIONS_EMAIL_FROM, HOST_SOLUTIONS_LEADS_ENABLED, HOST_SOLUTIONS_STRIPE_NOTIFY_SECRET and HOST_SOLUTIONS_WEBHOOK_ENABLED have been created under the existing Vercel project. The production deployment must be rebuilt/redeployed after the last two webhook variables were created.
+- Existing Stripe account acct_1U1mpNAuxFu0m9QL has an **additional** live webhook endpoint we_1UaMWsAuxFu0m9QL3hGECPcb to https://www.thepropertycareco.co.uk/api/host-stripe-notify. It is intentionally **disabled** until the new production build with updated webhook secrets is READY. Do not change the unrelated Stripe webhook to the existing Supabase cleaning payments Edge Function.
+- When production has the latest env, enable this webhook endpoint using the Stripe API and verify it is active. Then review Stripe Dashboard event deliveries; do not invent a successful end-to-end test if no qualifying payment occurs. Do not send unscripted customer messages.

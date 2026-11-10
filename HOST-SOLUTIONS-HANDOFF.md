@@ -1,3 +1,6 @@
+# 10 Nov 2026 — Production email and Stripe alert credentials
+Resend sending-only domain-restricted credential and signed form secret are saved in Vercel production env (not source). Production GET /api/host-consultation reports {enabled:true} and the updated form is live. An independent Stripe webhook endpoint we_1UaMWsAuxFu0m9QL3hGECPcb is created disabled and its signing secret is in Vercel production env; deploy latest build before enabling webhook. See docs/host-solutions/lead-and-payment-notifications.md. Do NOT modify the existing unrelated cleaning payments Supabase webhook. This commit and CI trigger production redeployment to pick up the final webhook secrets.
+
 # Live form and Stripe notification improvement — 10 November 2026
 A new cookie-verified serverless form adapter and signed Stripe event notification endpoint are developed. See docs/host-solutions/lead-and-payment-notifications.md. The frontend attempts direct submission only if the backend reports ready; otherwise provides a truthful email fallback. Payment events are restricted to vetted Stripe IDs and result only in internal alerts; no automatic customer email, refunds or subscriptions. Production environment variables and account permissions determine whether features can be activated. Read actual deployment/CI status before claiming any integration is live.
 
