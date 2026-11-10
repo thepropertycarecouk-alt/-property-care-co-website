@@ -101,7 +101,89 @@
     button.textContent='Review & confirm enquiry →';button.addEventListener('click',openReview);
     messages.append(button);messages.scrollTop=messages.scrollHeight;
   }
-  bubble('assistant','Welcome to PCCO Stays! I can help with contractor accommodation, business travel, family visits or relocation. Tell me what you need, or ask me anything about our service.');
+  async function showProperties(){
+    if(propertyBusy)return;
+    const target=String(latestLead.location||'').trim();
+    if(!target){showStatus('Tell me which town, city or postcode you need, then I can look for relevant PCCO listings.');return;}
+    propertyBusy=true;
+    const status=showStatus('Checking the published PCCO listings for '+target+'…');
+    try{
+      const properties=await listedProperties();
+      let candidates=[],distance=new Map(),locationVerified=false;
+      const q=target.trim().toLowerCase().replace(/\s+/g,' ');
+      try{
+        const result=await fetch('/api/location-suggest?q='+encodeURIComponent(target),{signal:AbortSignal.timeout(10000)});
+        const obj=await result.json();
+        const suggestions=Array.isArray(obj.suggestions)?obj.suggestions:[];
+        const chosen=suggestions.find(x=>String(x.label||'').toLowerCase().includes(q))||suggestions[0];
+        if(chosen&&Number.isFinite(Number(chosen.lat))&&Number.isFinite(Number(chosen.lon))){
+          const uri='/api/postcode-radius?lat='+encodeURIComponent(chosen.lat)+'&lon='+encodeURIComponent(chosen.lon)+'&radius=25';
+          const response=await fetch(uri,{signal:AbortSignal.timeout(16000)});
+          if(response.ok){
+            const nearby=await response.json();
+            if(nearby.ok&&Array.isArray(nearby.matches)){
+              const matched=new Set(nearby.matches.map(x=>x.slug));
+              distance=new Map(nearby.matches.map(x=>[x.slug,x.distance_miles]));
+              candidates=properties.filter(p=>matched.has(p.slug));
+              locationVerified=true;
+            }
+          }
+        }
+      }catch{ /* Only use the precise location search if it succeeds. */ }
+      if(!locationVerified){
+        const terms=q.split(/[\s,]+/).filter(w=>w.length>2);
+        candidates=properties.filter(p=>{
+          const city=String(p.city||'').toLowerCase(),postcode=String(p.postcode||'').toLowerCase();
+          return city===q||postcode===q||terms.some(term=>term.length>=4&&(city.split(/[\s,]+/).includes(term)||postcode===term));
+        });
+      }
+      const guestCount=parsedCount(latestLead.guests);
+      const bedrooms=parsedCount(latestLead.bedrooms);
+      const wantsParking=/yes|required|must|need|parking|car|van/i.test(String(latestLead.parking||''))&&!/no parking required|no need|not required/i.test(String(latestLead.parking||''));
+      // Exclude only explicitly unavailable parking. Missing parking information stays unverified.
+      if(wantsParking)candidates=candidates.filter(p=>hasParking(p)||(!p.parking&&!p.parking_category));
+      candidates.sort((a,b)=>{
+        const score=p=>(guestCount&&Number(p.sleeps)>=guestCount?8:0)+(bedrooms&&Number(p.bedrooms)>=bedrooms?3:0)+(wantsParking&&hasParking(p)?2:0);
+        return score(b)-score(a)||(distance.get(a.slug)??999)-(distance.get(b.slug)??999);
+      });
+      if(!candidates.length){
+        status.textContent='I could not find a suitable published listing around '+target+'. PCCO can still search its wider partner network. Tap Review & confirm to send your full requirements.';
+        return;
+      }
+      const items=candidates.slice(0,4);
+      status.textContent='Here are '+items.length+' published PCCO listing'+(items.length===1?'':'s')+' around '+target+' you can explore. These are NOT confirmed available for your dates; PCCO must check the host, bed configuration, parking and price.';
+      const list=document.createElement('div');list.className='pcco-ai-match-list';
+      for(const p of items){
+        const card=document.createElement('div');card.className='pcco-ai-match-card';
+        if(p.cover_photo){
+          const img=document.createElement('img');
+          img.src='/api/property-image?property='+encodeURIComponent(p.slug)+'&size=700'+(p.photo_version?'&v='+encodeURIComponent(p.photo_version):'');
+          img.alt=String(p.cover_photo.alt||p.name);img.loading='lazy';
+          img.onerror=()=>{img.remove();};
+          card.append(img);
+        }
+        const content=document.createElement('div');content.className='pcco-ai-match-card-body';
+        const name=document.createElement('strong');name.textContent=p.name;
+        const facts=document.createElement('small');
+        const details=[p.city||p.postcode||'UK location',p.bedrooms!=null?(Number(p.bedrooms)===0?'Studio':p.bedrooms+' bedrooms'):null,p.sleeps?'Sleeps '+p.sleeps:null,p.parking?'Parking: '+p.parking:'Parking to confirm'];
+        if(distance.has(p.slug))details.push('Approx. '+distance.get(p.slug)+' miles from search area');
+        facts.textContent=details.filter(Boolean).join(' · ');
+        const link=document.createElement('a');link.href='/properties/'+encodeURIComponent(p.slug)+'/';link.target='_blank';link.rel='noopener noreferrer';link.textContent='View property details';
+        const select=document.createElement('button');select.type='button';
+        const update=()=>{const chosen=selectedProperties.has(p.slug);select.textContent=chosen?'✓ Selected — remove':'Include in enquiry';select.setAttribute('aria-pressed',String(chosen));selectedSummary();};
+        select.addEventListener('click',()=>{if(selectedProperties.has(p.slug))selectedProperties.delete(p.slug);else selectedProperties.set(p.slug,{slug:p.slug,name:p.name});update();});
+        content.append(name,facts,link,select);card.append(content);list.append(card);update();
+      }
+      const note=document.createElement('div');note.className='pcco-ai-match-note';
+      note.textContent='Possible matches only — no live calendars are connected. If you need separate beds or multiple homes, the team will verify the layout and source additional options.';
+      list.append(note);
+      messages.append(list);messages.scrollTop=messages.scrollHeight;
+      offerReview();
+    }catch{
+      status.textContent='The published property search is temporarily unavailable. You can still review and send the accommodation enquiry without any property selection.';
+    }finally{propertyBusy=false;}
+  }
+    bubble('assistant','Welcome to PCCO Stays! I can help with contractor accommodation, business travel, family visits or relocation. Tell me what you need, or ask me anything about our service.');
   function toggle(force){const open=typeof force==='boolean'?force:panel.hidden;panel.hidden=!open;launch.setAttribute('aria-expanded',String(open));if(open)typing.focus();else launch.focus();}
   launch.addEventListener('click',()=>toggle());
   $('.pcco-ai-close').addEventListener('click',()=>toggle(false));
