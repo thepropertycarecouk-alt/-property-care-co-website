@@ -71,7 +71,28 @@
   const $=selector=>panel.querySelector(selector);
   const messages=$('.pcco-ai-messages'),typing=$('.pcco-ai-send textarea'),send=$('.pcco-ai-send button');
   const review=$('.pcco-ai-review'),chat=$('.pcco-ai-send'),actions=$('.pcco-ai-actions');
-  const history=[];let latestLead={},working=false;
+  const history=[];let latestLead={},working=false,propertyBusy=false,submitted=false;
+  const selectedProperties=new Map();
+  const autoSearchedLocations=new Set();
+  const PROPERTY_FEED='https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-property-feed?summary=1';
+  const ENQUIRY_ENDPOINT='https://pgbwbklqvyyzipbxcdvx.supabase.co/functions/v1/pcc-accommodation';
+  let propertyListPromise=null;
+  const listedProperties=()=>{
+    if(!propertyListPromise)propertyListPromise=fetch(PROPERTY_FEED,{cache:'no-store',signal:AbortSignal.timeout(14000)})
+      .then(response=>{if(!response.ok)throw new Error('Property feed unavailable');return response.json();})
+      .then(rows=>Array.isArray(rows)?rows.filter(p=>p&&p.published&&p.slug&&p.name):[])
+      .catch(err=>{propertyListPromise=null;throw err;});
+    return propertyListPromise;
+  };
+  function selectedSummary(){
+    const box=$('.pcco-ai-selected-summary');
+    if(!selectedProperties.size){box.hidden=true;box.textContent='';return;}
+    box.hidden=false;box.textContent='Properties selected for enquiry: '+[...selectedProperties.values()].map(p=>p.name).join('; ');
+  }
+  function showStatus(text){return bubble('assistant',text);}
+  const parsedCount=value=>{const n=Number(String(value||'').match(/\d+/)?.[0]);return Number.isInteger(n)&&n>0&&n<=5000?n:null;};
+  const hasParking=p=>{const cat=String(p.parking_category||'').toLowerCase(),info=String(p.parking||'').toLowerCase();if(cat==='none'||/\b(no parking|parking unavailable|no on-site parking)\b/.test(info))return false;return ['free','paid','parking','yes','available','street','permit','private','driveway','garage','included'].includes(cat)||/\b(parking|driveway|garage|permit)\b/.test(info);};
+  
   function bubble(role,text){const node=document.createElement('div');node.className='pcco-ai-bubble '+role;node.textContent=text;messages.append(node);messages.scrollTop=messages.scrollHeight;return node;}
   function offerReview(){
     messages.querySelectorAll('.pcco-ai-inline-review').forEach(node=>node.remove());
