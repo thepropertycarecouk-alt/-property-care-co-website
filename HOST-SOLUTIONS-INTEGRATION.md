@@ -36,3 +36,7 @@ All quoted website build totals, monthly maintenance rates and the £99 deposit 
 
 ## Verified code/preview and Stripe account blocker
 CI run 42874592607 passed all 13 tests, JS syntax and build from source SHA 585b07e60479ba4d71927f4e75497e112276e559. Latest ready preview (application) is https://pcc-live-site-260825-it53a22d4-thepropertycarecouk-4795.vercel.app/host-solutions/. GET /api/host-checkout-config returns enabled:false by design. Merchant has no active Stripe Tax registration, head office is missing and Vercel has no Stripe/Redis secrets. Do not switch live before completing those requirements and recording approved written terms.
+
+## Live Stripe Payment Links (supersedes previous Stripe Tax integration requirement)
+- PCCO is not VAT registered: no VAT charged or registration configured. Use 3 verified live hosted card-only Stripe Payment Links (see HOST-SOLUTIONS-STRIPE-CATALOG.json), one-time £99 website deposits, no automatic VAT, no subscription. Payment happens securely at Stripe with Stripe-hosted confirmation; Stripe Dashboard is the source of payment truth. No Vercel Stripe secret/Redis/webhooks are needed for the *live Payment Links*, though they would be needed for the unused custom checkout API.
+- The previous server-created dynamic checkout remains closed and is not exposed from the website. Do not enable it without a new security/tax/privacy review and sandbox testing. Refunds processed manually via Stripe upon contact (full £99 within 14 days). Future subscription billing must be authorised separately.

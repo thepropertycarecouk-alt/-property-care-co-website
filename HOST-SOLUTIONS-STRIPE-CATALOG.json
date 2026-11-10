@@ -1,8 +1,8 @@
 {
-  "status": "draft-not-created-in-Stripe",
+  "status": "live-payment-links-active",
   "currency": "gbp",
-  "vat": "website-build-deposit-maintenance-inclusive-approved-2026-11-10",
-  "monthlyOfferDuration": "awaiting-owner-approval",
+  "vat": "no-vat-charged-merchant-not-vat-registered",
+  "monthlyOfferDuration": "first-six-paid-months-then-normal",
   "depositPence": 9900,
   "packages": [
     {
@@ -44,21 +44,45 @@
   ],
   "subscriptionStart": "separately-agreed-and-authorised",
   "financeMethods": "excluded; verify payment method configuration",
-  "standaloneAiVat": "awaiting-owner-confirmation",
+  "standaloneAiVat": "no-vat-charged",
   "stripeTax": {
-    "status": "pending",
-    "missing": [
-      "head_office",
-      "confirmed-registration-jurisdiction"
-    ],
-    "registeredJurisdictions": 0,
-    "automaticTaxNotReady": true
+    "enabled": false,
+    "reason": "No UK VAT registration and no VAT charged"
   },
-  "paymentReady": false,
+  "paymentReady": true,
   "stripeConnection": {
     "mode": "live",
-    "productsCreated": false,
-    "linksCreated": false,
-    "vercelCredentialsConfigured": false
-  }
+    "chargesEnabled": true,
+    "payoutsEnabled": true,
+    "linksCreated": true,
+    "approach": "Stripe-hosted active card-only Payment Links; no server API keys necessary",
+    "testPaymentPerformed": false
+  },
+  "depositRefundDays": 14,
+  "aiFairUse": {
+    "standaloneReplies": 1000,
+    "directAddonReplies": 500,
+    "portfolioReplies": 500,
+    "trialReplies": 50
+  },
+  "packagePaymentLinks": [
+    {
+      "id": "starter",
+      "stripeId": "plink_1UaJtCAuxFu0m9QL1E6Bp2BH",
+      "url": "https://book.stripe.com/8x2cN4cfXgx05cp7md3VC00",
+      "depositPence": 9900
+    },
+    {
+      "id": "direct",
+      "stripeId": "plink_1UaJtYAuxFu0m9QLQKxPgNxk",
+      "url": "https://book.stripe.com/8x28wO6VD5Sm20d7md3VC01",
+      "depositPence": 9900
+    },
+    {
+      "id": "portfolio",
+      "stripeId": "plink_1UaJtbAuxFu0m9QLrj7gCtMu",
+      "url": "https://book.stripe.com/4gM3cu93L94ygV7dKB3VC02",
+      "depositPence": 9900
+    }
+  ]
 }

@@ -35,3 +35,8 @@ Retain buildless HTML/CSS/JS public directory and Vercel Node APIs. Isolate asse
 3. Add isolated test-only server payment foundations and validation/security tests; commit.
 4. Build, responsive desktop/mobile/keyboard QA, verify old routes unchanged, deploy Vercel preview, draft PR; record SHA/URL/test results and blockers.
 Launch requires owner signoff on finished preview, verified Stripe Tax registration (website pricing is already VAT-inclusive), monthly offer duration, payment schedule/refunds, AI fair use, maintenance allowances, support/cancellation/design revision terms, lead privacy/retention, real Stripe test end-to-end and live activation. Navigation/SEO launch changes only after approval.
+
+## Updated 10 November customer-approved commercial policy
+- PCCO is NOT UK VAT-registered; prices are all-in, no VAT charged. Registered address 14 Vicarage Road, Stourbridge, DY8 4JE, UK. 25% build offer ends 31 December 2026; six paid months of £5/month introductory maintenance saving, then full monthly prices.
+- Full £99 deposit refund available on request within 14 calendar days; scope/balance timing separately agreed in writing before paid work. No automatic subscriptions. AI fair use 1000 text replies standalone, 500 Direct add-on and Portfolio included, 50 trial; no automatic overage.
+- Live hosted Stripe Payment Links supersede prior need for Stripe Tax/secret/webhooks/Redis for simple deposit collection. Prior Checkout server endpoint remains unconfigured and disabled; it is not in current purchase journey.

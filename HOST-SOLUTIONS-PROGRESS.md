@@ -80,3 +80,9 @@
 - Source code revision 585b07e60479ba4d71927f4e75497e112276e559 verified by CI run 42874592607 (13 passed/0 failed, npm build passed).
 - Vercel preview https://pcc-live-site-260825-it53a22d4-thepropertycarecouk-4795.vercel.app/host-solutions/ READY; page/assets/confirmation 200, checkout configuration 200 disabled, checkout GET 405. Explicitly no real payments available.
 - Updated HOST-SOLUTIONS-STRIPE-CATALOG.json with approved VAT-inclusive website prices and missing Stripe Tax setup. All payment keys are still unconfigured and no accounts/charges were mutated.
+
+## 10 Nov latest owner confirmation and Stripe live rollout
+- No VAT registration (no VAT charged); address 14 Vicarage Road, Stourbridge, DY8 4JE. £5 maintenance saving for first six paid months. £99 refundable within 14 calendar days, full refund requested by email.
+- 3 Stripe-hosted active £99 card-only one-time deposit links created on connected LIVE PCCO account, verified with line-item reads, no automatic tax, no subscriptions. No site secrets needed for links. All IDs and URLs recorded in Stripe catalog JSON.
+- Website code updated to replace obsolete preview/test-only checkout frontend with secure direct Payment Link handoff and consent. Free consultation form now only composes email; customer must send. AI remains demo only, fair use set at 1000 standalone/500 Direct/500 Portfolio/50 trial monthly replies.
+- Verification and production deployment pending. Do not claim charges have occurred or automated maintenance/AI is active.

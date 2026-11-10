@@ -1,7 +1,8 @@
 import test from "node:test";
 import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
-import { priceFor, packages } from "../public/host-solutions/catalog.js";
+import { priceFor, packages, vatCharged, monthlyDiscountMonths, depositRefundDays, aiFairUse } from "../public/host-solutions/catalog.js";
+import { depositLinks } from "../public/host-solutions/deposit-links.js";
 import { validateBrief } from "../lib/host-solutions/consultation.js";
 import {
   testKey,
@@ -225,11 +226,35 @@ test("Host Solutions package explanations, AI purchase review and safety gates r
   assert.match(html, /<button class="btn" type="button" disabled>Stripe checkout unavailable<\/button>/);
   assert.match(js, /monthly-saving/);
   assert.match(css, /\.package-guide-grid/);
-  assert.match(html, /Payments and enquiry delivery are disabled pending/);
+  assert.match(html, /Opening offer/);
+  assert.match(html, /No VAT charged/);
   assert.match(html, /id="checkout-pay" disabled/);
-  assert.match(html, /id="checkout-acceptance" hidden/);
-  assert.match(js, /host-checkout-config/);
+  assert.match(html, /id="checkout-acceptance"/);
+  assert.match(js, /depositLinks/);
   assert.match(js, /Continue to Stripe/);
   const cohost = html.split('id="cohosting"')[1].split('id="process"')[0];
   assert.doesNotMatch(cohost, /data-checkout|Stripe|Pay £99 Deposit/);
+});
+
+test("launch: non-VAT-registered all-in pricing, six-month maintenance saving and 14-day refund", () => {
+  assert.equal(vatCharged, false);
+  assert.equal(monthlyDiscountMonths, 6);
+  assert.equal(depositRefundDays, 14);
+  assert.deepEqual(aiFairUse, {
+    standaloneReplies: 1000, directAddonReplies: 500, portfolioReplies: 500, trialReplies: 50,
+  });
+  const html = readFileSync(new URL("../public/host-solutions/index.html", import.meta.url), "utf8");
+  const app = readFileSync(new URL("../public/host-solutions/app.js", import.meta.url), "utf8");
+  const terms = readFileSync(new URL("../public/host-solutions/terms/index.html", import.meta.url), "utf8");
+  const config = readFileSync(new URL("../vercel.json", import.meta.url), "utf8");
+  assert.doesNotMatch(html, /VAT[- ]inclusive|VAT included|include VAT|owner preview/i);
+  for (const id of ["checkout-dialog", "form-success", "brief-review", "send-brief-email", "copy-brief", "ai-review-dialog", "checkout-terms"]) {
+    assert.match(html, new RegExp('id="' + id + '"'));
+  }
+  assert.match(terms, /14 calendar days/);
+  assert.match(terms, /first six paid months/);
+  assert.match(app, /mailto:partners@thepropertycareco.co.uk/);
+  assert.doesNotMatch(app, /host-checkout-config/);
+  assert.doesNotMatch(config, /noindex, nofollow/);
+  for (const id of ["starter","direct","portfolio"]) assert.match(depositLinks[id], /^https:\/\/book\.stripe\.com\/[A-Za-z0-9]+$/);
 });
