@@ -67,3 +67,7 @@
 - User approved website build/maintenance/deposit prices inclusive of VAT, and 25% build promotion until 31 December 2026. Updated catalogue gate and customer-facing pricing disclosures.
 - Stripe LIVE account inspected read-only: 0 existing products, 0 payment links, 0 tax registrations, tax.settings.status=pending because head_office is absent. Vercel env has no Stripe or Redis credentials. No Stripe objects created or payments enabled.
 - Running CI, then advancing gated payment architecture; production remains on main pending safe end-to-end verification.
+
+## Continued secure Checkout implementation
+- Implemented production/test separated Stripe client selection and VAT-inclusive £99 deposit with automatic tax and secure webhook/status verification. Added public checkout configuration API that returns enabled:false while gated. New tests added for environment/key separation, correct VAT treatment and fail-closed readiness.
+- No transaction, live setting, or production deployment enabled. Run CI and preview before treating this as validated.

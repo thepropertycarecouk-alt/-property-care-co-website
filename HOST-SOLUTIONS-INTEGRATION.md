@@ -28,3 +28,8 @@ A GitHub Actions workflow under .github/workflows/host-solutions-preview-qa.yml 
 
 ## New owner-approved tax display
 All quoted website build totals, monthly maintenance rates and the £99 deposit are VAT-inclusive. Do not add VAT on top. The 25% opening discount lasts until 31 December 2026 inclusive. Standalone AI VAT not yet confirmed. Stripe Tax remains pending/head-office missing, no registrations — never treat customer-facing VAT inclusion as proof of Stripe Tax compliance.
+
+## Stripe live/preview gates (code prepared, no credentials configured)
+- Set HOST_SOLUTIONS_STRIPE_TEST_KEY only on preview and HOST_SOLUTIONS_STRIPE_LIVE_KEY only in production. Production key must be secret or restricted server-side, not in HTML or source.
+- Backend requires HOST_SOLUTIONS_TAX_READY=verified, HOST_SOLUTIONS_STRIPE_TAX_CODE (approve website design code), HOST_SOLUTIONS_STRIPE_WEBHOOK_SECRET, HOST_SOLUTIONS_REDIS_URL/TOKEN, HOST_SOLUTIONS_PAYMENT_METHOD_CONFIG excluding BNPL, and HOST_SOLUTIONS_ORIGIN (exact HTTPS site origin). Use HOST_SOLUTIONS_CHECKOUT_ENABLED=test-approved for test previews, then live-approved on production only after E2E and legal/commercial approval. No env keys currently installed.
+- Price_data.tax_behavior=inclusive and automatic_tax.enabled=true, so Stripe Tax must be fully configured, registered and tested. The £99 deposit is a one-time payment only; no maintenance or AI subscriptions are activated.

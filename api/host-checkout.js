@@ -11,6 +11,7 @@ import {
   stripeClient,
   depositParameters,
 } from "../lib/host-solutions/payments.js";
+import { paymentMode } from "../lib/host-solutions/security.js";
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -21,7 +22,7 @@ export default async function handler(req, res) {
   } catch {
     return json(res, 503, {
       error:
-        "Checkout is closed pending approved terms and test configuration.",
+        "Checkout is closed pending approved terms and verified Stripe configuration.",
     });
   }
   let origin, data;
@@ -45,11 +46,11 @@ export default async function handler(req, res) {
       { idempotencyKey: token },
     );
     if (
-      session.livemode ||
+      session.livemode !== (paymentMode() === "live") ||
       !session.url?.startsWith("https://checkout.stripe.com/")
     )
       throw Error();
-    await redis(["SET", `hs:session:${token}`, session.id, "EX", 86400]);
+    await redis(["SET", `hs:${paymentMode()}:session:${token}`, session.id, "EX", 86400]);
     res.setHeader(
       "Set-Cookie",
       `hs_checkout=${token}; HttpOnly; Secure; SameSite=Lax; Path=/api/host-payment-status; Max-Age=86400`,
@@ -57,7 +58,7 @@ export default async function handler(req, res) {
     return json(res, 200, { url: session.url });
   } catch {
     return json(res, 503, {
-      error: "Test checkout is unavailable. No project has been started.",
+      error: "Checkout is unavailable. No project has been started.",
     });
   }
 }

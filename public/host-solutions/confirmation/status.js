@@ -5,12 +5,14 @@ try {
   });
   const data = await response.json();
   if (!response.ok || !data.paid) throw Error();
-  document.getElementById("title").textContent = "Test deposit verified.";
-  document.getElementById("status").textContent =
-    "Your £99 test deposit is recorded. The next step is to confirm your requirements and scope. No real charge has been made.";
+  document.getElementById("title").textContent =
+    data.test ? "Test deposit verified." : "Your website deposit is verified.";
+  document.getElementById("status").textContent = data.test
+    ? "Your £99 test deposit is recorded, with no real charge. Our team will confirm the scope before any work starts."
+    : "Your £99 VAT-inclusive website deposit has been verified. Our team will confirm the scope, remaining build balance and delivery schedule with you. Monthly maintenance has not started.";
   document.getElementById("onboarding").hidden = false;
 } catch {
   document.getElementById("title").textContent = "Payment not verified.";
   document.getElementById("status").textContent =
-    "We cannot confirm a successful test payment for this browser. Checkout is currently closed pending configuration and approval. No project has been started.";
+    "We cannot verify a successful deposit for this browser. Please check your Stripe receipt and contact PCCO before retrying. This page alone does not confirm a payment.";
 }

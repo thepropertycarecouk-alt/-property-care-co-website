@@ -5,6 +5,8 @@ import { priceFor, packages } from "../public/host-solutions/catalog.js";
 import { validateBrief } from "../lib/host-solutions/consultation.js";
 import {
   testKey,
+  liveKey,
+  paymentMode,
   requireOrigin,
   parseBody,
 } from "../lib/host-solutions/security.js";
@@ -15,6 +17,7 @@ import {
   stripeClient,
 } from "../lib/host-solutions/payments.js";
 import checkout from "../api/host-checkout.js";
+import checkoutConfig from "../api/host-checkout-config.js";
 import consultation from "../api/host-consultation.js";
 import webhook from "../api/host-stripe-webhook.js";
 const fakeTestKey = ["sk", "test", "fixture_only_not_a_real_key"].join("_");
@@ -74,7 +77,7 @@ test("promotion includes last millisecond of 31 December, expires in January Lon
 });
 test("unrecognised package cannot control server price", () =>
   assert.throws(() => priceFor("../../anything")));
-test("live keys and production environment are always rejected", () => {
+test("test/live keys are isolated by environment", () => {
   assert.throws(() =>
     testKey({
       HOST_SOLUTIONS_STRIPE_TEST_KEY: ["sk", "live", "fixture"].join("_"),
@@ -90,6 +93,12 @@ test("live keys and production environment are always rejected", () => {
     testKey({ HOST_SOLUTIONS_STRIPE_TEST_KEY: fakeTestKey }),
     fakeTestKey,
   );
+  const fakeLive = ["sk", "live", "fixture_not_a_real_key"].join("_");
+  assert.equal(liveKey({VERCEL_ENV: "production",HOST_SOLUTIONS_STRIPE_LIVE_KEY:fakeLive}),fakeLive);
+  assert.throws(() => liveKey({HOST_SOLUTIONS_STRIPE_LIVE_KEY:fakeLive}));
+  assert.throws(() => liveKey({VERCEL_ENV:"production",HOST_SOLUTIONS_STRIPE_LIVE_KEY:fakeTestKey}));
+  assert.equal(paymentMode({VERCEL_ENV:"production"}),"live");
+  assert.equal(paymentMode({VERCEL_ENV:"preview"}),"test");
 });
 test("checkout remains closed even with a test key while commercial flags unapproved", () =>
   assert.throws(() =>
@@ -107,6 +116,9 @@ test("deposit is fixed server-side; maintenance not silently subscribed", () => 
   );
   assert.equal(p.mode, "payment");
   assert.equal(p.line_items[0].price_data.unit_amount, 9900);
+  assert.equal(p.line_items[0].price_data.tax_behavior, "inclusive");
+  assert.equal(p.automatic_tax.enabled, true);
+  assert.equal(p.metadata.vat_inclusive, "true");
   assert.equal(p.metadata.balance_pence, "38850");
   assert.equal(p.metadata.maintenance_pence, "3400");
   assert.equal(p.metadata.scope_status, "awaiting-confirmation");
@@ -119,9 +131,11 @@ test("only paid test Host Solutions deposits qualify", () => {
     payment_status: "paid",
     currency: "gbp",
     amount_total: 9900,
-    metadata: { service: "host-solutions", package: "direct" },
+    metadata: { service: "host-solutions", package: "direct", vat_inclusive: "true" },
   };
   assert.equal(paidHostSession(s), true);
+  assert.equal(paidHostSession({...s,livemode:true}, true), true);
+  assert.equal(paidHostSession(s, true), false);
   for (const patch of [
     { livemode: true },
     { payment_status: "unpaid" },
@@ -168,6 +182,13 @@ test("disabled endpoints fail closed without network calls", async () => {
     assert.equal(res.code, 503);
     assert.equal(res.headers["Cache-Control"], "no-store");
   }
+});
+test("checkout capability stays disabled without complete commercial and tax setup", async () => {
+  const res = response();
+  await checkoutConfig({method:"GET",headers:{}},res);
+  assert.equal(res.code,200);
+  assert.deepEqual(res.body,{enabled:false,depositPence:9900,vatIncluded:true});
+  assert.equal(res.headers["Cache-Control"],"no-store");
 });
 test("webhook signature rejects tampering and unsigned requests", async () => {
   const stripe = stripeClient({ HOST_SOLUTIONS_STRIPE_TEST_KEY: fakeTestKey });

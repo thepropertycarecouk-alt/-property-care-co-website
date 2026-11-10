@@ -1,4 +1,4 @@
-import { json, redis } from "../lib/host-solutions/security.js";
+import { json, redis, paymentMode } from "../lib/host-solutions/security.js";
 import {
   stripeClient,
   paidHostSession,
@@ -23,9 +23,9 @@ export default async function handler(req, res) {
       req.headers["stripe-signature"],
       process.env.HOST_SOLUTIONS_STRIPE_WEBHOOK_SECRET,
     );
-    if (event.livemode) throw Error();
+    if (event.livemode !== (paymentMode() === "live")) throw Error();
   } catch {
-    return json(res, 400, { error: "Invalid test webhook" });
+    return json(res, 400, { error: "Invalid webhook" });
   }
   try {
     const object = event.data.object;
@@ -34,18 +34,18 @@ export default async function handler(req, res) {
         "checkout.session.completed",
         "checkout.session.async_payment_succeeded",
       ].includes(event.type) &&
-      paidHostSession(object)
+      paidHostSession(object, paymentMode() === "live")
     ) {
       // Atomic SET NX makes duplicate deliveries harmless. No automatic build or email.
       await redis([
         "SET",
-        `hs:deposit:${object.id}`,
+        `hs:${paymentMode()}:deposit:${object.id}`,
         JSON.stringify({
           eventId: event.id,
           package: object.metadata.package,
           balancePence: Number(object.metadata.balance_pence),
           status: "paid-awaiting-scope",
-          test: true,
+          test: paymentMode() !== "live",
         }),
         "NX",
       ]);
@@ -55,11 +55,11 @@ export default async function handler(req, res) {
     ) {
       await redis([
         "SET",
-        `hs:failure:${object.id}`,
+        `hs:${paymentMode()}:failure:${object.id}`,
         JSON.stringify({
           eventId: event.id,
           status: "payment-failed",
-          test: true,
+          test: paymentMode() !== "live",
         }),
         "NX",
       ]);
