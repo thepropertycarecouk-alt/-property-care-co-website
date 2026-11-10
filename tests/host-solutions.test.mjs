@@ -227,7 +227,8 @@ test("Host Solutions package explanations, AI purchase review and safety gates r
   assert.match(js, /monthly-saving/);
   assert.match(css, /\.package-guide-grid/);
   assert.match(html, /Opening offer/);
-  assert.match(html, /No VAT charged/);
+  assert.doesNotMatch(html, /no VAT charged|no VAT is charged|no VAT added|no VAT charged or added/i);
+  assert.match(html, /The displayed website prices are final/);
   assert.match(html, /id="checkout-pay" disabled/);
   assert.match(html, /id="checkout-acceptance"/);
   assert.match(js, /depositLinks/);

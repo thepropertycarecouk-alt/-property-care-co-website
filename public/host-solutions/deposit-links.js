@@ -1,5 +1,5 @@
 // Public, independently verified live Stripe Payment Links.
-// Each link is a £99 one-time website deposit, card only; no VAT charged.
+// Each link is a £99 one-time website deposit, card only.
 // Live checkout is on Stripe and it never starts a subscription.
 export const depositLinks = Object.freeze({
   starter: "https://book.stripe.com/8x2cN4cfXgx05cp7md3VC00",

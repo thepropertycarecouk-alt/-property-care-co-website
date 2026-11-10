@@ -9,7 +9,7 @@ try {
     data.test ? "Test deposit verified." : "Your website deposit is verified.";
   document.getElementById("status").textContent = data.test
     ? "Your £99 test deposit is recorded, with no real charge. Our team will confirm the scope before any work starts."
-    : "Your £99 VAT-inclusive website deposit has been verified. Our team will confirm the scope, remaining build balance and delivery schedule with you. Monthly maintenance has not started.";
+    : "Your £99 website deposit has been verified. Our team will confirm the scope, remaining build balance and delivery schedule with you. Monthly maintenance has not started.";
   document.getElementById("onboarding").hidden = false;
 } catch {
   document.getElementById("title").textContent = "Payment not verified.";
