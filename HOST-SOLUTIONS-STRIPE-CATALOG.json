@@ -1,0 +1,88 @@
+{
+  "status": "live-payment-links-active",
+  "currency": "gbp",
+  "vat": "no-vat-charged-merchant-not-vat-registered",
+  "monthlyOfferDuration": "first-six-paid-months-then-normal",
+  "depositPence": 9900,
+  "packages": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "oneOffBuildPence": 39900,
+      "openingBuildPence": 29925,
+      "standardMonthlyPence": 1900,
+      "openingMonthlyPence": 1400
+    },
+    {
+      "id": "direct",
+      "name": "Direct Booking",
+      "oneOffBuildPence": 65000,
+      "openingBuildPence": 48750,
+      "standardMonthlyPence": 3900,
+      "openingMonthlyPence": 3400
+    },
+    {
+      "id": "portfolio",
+      "name": "Portfolio Pro",
+      "oneOffBuildPence": 99500,
+      "openingBuildPence": 74625,
+      "standardMonthlyPence": 5500,
+      "openingMonthlyPence": 5000
+    }
+  ],
+  "ai": [
+    {
+      "id": "standalone",
+      "setupPence": 15000,
+      "monthlyPence": 2000
+    },
+    {
+      "id": "direct-addon",
+      "setupPence": 7500,
+      "monthlyPence": 1000
+    }
+  ],
+  "subscriptionStart": "separately-agreed-and-authorised",
+  "financeMethods": "excluded; verify payment method configuration",
+  "standaloneAiVat": "no-vat-charged",
+  "stripeTax": {
+    "enabled": false,
+    "reason": "No UK VAT registration and no VAT charged"
+  },
+  "paymentReady": true,
+  "stripeConnection": {
+    "mode": "live",
+    "chargesEnabled": true,
+    "payoutsEnabled": true,
+    "linksCreated": true,
+    "approach": "Stripe-hosted active card-only Payment Links; no server API keys necessary",
+    "testPaymentPerformed": false
+  },
+  "depositRefundDays": 14,
+  "aiFairUse": {
+    "standaloneReplies": 1000,
+    "directAddonReplies": 500,
+    "portfolioReplies": 500,
+    "trialReplies": 50
+  },
+  "packagePaymentLinks": [
+    {
+      "id": "starter",
+      "stripeId": "plink_1UaJtCAuxFu0m9QL1E6Bp2BH",
+      "url": "https://book.stripe.com/8x2cN4cfXgx05cp7md3VC00",
+      "depositPence": 9900
+    },
+    {
+      "id": "direct",
+      "stripeId": "plink_1UaJtYAuxFu0m9QLQKxPgNxk",
+      "url": "https://book.stripe.com/8x28wO6VD5Sm20d7md3VC01",
+      "depositPence": 9900
+    },
+    {
+      "id": "portfolio",
+      "stripeId": "plink_1UaJtbAuxFu0m9QLrj7gCtMu",
+      "url": "https://book.stripe.com/4gM3cu93L94ygV7dKB3VC02",
+      "depositPence": 9900
+    }
+  ]
+}
