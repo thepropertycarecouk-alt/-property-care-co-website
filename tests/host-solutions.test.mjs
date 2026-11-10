@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { priceFor, packages, vatCharged, monthlyDiscountMonths, depositRefundDays, aiFairUse } from "../public/host-solutions/catalog.js";
 import { depositLinks } from "../public/host-solutions/deposit-links.js";
+import { standaloneAiSetupLink, customerBillingPortalLink } from "../public/host-solutions/stripe-links.js";
 import { validateBrief } from "../lib/host-solutions/consultation.js";
 import {
   testKey,
@@ -223,7 +224,9 @@ test("Host Solutions package explanations, AI purchase review and safety gates r
   assert.match(html, /id="ai-review-dialog"/);
   assert.match(html, /£150/);
   assert.match(html, /£20\/month/);
-  assert.match(html, /<button class="btn" type="button" disabled>Stripe checkout unavailable<\/button>/);
+  assert.match(html, /id="ai-setup-pay" disabled/);
+  assert.match(html, /id="ai-setup-terms"/);
+  assert.match(js, /standaloneAiSetupLink/);
   assert.match(js, /monthly-saving/);
   assert.match(css, /\.package-guide-grid/);
   assert.match(html, /Opening offer/);
@@ -258,4 +261,15 @@ test("launch: non-VAT-registered all-in pricing, six-month maintenance saving an
   assert.doesNotMatch(app, /host-checkout-config/);
   assert.doesNotMatch(config, /noindex, nofollow/);
   for (const id of ["starter","direct","portfolio"]) assert.match(depositLinks[id], /^https:\/\/book\.stripe\.com\/[A-Za-z0-9]+$/);
+});
+
+test("standalone AI setup is one-time and links only to approved Stripe hosts", () => {
+  assert.match(standaloneAiSetupLink, /^https:\/\/buy\.stripe\.com\/[A-Za-z0-9]+$/);
+  assert.match(customerBillingPortalLink, /^https:\/\/billing\.stripe\.com\/p\/login\/[A-Za-z0-9]+$/);
+  const source = readFileSync(new URL("../public/host-solutions/index.html", import.meta.url), "utf8");
+  assert.match(source, /I am paying £150 once for setup/);
+  assert.match(source, /subscription is separate/);
+  const terms = readFileSync(new URL("../public/host-solutions/terms/index.html", import.meta.url), "utf8");
+  assert.match(terms, /Cancellation takes effect at the end/);
+  assert.match(terms, /£5 off for the first six monthly billing periods/);
 });

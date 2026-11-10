@@ -1,5 +1,6 @@
 import { packages, priceFor, money } from "./catalog.js";
 import { depositLinks } from "./deposit-links.js";
+import { standaloneAiSetupLink } from "./stripe-links.js";
 const $ = (s) => document.querySelector(s);
 const prices = packages.map((p) => priceFor(p.id));
 $("#pricing").innerHTML = prices
@@ -454,7 +455,23 @@ const aiDialog = $("#ai-review-dialog");
 let aiOpener;
 $("#ai-review-open").addEventListener("click", (event) => {
   aiOpener = event.currentTarget;
+  $("#ai-setup-terms").checked = false;
+  $("#ai-setup-pay").disabled = true;
+  $("#ai-setup-error").hidden = true;
   aiDialog.showModal();
+});
+$("#ai-setup-terms").addEventListener("change", (event) => {
+  $("#ai-setup-pay").disabled = !event.target.checked;
+});
+$("#ai-setup-pay").addEventListener("click", () => {
+  if (!aiDialog.open || !$("#ai-setup-terms").checked) return;
+  if (!/^https:\/\/buy\.stripe\.com\/[A-Za-z0-9]+$/.test(standaloneAiSetupLink)) {
+    $("#ai-setup-error").textContent = "AI setup checkout is currently unavailable. No payment has been taken.";
+    $("#ai-setup-error").hidden = false;
+    return;
+  }
+  $("#ai-setup-pay").disabled = true;
+  window.location.assign(standaloneAiSetupLink);
 });
 $("#close-ai-review").addEventListener("click", () => aiDialog.close());
 aiDialog.addEventListener("close", () => aiOpener?.focus());
