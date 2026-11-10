@@ -838,13 +838,88 @@
                 </div>
                 <label class="consent"
                   ><input type="checkbox" name="consent" required /><span
-                    >I agree PCCO may use the information I choose to send by email to respond to my enquiry. I understand I must send the prepared email myself. This is not marketing consent.</span>
+                    >I agree PCCO may use the details I send by email to respond to my enquiry. I understand I must press Send in my email app. This is not consent to marketing.</span
+                  ></label
+                >
+                <div class="form-actions">
+                  <button class="btn secondary" type="button" data-back>
+                    ← Back</button
+                  ><button class="btn" type="button" data-next>
+                    Review my brief →
+                  </button>
+                </div>
+              </div>
+              <div class="form-content" data-step="3" hidden>
+                <h3 tabindex="-1">Everything look right?</h3>
+                <p class="sub">
+                  Review your details, then open the prepared enquiry in your email app and press Send. This page does not send it by itself.
+                </p>
+                <dl class="review" id="brief-review"></dl>
+                <div class="form-actions">
+                  <button class="btn secondary" type="button" data-back>
+                    ← Edit details</button
+                  ><button class="btn" type="submit">
+                    Open email to send →
+                  </button>
+                </div>
+              </div>
+              <p class="error" id="form-error" role="alert" hidden></p>
+            </form>
+            <div class="success" id="form-success" hidden tabindex="-1">
+  <p class="eyebrow">Ready to send · check your email app</p>
+  <h3>Your enquiry is ready.</h3>
+  <p>Your email app should open a draft addressed to partners@thepropertycareco.co.uk. Please press Send in that app. The website has not submitted or delivered the brief.</p>
+  <p>If your email app did not open, use the link below or copy the brief into a new email.</p>
+  <div class="actions">
+    <a class="btn" id="send-brief-email" href="mailto:partners@thepropertycareco.co.uk">Open email to send</a>
+    <button class="btn secondary" id="copy-brief" type="button">Copy my brief</button>
+    <button class="btn secondary" id="restart-brief" type="button">Start a new brief</button>
+  </div>
+</div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="wrap">
+        <div>
+          <strong>The Property Care Co.</strong>
+          <p>Host Solutions · Websites, AI and accommodation support.</p>
+          <p>© 2026 The Property Care Co.</p>
+        </div>
+        <div>
+          <div class="footer-links">
+            <a href="/">PCCO Stays</a><a href="/partners/">Partners</a
+            ><a href="#consultation">Contact</a>
+          </div>
+          <p><a href="/host-solutions/terms/">Deposit and cancellation terms</a> · No VAT charged</p>
+        </div>
+      </div>
+    </footer>
+    <dialog id="checkout-dialog" aria-labelledby="checkout-title">
+      <div class="dialog-content">
+        <div class="dialog-top">
+          <div>
+            <p class="eyebrow">Your website, one step closer</p>
+            <h3 id="checkout-title">Review your package</h3>
+          </div>
+          <button
+            class="close"
+            id="close-checkout"
+            type="button"
+            aria-label="Close checkout review"
+          >
+            ×
+          </button>
+        </div>
+        <p class="checkout-total">
+          £99 <span style="font-size: 16px; letter-spacing: 0">deposit</span>
         </p>
         <p class="fine">Part of your build price. Not an extra fee.</p>
         <dl class="checkout-breakdown" id="checkout-breakdown"></dl>
-        <p class="checkout-notice" id="checkout-notice"><strong>Secure £99 deposit by Stripe.</strong> No VAT charged; fully refundable if requested within 14 days. No subscription starts with this payment.</p>
+        <p class="checkout-notice" id="checkout-notice"><strong>Pay £99 securely through Stripe.</strong> No VAT charged. Fully refundable if requested within 14 days of payment. No subscription begins with the deposit.</p>
         <label class="consent" id="checkout-acceptance">
-          <input type="checkbox" id="checkout-terms" /><span>I understand £99 is credited towards the website build, fully refundable on request within 14 days, and doesn't start a maintenance or AI subscription. I accept the <a href="/host-solutions/terms/" target="_blank" rel="noopener noreferrer">deposit and cancellation terms</a>.</span>
+          <input type="checkbox" id="checkout-terms" /><span>I understand £99 is credited against the displayed website build price, is fully refundable on request within 14 days, and does not start maintenance or AI billing. I agree to the <a href="/host-solutions/terms/" target="_blank" rel="noopener noreferrer">deposit and cancellation terms</a>.</span>
         </label>
         <p class="error" id="checkout-error" role="alert" hidden></p>
         <p class="fine" style="margin-top: 16px">
@@ -878,7 +953,7 @@
           <div><dt>Conversation allowance</dt><dd>1,000 replies/month</dd></div>
           <div><dt>VAT</dt><dd>No VAT charged</dd></div>
         </dl>
-        <p class="checkout-notice"><strong>Standalone AI requires consultation.</strong> £150 setup + £20/month includes 1,000 replies/month. No VAT is charged. Activation and recurring billing need separate agreement; no automatic overage charges.</p>
+        <p class="checkout-notice"><strong>Standalone AI is arranged through consultation.</strong> £150 setup + £20/month includes 1,000 text replies/month. No VAT charged. Activation and monthly billing require a separate agreement. No automatic overage charges.</p>
         <p class="fine" style="margin-top:16px">Your assistant can collect enquiries and make suggestions using available, approved property data. It does not guarantee availability or book a property automatically.</p>
         <div class="actions">
           <button class="btn" type="button" disabled>Stripe checkout unavailable</button>
