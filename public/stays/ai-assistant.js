@@ -224,6 +224,72 @@
   $('.pcco-ai-properties-open').addEventListener('click',()=>void showProperties());
   $('.pcco-ai-review-open').addEventListener('click',openReview);
   $('.pcco-ai-back').addEventListener('click',closeReview);
-  review.addEventListener('submit',e=>{e.preventDefault(); /* Preview: deliberately no network request or production enquiry */});
+  review.addEventListener('submit',async e=>{
+    e.preventDefault();
+    if(submitted||review.dataset.sending==='true')return;
+    const values=Object.fromEntries(new FormData(review));
+    const feedback=$('.pcco-ai-feedback');
+    const submit=$('.pcco-ai-submit');
+    const fullName=String(values.name||'').trim(),email=String(values.email||'').trim();
+    const phone=String(values.phone||'').trim(),locationRequired=String(values.location||'').trim();
+    const digits=phone.replace(/\D/g,'');
+    if(fullName.length<2||!locationRequired||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||digits.length<7||digits.length>15||!review.reportValidity()){
+      feedback.hidden=false;feedback.textContent='Please check your name, email, phone, location and privacy consent before sending.';
+      return;
+    }
+    if(values.consent!=='on'){feedback.hidden=false;feedback.textContent='Please agree to the enquiry privacy details before sending.';return;}
+    // These dates may be approximate. Retain exactly what the guest entered, without inventing a date.
+    const arrive=String(values.arrival||'').trim(),depart=String(values.departure||'').trim(),duration=String(values.duration||'').trim();
+    const stay=[arrive?'Arrival: '+arrive:'',depart?'Departure: '+depart:'',duration?'Duration: '+duration:''].filter(Boolean).join('; ')||'Dates to be confirmed';
+    const chosen=[...selectedProperties.values()];
+    const brief=[
+      'SOURCE: PCCO AI CHATBOT — PRIVATE TEST',
+      'PURPOSE: '+String(values.purpose||'Not specified'),
+      'LOCATION: '+locationRequired,
+      'DATES: '+stay,
+      'GUESTS: '+String(values.guests||'Not specified'),
+      'BEDROOMS: '+String(values.bedrooms||'Not specified'),
+      'SEPARATE BEDS: '+String(values.beds||'Not specified'),
+      'PARKING: '+String(values.parking||'Not specified'),
+      'BUDGET: '+String(values.budget||'To be discussed'),
+      'ADDITIONAL REQUIREMENTS: '+String(values.notes||'None'),
+      'SELECTED LISTINGS (AVAILABILITY NOT CONFIRMED):',
+      chosen.length?chosen.map(p=>p.name+' — https://www.thepropertycareco.co.uk/properties/'+encodeURIComponent(p.slug)+'/').join('\n'):'None; please source suitable options from the wider network',
+      'All availability, layouts, parking and pricing must be confirmed by PCCO.'
+    ].join('\n');
+    const payload={
+      enquiry_type:'need_accommodation',
+      source:'website_ai_preview',
+      full_name:fullName,email,phone,location_required:locationRequired,
+      check_in_date:/^\d{4}-\d{2}-\d{2}$/.test(arrive)?arrive:null,
+      stay_length:stay.slice(0,120),guest_count:parsedCount(values.guests),
+      unit_count:null,bedrooms_required:String(values.bedrooms||'').slice(0,150),
+      parking_required:String(values.parking||'').slice(0,60),
+      budget:String(values.budget||'').slice(0,120),
+      details:brief.slice(0,3000),website:''
+    };
+    review.dataset.sending='true';submit.disabled=true;submit.textContent='Sending enquiry…';
+    feedback.hidden=true;
+    try{
+      const response=await fetch(ENQUIRY_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(30000)});
+      const receipt=await response.json().catch(()=>({}));
+      if(!response.ok||!receipt.ok)throw new Error(receipt.error||'The enquiry could not be confirmed.');
+      submitted=true;
+      review.hidden=true;messages.hidden=false;actions.hidden=true;chat.hidden=true;
+      messages.querySelectorAll('.pcco-ai-inline-review').forEach(node=>node.remove());
+      const reference=receipt.id?' Reference: '+receipt.id+'.':'';
+      if(receipt.notification_sent?.owner===true){
+        showStatus('Thank you, '+fullName+'. Your accommodation enquiry has been received and the email notification has been sent to PCCO Stays.'+reference+' We aim to respond within 24 hours. Availability and prices are still subject to confirmation.');
+      }else{
+        showStatus('Thank you, '+fullName+'. Your enquiry has been saved.'+reference+' The email notification could not be confirmed, so please contact PCCO on 07411 251361 if urgent. Do not resubmit the same request.');
+      }
+      selectedProperties.clear();
+    }catch(err){
+      feedback.hidden=false;feedback.textContent=(err instanceof Error?err.message:'Unable to send the enquiry.')+' Your details are still here; please avoid repeated submissions if you are unsure whether it arrived.';
+    }finally{
+      review.dataset.sending='false';
+      if(!submitted){submit.disabled=false;submit.textContent='Send Enquiry';}
+    }
+  });
   $('.pcco-ai-existing').addEventListener('click',()=>toggle(false));
 })();
