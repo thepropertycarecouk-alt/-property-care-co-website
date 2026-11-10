@@ -32,3 +32,10 @@
 - First API deployment attempt rejected target=preview (400); corrected to Vercel API target=staging and succeeded. No production deployment attempted.
 - Found header route matcher did not cover directory pages on first deployment (JS had CSP but page did not). Changed matcher to /host-solutions(.*); must verify in next preview. Form/checkout remain disabled independently.
 - Saved actual local pricing screenshot docs/host-solutions/pricing-preview.png. Reformatted source for maintainability.
+
+## Final verification / handoff
+- Updated implementation committed remotely: 780b4f740143649c5fdda7c7b8be3b509aa8fea3.
+- Final preview READY: https://pcc-live-site-260825-olj7hinte-thepropertycarecouk-4795.vercel.app/host-solutions/ (deployment dpl_AsHTFVRdg6W5BJJgSEByrdc2JRkq).
+- Deployed directory page HTTP 200 with all intended CSP/noindex/nosniff/referrer headers verified after matcher fix.
+- Handoff rewritten as authoritative snapshot with exact resumption steps, tests, limits, configuration blockers and approvals. Current documentation-only commit does not alter deployed application code.
+- Production untouched; no live charging or outgoing development/customer messages. PR remains draft.
