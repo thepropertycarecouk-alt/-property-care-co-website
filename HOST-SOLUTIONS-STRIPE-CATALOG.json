@@ -215,5 +215,23 @@
       "amountPence": 64725,
       "private": true
     }
-  ]
+  ],
+  "notifications": {
+    "webhookEndpointId": "we_1UaMWsAuxFu0m9QL3hGECPcb",
+    "webhookUrl": "https://www.thepropertycareco.co.uk/api/host-stripe-notify",
+    "enabledEvents": [
+      "checkout.session.completed",
+      "checkout.session.async_payment_succeeded",
+      "invoice.paid",
+      "invoice.payment_failed",
+      "customer.subscription.updated",
+      "customer.subscription.deleted"
+    ],
+    "recipient": "partners@thepropertycareco.co.uk",
+    "secrets": "stored-as-sensitive-production-vercel-environment-variables",
+    "persistentEventStore": false,
+    "providerIdempotencyHours": 24,
+    "sourceOfTruth": "stripe",
+    "note": "No customer emails or financial actions on webhook; internal alerts only. Initially webhook disabled until redeployment."
+  }
 }
