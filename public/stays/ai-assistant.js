@@ -16,6 +16,7 @@
     .pcco-ai-messages{padding:16px 14px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;background:#fbfaf7}
     .pcco-ai-bubble{padding:11px 13px;border-radius:12px;max-width:87%;white-space:pre-wrap;word-break:break-word}
     .pcco-ai-bubble.assistant{background:#fff;border:1px solid #e5e7eb;align-self:flex-start}.pcco-ai-bubble.user{background:#e7eef6;align-self:flex-end}
+    .pcco-ai-inline-review{align-self:flex-start;background:#021b3c;color:white;border:1px solid #c99e51;border-radius:9px;padding:10px 14px;font:600 13px Arial,sans-serif;cursor:pointer}.pcco-ai-inline-review:hover{background:#123456}
     .pcco-ai-actions{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid #eee}
     .pcco-ai-actions button{font-size:12px;color:#021b3c;background:#fff;border:1px solid #d5c49e;border-radius:18px;padding:7px 10px;cursor:pointer}
     .pcco-ai-send{padding:12px;background:white;border-top:1px solid #e4e4e4;display:flex;gap:7px}
@@ -42,9 +43,9 @@
     <div class="pcco-ai-header"><span aria-hidden="true" style="font-size:23px">✦</span><div><strong>PCCO Stays Assistant</strong><small>AI-powered booking enquiries</small></div><button type="button" class="pcco-ai-close" aria-label="Close assistant">×</button></div>
     <div class="pcco-ai-preview">Private preview — no enquiries are submitted or emailed.</div>
     <div class="pcco-ai-messages" aria-live="polite" aria-relevant="additions text"></div>
-    <div class="pcco-ai-actions"><button type="button" data-ask="We need contractor accommodation.">Contractors</button><button type="button" data-ask="I'm looking for family or relocation accommodation.">Family / relocation</button><button type="button" data-ask="I need accommodation for a work trip.">Corporate stay</button><button type="button" class="pcco-ai-review-open">Review enquiry</button></div>
+    <div class="pcco-ai-actions"><button type="button" data-ask="We need contractor accommodation.">Contractors</button><button type="button" data-ask="I'm looking for family or relocation accommodation.">Family / relocation</button><button type="button" data-ask="I need accommodation for a work trip.">Corporate stay</button><button type="button" class="pcco-ai-review-open">Review &amp; confirm</button></div>
     <form class="pcco-ai-send"><textarea rows="2" maxlength="1500" aria-label="Message the PCCO AI Assistant" placeholder="Tell me where and when you need to stay…" required></textarea><button type="submit">Send</button></form>
-    <form class="pcco-ai-review" hidden><h3>Review your accommodation request</h3><p>Check or correct your details before submitting. We confirm prices and availability separately.</p>
+    <form class="pcco-ai-review" hidden><h3>Review &amp; confirm your enquiry</h3><p>Your chat has pre-filled these details. Check or correct them here. In the live version you will be able to send this directly to PCCO; no enquiry is sent from this private preview.</p>
       <label>Full name *<input name="name" maxlength="100" autocomplete="name" required></label>
       <label>Email *<input type="email" name="email" maxlength="160" autocomplete="email" required></label>
       <label>Phone *<input type="tel" name="phone" maxlength="40" autocomplete="tel" required></label>
@@ -62,7 +63,7 @@
       <label class="pcco-ai-check pcco-ai-wide"><input type="checkbox" name="consent" required> <span>I agree that PCCO may use the details I provide to respond to my enquiry. I understand AI processes chat messages and no booking is confirmed by this chat.</span></label>
       <div class="pcco-ai-error" role="alert" hidden></div>
       <button type="button" class="pcco-ai-back pcco-ai-wide">← Back to chat</button>
-      <button type="submit" class="pcco-ai-submit" disabled>Test preview — submission disabled</button>
+      <button type="submit" class="pcco-ai-submit" disabled>Send Enquiry — available after approval</button>
     </form>
     <div class="pcco-ai-foot">You are chatting with AI. Replies may be inaccurate; do not share sensitive information. For urgent help call <a href="tel:+447411251361" style="text-decoration:underline">07411 251361</a>. <a href="#enquire" class="pcco-ai-existing" style="text-decoration:underline">Use standard enquiry form</a>.</div>
   `;
@@ -72,6 +73,13 @@
   const review=$('.pcco-ai-review'),chat=$('.pcco-ai-send'),actions=$('.pcco-ai-actions');
   const history=[];let latestLead={},working=false;
   function bubble(role,text){const node=document.createElement('div');node.className='pcco-ai-bubble '+role;node.textContent=text;messages.append(node);messages.scrollTop=messages.scrollHeight;return node;}
+  function offerReview(){
+    messages.querySelectorAll('.pcco-ai-inline-review').forEach(node=>node.remove());
+    if(!(latestLead.location && (latestLead.arrival||latestLead.departure||latestLead.duration) && (latestLead.email||latestLead.phone)))return;
+    const button=document.createElement('button');button.type='button';button.className='pcco-ai-inline-review';
+    button.textContent='Review & confirm enquiry →';button.addEventListener('click',openReview);
+    messages.append(button);messages.scrollTop=messages.scrollHeight;
+  }
   bubble('assistant','Welcome to PCCO Stays! I can help with contractor accommodation, business travel, family visits or relocation. Tell me what you need, or ask me anything about our service.');
   function toggle(force){const open=typeof force==='boolean'?force:panel.hidden;panel.hidden=!open;launch.setAttribute('aria-expanded',String(open));if(open)typing.focus();else launch.focus();}
   launch.addEventListener('click',()=>toggle());
@@ -90,6 +98,7 @@
       waiting.textContent=payload.reply;
       history.push({role:'assistant',content:payload.reply});
       latestLead=payload.lead||{};
+      offerReview();
       // Limit conversation history submitted to the model to control cost and latency.
       if(history.length>22)history.splice(0,history.length-22);
     }catch(err){
