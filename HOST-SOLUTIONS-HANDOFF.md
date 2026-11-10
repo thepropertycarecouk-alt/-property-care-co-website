@@ -1,3 +1,6 @@
+# Live form and Stripe notification improvement — 10 November 2026
+A new cookie-verified serverless form adapter and signed Stripe event notification endpoint are developed. See docs/host-solutions/lead-and-payment-notifications.md. The frontend attempts direct submission only if the backend reports ready; otherwise provides a truthful email fallback. Payment events are restricted to vetted Stripe IDs and result only in internal alerts; no automatic customer email, refunds or subscriptions. Production environment variables and account permissions determine whether features can be activated. Read actual deployment/CI status before claiming any integration is live.
+
 # PCCO Host Solutions — current operational handoff
 Updated 10 November 2026. Production is LIVE at https://www.thepropertycareco.co.uk/host-solutions/. GitHub main has been released through PR #16, #17 and #18. The primary operational guide is docs/host-solutions/stripe-billing-operations.md, followed by the historical notes below.
 

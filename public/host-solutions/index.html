@@ -668,7 +668,7 @@
               ><a href="tel:+447411251361">Sandeep · +44 7411 251361</a>
             </div>
             <p class="privacy-note">
-              Your information stays in your browser unless you choose to send it using your own email app. This form does not automatically upload or deliver the brief. We use enquiries to respond to your request.</p>
+              Your information is only submitted when you choose to send your request. We use it to respond to your enquiry, not for unsolicited marketing. If secure delivery is unavailable, you can send the prepared email yourself.</p>
           </div>
           <div class="form-shell">
             <div class="form-top">
@@ -838,7 +838,7 @@
                 </div>
                 <label class="consent"
                   ><input type="checkbox" name="consent" required /><span
-                    >I agree PCCO may use the details I send by email to respond to my enquiry. I understand I must press Send in my email app. This is not consent to marketing.</span
+                    >I agree PCCO may use my submitted details to respond to this enquiry. This is not consent to marketing.</span
                   ></label
                 >
                 <div class="form-actions">
@@ -852,26 +852,26 @@
               <div class="form-content" data-step="3" hidden>
                 <h3 tabindex="-1">Everything look right?</h3>
                 <p class="sub">
-                  Review your details, then open the prepared enquiry in your email app and press Send. This page does not send it by itself.
+                  Review your details, then send your consultation request securely. If direct delivery is unavailable, you can use a prepared email instead.
                 </p>
                 <dl class="review" id="brief-review"></dl>
                 <div class="form-actions">
                   <button class="btn secondary" type="button" data-back>
                     ← Edit details</button
                   ><button class="btn" type="submit">
-                    Open email to send →
+                    Send my consultation request →
                   </button>
                 </div>
               </div>
               <p class="error" id="form-error" role="alert" hidden></p>
             </form>
             <div class="success" id="form-success" hidden tabindex="-1">
-  <p class="eyebrow">Ready to send · check your email app</p>
-  <h3>Your enquiry is ready.</h3>
-  <p>Your email app should open a draft addressed to partners@thepropertycareco.co.uk. Please press Send in that app. The website has not submitted or delivered the brief.</p>
-  <p>If your email app did not open, use the link below or copy the brief into a new email.</p>
+  <p class="eyebrow" id="brief-outcome-label">Consultation enquiry</p>
+  <h3 id="brief-outcome-title">Your enquiry is ready.</h3>
+  <p id="brief-outcome-message" role="status">Check the status below for the next step.</p>
+  <p id="brief-outcome-help">You can also contact our team directly.</p>
   <div class="actions">
-    <a class="btn" id="send-brief-email" href="mailto:partners@thepropertycareco.co.uk">Open email to send</a>
+    <a class="btn" id="send-brief-email" href="mailto:partners@thepropertycareco.co.uk">Open prepared email</a>
     <button class="btn secondary" id="copy-brief" type="button">Copy my brief</button>
     <button class="btn secondary" id="restart-brief" type="button">Start a new brief</button>
   </div>

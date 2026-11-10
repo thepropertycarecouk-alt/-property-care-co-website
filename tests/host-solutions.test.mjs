@@ -18,10 +18,12 @@ import {
   paidHostSession,
   stripeClient,
 } from "../lib/host-solutions/payments.js";
-import checkout from "../api/host-checkout.js";
-import checkoutConfig from "../api/host-checkout-config.js";
 import consultation from "../api/host-consultation.js";
-import webhook from "../api/host-stripe-webhook.js";
+import { issueChallenge, verifyChallenge, formConfigured } from "../lib/host-solutions/form-challenge.js";
+import { verifyStripeEvent, describeHostEvent } from "../lib/host-solutions/stripe-notifications.js";
+import stripeNotify from "../api/host-stripe-notify.js";
+import { createHmac } from "node:crypto";
+import { Readable } from "node:stream";
 const fakeTestKey = ["sk", "test", "fixture_only_not_a_real_key"].join("_");
 const brief = {
   business: "Test Stays",
@@ -177,41 +179,11 @@ test("origin and bounded body validation", () => {
   assert.throws(() => parseBody({ body: "x".repeat(12001) }));
   assert.throws(() => parseBody({ body: "[]" }));
 });
-test("disabled endpoints fail closed without network calls", async () => {
-  for (const fn of [checkout, consultation]) {
-    const res = response();
-    await fn({ method: "POST", headers: {}, body: brief }, res);
-    assert.equal(res.code, 503);
-    assert.equal(res.headers["Cache-Control"], "no-store");
-  }
-});
-test("checkout capability stays disabled without complete commercial and tax setup", async () => {
-  const res = response();
-  await checkoutConfig({method:"GET",headers:{}},res);
-  assert.equal(res.code,200);
-  assert.deepEqual(res.body,{enabled:false,depositPence:9900,vatIncluded:true});
+test("disabled direct consultation POST fails closed without email credentials", async () => {
+  const res=response();
+  await consultation({method:"POST",headers:{},body:brief},res);
+  assert.equal(res.code,503);
   assert.equal(res.headers["Cache-Control"],"no-store");
-});
-test("webhook signature rejects tampering and unsigned requests", async () => {
-  const stripe = stripeClient({ HOST_SOLUTIONS_STRIPE_TEST_KEY: fakeTestKey });
-  const payload = JSON.stringify({
-    id: "evt_fixture",
-    livemode: false,
-    type: "checkout.session.completed",
-    data: { object: {} },
-  });
-  const secret = "fixture_signing_secret";
-  const header = stripe.webhooks.generateTestHeaderString({ payload, secret });
-  assert.equal(
-    stripe.webhooks.constructEvent(payload, header, secret).id,
-    "evt_fixture",
-  );
-  assert.throws(() =>
-    stripe.webhooks.constructEvent(payload + " ", header, secret),
-  );
-  const res = response();
-  await webhook({ method: "POST", headers: {} }, res);
-  assert.equal(res.code, 400);
 });
 
 test("Host Solutions package explanations, AI purchase review and safety gates render in source", () => {
@@ -258,6 +230,8 @@ test("launch: non-VAT-registered all-in pricing, six-month maintenance saving an
   assert.match(terms, /14 calendar days/);
   assert.match(terms, /first six paid months/);
   assert.match(app, /mailto:partners@thepropertycareco.co.uk/);
+  assert.match(app, /host-consultation"/);
+  assert.match(html, /brief-outcome-message/);
   assert.doesNotMatch(app, /host-checkout-config/);
   assert.doesNotMatch(config, /noindex, nofollow/);
   for (const id of ["starter","direct","portfolio"]) assert.match(depositLinks[id], /^https:\/\/book\.stripe\.com\/[A-Za-z0-9]+$/);
@@ -289,4 +263,60 @@ test("post-offer checkout uses standard Stripe deposit links and correct remaini
   const source=readFileSync(new URL("../public/host-solutions/app.js",import.meta.url),"utf8");
   assert.match(source,/depositLinkFor\(p.id, p.promo\)/);
   assert.doesNotMatch(source,/Opening offer ended";/);
+});
+
+// Live-adapter tests never send emails, issue charges or require credentials.
+test("signed consultation challenge rejects tampering, old tokens and immediate spam", () => {
+  const key = "1".repeat(64);
+  const now = 1794346200000;
+  const token = issueChallenge(key, now, "a".repeat(32));
+  assert.equal(verifyChallenge(token,key,now+1900).nonce, "a".repeat(32));
+  assert.throws(() => verifyChallenge(token,key,now+200));
+  assert.throws(() => verifyChallenge(token,key,now+31*60*1000));
+  assert.throws(() => verifyChallenge(token.slice(0,-1)+"0",key,now+1900));
+  assert.equal(formConfigured({}),false);
+});
+
+test("live lead form capability stays disabled until verified provider and secret are configured", async () => {
+  const res = response();
+  await consultation({method:"GET",headers:{}},res);
+  assert.equal(res.code,200);
+  assert.deepEqual(res.body,{enabled:false});
+});
+
+test("webhook signatures reject forged and stale events", () => {
+  const secret="whsec_test_fixture_not_real";
+  const payload=Buffer.from(JSON.stringify({id:"evt_TESTSIGNATURE",object:"event",livemode:true,type:"checkout.session.completed",data:{object:{}}}));
+  const at=1794346200000, timestamp=Math.floor(at/1000);
+  const signature=createHmac("sha256",secret).update(String(timestamp)+".").update(payload).digest("hex");
+  const header="t="+timestamp+",v1="+signature;
+  assert.equal(verifyStripeEvent(payload,header,secret,at).id,"evt_TESTSIGNATURE");
+  assert.throws(()=>verifyStripeEvent(Buffer.concat([payload,Buffer.from(" ")]),header,secret,at));
+  assert.throws(()=>verifyStripeEvent(payload,header,secret,at+10*60*1000));
+});
+
+test("webhook accepts only the correct PCCO payment links and expected amounts", () => {
+  function event(link,amount,kind="checkout.session.completed"){
+    return {id:"evt_TEST",object:"event",type:kind,livemode:true,data:{object:{
+      object:"checkout.session",id:"cs_TEST",payment_link:link,livemode:true,
+      amount_total:amount,currency:"gbp",payment_status:"paid",customer_details:{email:"sample@example.com"}
+    }}};
+  }
+  const good=describeHostEvent(event("plink_1UaJtCAuxFu0m9QL1E6Bp2BH",9900));
+  assert.match(good.subject,/payment received/);
+  assert.match(good.text,/Starter website opening deposit/);
+  assert.equal(describeHostEvent(event("plink_nonexistent",9900)),null);
+  assert.equal(describeHostEvent(event("plink_1UaJtCAuxFu0m9QL1E6Bp2BH",10000)),null);
+  assert.equal(describeHostEvent({...event("plink_1UaJtCAuxFu0m9QL1E6Bp2BH",9900),livemode:false}),null);
+  assert.match(describeHostEvent(event("plink_1UaLa3AuxFu0m9QLOODhCsVG",1400)).text,/Starter website monthly maintenance/);
+  assert.match(describeHostEvent(event("plink_1UaLa3AuxFu0m9QLOODhCsVG",1900)).text,/Starter website monthly maintenance/);
+});
+
+test("unconfigured Stripe notification endpoint fails closed without sending messages", async () => {
+  const res=response();
+  const req=Readable.from([]);
+  req.method="POST";
+  req.headers={};
+  await stripeNotify(req,res);
+  assert.equal(res.code,503);
 });
