@@ -20,7 +20,7 @@ import {
 } from "../lib/host-solutions/payments.js";
 import consultation from "../api/host-consultation.js";
 import { issueChallenge, verifyChallenge, formConfigured } from "../lib/host-solutions/form-challenge.js";
-import { consumeLeadNonce } from "../lib/host-solutions/lead-throttle.js";
+import { consumeLeadNonce, rateLimiterHealthy } from "../lib/host-solutions/lead-throttle.js";
 import { verifyStripeEvent, describeHostEvent } from "../lib/host-solutions/stripe-notifications.js";
 import stripeNotify from "../api/host-stripe-notify.js";
 import { createHmac } from "node:crypto";
@@ -459,4 +459,28 @@ test("durable form limiter sends hashed identifiers only and fails closed", asyn
     assert.equal(await consumeLeadNonce({headers:{"x-real-ip":"198.51.100.40"}},"c".repeat(32),env),false);
     await assert.rejects(()=>consumeLeadNonce({headers:{}},"c".repeat(32),env),/Trusted visitor address/);
   } finally { global.fetch=originalFetch; }
+});
+
+test("consultation readiness is verified against the private limiter without consuming nonces", async () => {
+  const old=global.fetch;
+  const env={
+    HOST_SOLUTIONS_RATE_LIMIT_SECRET:"1".repeat(64),
+    HOST_SOLUTIONS_SUPABASE_ANON_KEY:"eyJ"+"x".repeat(140),
+    HOST_SOLUTIONS_SUPABASE_URL:"https://pgbwbklqvyyzipbxcdvx.supabase.co",
+  };
+  let called=null;
+  try {
+    global.fetch=async (url,options)=>{
+      called={url,options};
+      return {ok:true,json:async()=>true};
+    };
+    assert.equal(await rateLimiterHealthy(env),true);
+    assert.match(called.url,/\/rest\/v1\/rpc\/pcco_hs_form_health$/);
+    assert.deepEqual(JSON.parse(called.options.body),{p_secret:"1".repeat(64)});
+    global.fetch=async()=>({ok:true,json:async()=>false});
+    assert.equal(await rateLimiterHealthy(env),false);
+    global.fetch=async()=>{throw Error("offline")};
+    assert.equal(await rateLimiterHealthy(env),false);
+    assert.equal(await rateLimiterHealthy({...env,HOST_SOLUTIONS_SUPABASE_URL:"https://invalid.example"}),false);
+  } finally {global.fetch=old;}
 });

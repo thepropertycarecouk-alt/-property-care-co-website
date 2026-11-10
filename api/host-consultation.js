@@ -1,13 +1,14 @@
 import { json, requireOrigin, parseBody } from "../lib/host-solutions/security.js";
 import { validateBrief } from "../lib/host-solutions/consultation.js";
 import { formConfigured, issueChallenge, verifyChallenge, readCookie } from "../lib/host-solutions/form-challenge.js";
-import { consumeLeadNonce } from "../lib/host-solutions/lead-throttle.js";
+import { consumeLeadNonce, rateLimiterHealthy } from "../lib/host-solutions/lead-throttle.js";
 
 // This route delivers only an explicitly requested consultation to the fixed PCCO mailbox.
 // No customer marketing or automatic customer confirmation is sent.
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    if (!formConfigured()) return json(res, 200, { enabled: false });
+    if (!formConfigured() || !(await rateLimiterHealthy()))
+      return json(res, 200, { enabled: false });
     const token = issueChallenge(process.env.HOST_SOLUTIONS_FORM_SIGNING_SECRET);
     res.setHeader("Set-Cookie", "hs_form=" + token + "; Path=/api/host-consultation; Max-Age=1800; Secure; HttpOnly; SameSite=Strict");
     return json(res, 200, { enabled: true });
