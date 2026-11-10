@@ -99,3 +99,6 @@ Implemented signed expiring form challenge, fixed business-recipient Resend adap
 
 ## SEO and expired-offer presentation QA — 10 November 2026
 Added Host Solutions to the dynamic sitemap, canonical and social-preview metadata, links from partner/landlord navigation, evergreen no-JavaScript package prices, and a date-aware top banner to stop advertising 2026 discounts in 2027. Checkout already selects standard-price Stripe links after the deadline. Keep manual deactivation of the 2026 links on the operational checklist.
+
+## Durable form anti-spam audit — 10 November 2026
+Created and tested isolated private Supabase credential-checked nonce and per-IP rate limiter, 5/hour and 15/day. Vercel production env configured for server-only RPC. Updated consultation endpoint to consume one-time nonce before sending email and fail closed on database failure. Regression tested using mocks. No financial transactions or unreviewed emails sent.

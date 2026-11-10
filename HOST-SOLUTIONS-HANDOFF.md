@@ -1,3 +1,6 @@
+# November 2026 final audit — secure, durable form rate limiting
+Host Solutions uses an isolated Supabase private schema with single-use signed form challenges, per-IP quotas and 48-hour cleanup. Existing PCCO production data/tables were not modified. Vercel production credentials are sensitive. The website offers a manual email fallback if the limiter is unreachable. The assistant did not send an external test email or payment transaction without customer approval.
+
 # 10 Nov 2026 — Production email and Stripe alert credentials
 Resend sending-only domain-restricted credential and signed form secret are saved in Vercel production env (not source). Production GET /api/host-consultation reports {enabled:true} and the updated form is live. An independent Stripe webhook endpoint we_1UaMWsAuxFu0m9QL3hGECPcb is created disabled and its signing secret is in Vercel production env; deploy latest build before enabling webhook. See docs/host-solutions/lead-and-payment-notifications.md. Do NOT modify the existing unrelated cleaning payments Supabase webhook. This commit and CI trigger production redeployment to pick up the final webhook secrets.
 

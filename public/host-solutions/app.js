@@ -467,10 +467,10 @@ form.addEventListener("submit", async (e) => {
   $("#form-success").hidden = false;
   $("#step-label").textContent = delivered ? "Request received" : "Send by email";
   $("#brief-outcome-label").textContent = delivered ? "Successfully submitted" : "Email fallback";
-  $("#brief-outcome-title").textContent = delivered ? "Thank you — we've received your enquiry." : "Your email is prepared.";
+  $("#brief-outcome-title").textContent = delivered ? "Your consultation request was submitted." : "Your email is prepared.";
   $("#brief-outcome-message").textContent = delivered
-    ? "Your consultation request has been accepted for delivery to PCCO. Our team will respond within 24 hours."
-    : "We could not confirm delivery through this website. No submission has been recorded here. Please open the prepared email and press Send in your email app.";
+    ? "Your enquiry was accepted for delivery to PCCO. Our team aims to respond within 24 hours. Please keep a copy of your details."
+    : "We could not confirm delivery through this website. Please open the prepared email and press Send in your email app. If you already submitted once, ask us to check before resending.";
   $("#brief-outcome-help").textContent = delivered
     ? "For anything urgent, contact partners@thepropertycareco.co.uk."
     : "If your email app is unavailable, copy the brief and send it manually to partners@thepropertycareco.co.uk.";

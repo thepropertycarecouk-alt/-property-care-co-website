@@ -1,6 +1,7 @@
 import { json, requireOrigin, parseBody } from "../lib/host-solutions/security.js";
 import { validateBrief } from "../lib/host-solutions/consultation.js";
 import { formConfigured, issueChallenge, verifyChallenge, readCookie } from "../lib/host-solutions/form-challenge.js";
+import { consumeLeadNonce } from "../lib/host-solutions/lead-throttle.js";
 
 // This route delivers only an explicitly requested consultation to the fixed PCCO mailbox.
 // No customer marketing or automatic customer confirmation is sent.
@@ -28,6 +29,21 @@ export default async function handler(req, res) {
     );
   } catch {
     return json(res, 400, { error: "Please refresh the form, check your details and try again." });
+  }
+
+  // Persistent nonce consumption and per-IP quotas precede email delivery.
+  try {
+    const permitted = await consumeLeadNonce(req, challenge.nonce);
+    if (!permitted) {
+      res.setHeader("Retry-After", "3600");
+      return json(res, 429, {
+        error: "Too many enquiries or this request was already submitted. Please contact PCCO directly.",
+      });
+    }
+  } catch {
+    return json(res, 503, {
+      error: "Secure delivery could not be verified. Please use the prepared email.",
+    });
   }
 
   const nameMap = {
