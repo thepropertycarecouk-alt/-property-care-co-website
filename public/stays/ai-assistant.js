@@ -202,6 +202,11 @@
       history.push({role:'assistant',content:payload.reply});
       latestLead=payload.lead||{};
       offerReview();
+      const locationKey=String(latestLead.location||'').trim().toLowerCase();
+      if(locationKey&&!autoSearchedLocations.has(locationKey)){
+        autoSearchedLocations.add(locationKey);
+        void showProperties();
+      }
       // Limit conversation history submitted to the model to control cost and latency.
       if(history.length>22)history.splice(0,history.length-22);
     }catch(err){
@@ -214,8 +219,9 @@
   chat.addEventListener('submit',e=>{e.preventDefault();const value=typing.value;typing.value='';talk(value)});
   typing.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(!working)chat.requestSubmit();}});
   actions.querySelectorAll('[data-ask]').forEach(btn=>btn.addEventListener('click',()=>talk(btn.dataset.ask)));
-  function openReview(){for(const input of review.querySelectorAll('input[name]')){if(input.type!=='checkbox')input.value=latestLead[input.name]||'';}messages.hidden=true;actions.hidden=true;chat.hidden=true;review.hidden=false;review.querySelector('input[name="name"]').focus();}
+  function openReview(){if(submitted)return;for(const input of review.querySelectorAll('input[name]')){if(input.type!=='checkbox')input.value=latestLead[input.name]||'';}selectedSummary();messages.hidden=true;actions.hidden=true;chat.hidden=true;review.hidden=false;review.querySelector('input[name="name"]').focus();}
   function closeReview(){review.hidden=true;messages.hidden=false;actions.hidden=false;chat.hidden=false;typing.focus();}
+  $('.pcco-ai-properties-open').addEventListener('click',()=>void showProperties());
   $('.pcco-ai-review-open').addEventListener('click',openReview);
   $('.pcco-ai-back').addEventListener('click',closeReview);
   review.addEventListener('submit',e=>{e.preventDefault(); /* Preview: deliberately no network request or production enquiry */});
