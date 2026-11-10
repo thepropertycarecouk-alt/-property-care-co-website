@@ -22,3 +22,6 @@ Before activation: approve privacy notice/data retention/contact processing; add
 - Test real integrations in sandbox; verify user consent and no finance methods.
 - Remove preview notices/noindex only with launch approval, update canonical/metadata/sitemap and main navigation at that time.
 - Regression-check Stays enquiries, inventory, assistant, cleaning, partners, landlords, property and location SEO routes. Their source is unchanged apart from inherited feature-branch navigation.
+
+## Branch QA automation added during continuation
+A GitHub Actions workflow under .github/workflows/host-solutions-preview-qa.yml checks pull requests into main for changes under Host Solutions. It installs dependencies with scripts disabled, validates JavaScript syntax, runs the Node test suite and builds the site. It uses no application secrets, payment tokens or live deployment operations. Consult PR checks to verify run outcome; the existence of a workflow does not prove tests passed.

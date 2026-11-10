@@ -5,10 +5,10 @@ Updated 10 November 2026. This is an implementation preview, NOT payment/lead-la
 - Repository: https://github.com/thepropertycarecouk-alt/-property-care-co-website
 - Branch: feature/host-solutions-complete
 - Draft PR: https://github.com/thepropertycarecouk-alt/-property-care-co-website/pull/16
-- Latest deployed implementation SHA: 780b4f740143649c5fdda7c7b8be3b509aa8fea3
+- Latest deployed implementation SHA: bdef3853f4b900f2d950ea432e0ead7bef0237ac
 - Latest handoff commit: use the GitHub branch head / git log -1 (this document cannot contain its own hash).
-- Working Vercel preview: https://pcc-live-site-260825-olj7hinte-thepropertycarecouk-4795.vercel.app/host-solutions/
-- Deployment: dpl_AsHTFVRdg6W5BJJgSEByrdc2JRkq, READY, target staging (Vercel API name for this non-production deployment).
+- Working Vercel preview: https://pcc-live-site-260825-bpt46p5uv-thepropertycarecouk-4795.vercel.app/host-solutions/
+- Deployment: dpl_23Ed5boFABGiX19s1HYyXfzYJE6X, READY, target staging (Vercel API name for this non-production deployment).
 - Vercel project pcc-live-site-260825 / prj_32BDhNcZMrqs2JvLGZiAl5FdlFW8, team team_dQ4Q5IIRCbOwBlQxQYUlILTA.
 - Vercel authentication remains enabled. Owner must sign in to view; no protection disabled. Authenticated connector verified deployed page HTTP 200 and CSP, noindex/nofollow, nosniff and referrer policy.
 
@@ -50,3 +50,11 @@ Git clone/fetch works; shell push has no credential. Use GitHub create_tree with
 - Added a detailed Direct Booking vs Portfolio Pro benefits guide at #package-guide; standalone AI purchase preview dialog; and green £5 monthly-saving messages. No integration was unlocked.
 - Added an automated source-safety test in tests/host-solutions.test.mjs. Run `node --test tests/host-solutions.test.mjs` once a Node environment with dependencies is available; do not assert it passed without running it.
 - New preview URL and deployment verification must be recorded after deployment. Earlier READY preview URL remains above until then. Do not merge or enable transactions.
+
+## Preview QA status following 10 November continuation
+- Latest deployment source bdef3853f4b900f2d950ea432e0ead7bef0237ac, READY, target staging: https://pcc-live-site-260825-bpt46p5uv-thepropertycarecouk-4795.vercel.app/host-solutions/ (dpl_23Ed5boFABGiX19s1HYyXfzYJE6X).
+- Authenticated Vercel fetch confirmed /host-solutions/, app.js, styles.css and confirmation page HTTP 200. The route has CSP, X-Robots-Tag noindex/nofollow and X-Content-Type-Options nosniff. Checkout GET returned 405, as expected. JavaScript syntax parsing passed (module import excluded; no application code executed).
+- Added a PR-only GitHub Actions QA workflow to run npm ci, node --check, the automated tests and npm run build without secrets. Its passing status is **not verified** yet: check GitHub Actions/PR checks before claiming tests passed.
+- No browser interaction or physical-device QA of this newest visual change has been completed. Previous browser QA and the existing 11 tests belong to the earlier milestone. Recheck new desktop/mobile package guide and AI modal before release.
+- The connected sandbox does not support cloning this repository directly; connected GitHub write APIs were used. Branch ref moved with a non-forced fast-forward check.
+- Resume: inspect the latest PR head, run/inspect CI, visually review the new package guide and AI review modal on mobile, then address missing Stripe TEST, approved commercial terms, form privacy/delivery, subscriptions and cancellation lifecycle. Keep production untouched.

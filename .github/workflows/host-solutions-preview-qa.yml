@@ -1,0 +1,42 @@
+name: Host Solutions preview QA
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'public/host-solutions/**'
+      - 'lib/host-solutions/**'
+      - 'api/host-*.js'
+      - 'tests/host-solutions.test.mjs'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'vercel.json'
+      - '.github/workflows/host-solutions-preview-qa.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview-checks:
+    name: Syntax, security tests and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b163ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install without lifecycle scripts
+        run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Check browser JavaScript syntax
+        run: node --check public/host-solutions/app.js
+      - name: Run Host Solutions tests
+        run: node --test tests/host-solutions.test.mjs
+      - name: Build website
+        run: npm run build
