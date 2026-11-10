@@ -10,6 +10,7 @@ $("#pricing").innerHTML = prices
   )
   .join("");
 if (!prices[0].promo) {
+  $("#site-offer-bar").textContent = "PCCO Host Solutions · Websites, AI & hosting support";
   $("#offer-banner").innerHTML =
     "<div><b>Choose your website package.</b><span>The opening offer ended on 31 December 2026. Standard pricing is shown below.</span></div>";
 }
