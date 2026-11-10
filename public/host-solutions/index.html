@@ -199,6 +199,46 @@
           </div>
         </div>
       </section>
+
+      <section class="section soft" id="package-guide" aria-labelledby="package-guide-title">
+        <div class="wrap">
+          <div class="section-head">
+            <p class="eyebrow">Understand exactly what your build includes</p>
+            <h2 id="package-guide-title">More than a good-looking website.</h2>
+            <p>Every package is built around your agreed property information. The difference is how much of the enquiry journey, portfolio presentation and operational support it provides.</p>
+          </div>
+          <div class="package-guide-grid">
+            <article class="package-guide-card">
+              <span class="package-guide-label">Most popular · up to five properties</span>
+              <h3>Direct Booking</h3>
+              <p class="guide-lead">A professional route from finding a property to contacting your team directly.</p>
+              <dl>
+                <div><dt>Dedicated property pages and galleries</dt><dd>Up to five designed property pages present your supplied photos, bed arrangements, facilities and location information clearly, so guests can assess each stay before enquiring.</dd></div>
+                <div><dt>Enquiries designed for contractors and companies</dt><dd>Separate enquiry journeys collect practical requirements such as number of guests, stay dates, working location, separate beds and parking. This gives your team more context from the first message.</dd></div>
+                <div><dt>Property search and supported booking connections</dt><dd>Visitors can filter your published portfolio. Where your booking engine supports it, we can configure an existing link, embed or standard integration, with compatibility confirmed in the brief.</dd></div>
+                <div><dt>Search foundations and measured enquiries</dt><dd>Location-focused site structure, Google Search Console setup, analytics and enquiry notifications make it easier to understand how guests reach you and which requests need attention.</dd></div>
+                <div><dt>Guest pages, onboarding and training</dt><dd>Guest information pages help reduce repeat questions; a launch consultation and handover explain the website and how to manage the agreed tools.</dd></div>
+              </dl>
+              <p class="fine">Booking-engine or channel-manager subscription fees, bespoke APIs and any extra property pages are quoted separately. Enquiries are not confirmed bookings.</p>
+              <a class="guide-link" href="#consultation" data-interest="New website">Discuss Direct Booking →</a>
+            </article>
+            <article class="package-guide-card featured">
+              <span class="package-guide-label">For growing portfolios · up to ten properties</span>
+              <h3>Portfolio Pro</h3>
+              <p class="guide-lead">Bring multiple properties, locations and enquiry types together under one coherent brand.</p>
+              <dl>
+                <div><dt>A portfolio experience across locations</dt><dd>Up to ten listings, advanced property presentation and multiple location pages help visitors understand where your accommodation business operates.</dd></div>
+                <div><dt>Contractor, corporate and group landing pages</dt><dd>Dedicated journeys for different audiences and multi-property requests make it simpler to ask for several units, longer stays or accommodation for teams.</dd></div>
+                <div><dt>Standard AI booking assistant included</dt><dd>An assistant can answer from approved information and collect guest dates, numbers and requirements. Available listing data may support property suggestions; your team must still confirm rates and availability.</dd></div>
+                <div><dt>Enhanced enquiry and search foundations</dt><dd>Advanced enquiry tracking and enhanced SEO structure provide stronger foundations for handling leads across locations. Rankings, leads and revenue are never guaranteed.</dd></div>
+                <div><dt>Integration assistance and priority support</dt><dd>Supported booking and dynamic pricing integrations are scoped with your existing tools. Additional onboarding, training and an agreed priority-support arrangement help your team operate the site.</dd></div>
+              </dl>
+              <p class="fine">The standard AI assistant carries no separate setup or subscription fee. Its conversation allowance, support coverage and content-change scope must be agreed before sale.</p>
+              <a class="guide-link" href="#consultation" data-interest="New website">Discuss Portfolio Pro →</a>
+            </article>
+          </div>
+        </div>
+      </section>
       <section class="section soft" id="compare">
         <div class="wrap">
           <div class="compare-intro">
@@ -290,12 +330,10 @@
               <li>24/7 automated enquiry capture</li>
               <li>Standard maintenance</li>
             </ul>
-            <a
-              class="btn gold"
-              href="#consultation"
-              data-interest="Standalone AI assistant"
-              >Talk about my AI assistant →</a
-            >
+            <div class="actions">
+              <button class="btn gold" type="button" id="ai-review-open">Review standalone AI purchase →</button>
+              <a class="btn secondary" href="#consultation" data-interest="Standalone AI assistant">Talk to Us First</a>
+            </div>
             <p class="fine">
               An agreed monthly conversation allowance applies; the allowance
               and VAT treatment must be confirmed before purchase. Voice AI,
@@ -973,6 +1011,31 @@
           ><button class="btn secondary" type="button" id="checkout-consult">
             Talk to Us First
           </button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="ai-review-dialog" aria-labelledby="ai-review-title">
+      <div class="dialog-content">
+        <div class="dialog-top">
+          <div>
+            <p class="eyebrow">Standalone · works with your existing site</p>
+            <h3 id="ai-review-title">Review your AI booking assistant</h3>
+          </div>
+          <button class="close" id="close-ai-review" type="button" aria-label="Close AI purchase review">×</button>
+        </div>
+        <dl class="checkout-breakdown">
+          <div><dt>One-off installation and branding</dt><dd>£150</dd></div>
+          <div><dt>Standard assistant maintenance</dt><dd>£20/month</dd></div>
+          <div><dt>Initial setup and first month</dt><dd>Charged separately under agreed terms</dd></div>
+          <div><dt>Conversation allowance</dt><dd>Awaiting approval</dd></div>
+          <div><dt>VAT treatment</dt><dd>Awaiting approval</dd></div>
+        </dl>
+        <p class="checkout-notice"><strong>Preview only — payment is disabled.</strong> No setup payment or subscription will be created. The monthly rate, fair-use allowance, VAT, billing start, support and cancellation terms must be agreed before any checkout opens.</p>
+        <p class="fine" style="margin-top:16px">Your assistant can collect enquiries and make suggestions using available, approved property data. It does not guarantee availability or book a property automatically.</p>
+        <div class="actions">
+          <button class="btn" type="button" disabled>Stripe checkout unavailable</button>
+          <button class="btn secondary" type="button" id="ai-review-consult">Talk to Us First</button>
         </div>
       </div>
     </dialog>

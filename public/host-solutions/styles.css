@@ -1293,3 +1293,55 @@ dialog::backdrop {
     transform: none;
   }
 }
+
+/* Host Solutions package decision guide and standalone AI review */
+.package-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 24px;
+}
+.package-guide-card {
+  background: #fff;
+  border: 1px solid #d7dfe7;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 12px 25px #021b3c08;
+}
+.package-guide-card.featured { border-color: #c5a168; }
+.package-guide-label {
+  color: #88672f;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 11px;
+}
+.package-guide-card h3 { font-size: clamp(26px, 2.8vw, 35px); margin-top: 13px; }
+.package-guide-card .guide-lead { font-size: 16px; margin: 13px 0 25px; }
+.package-guide-card dl { margin: 0 0 22px; }
+.package-guide-card dl div { border-top: 1px solid #e5e8ec; padding: 16px 0; }
+.package-guide-card dt { font-weight: 700; font-size: 15px; }
+.package-guide-card dd { margin: 6px 0 0; font-size: 13px; line-height: 1.65; color: var(--muted); }
+.package-guide-card .guide-link {
+  display: inline-block;
+  margin-top: 18px;
+  text-underline-offset: 4px;
+  font-weight: 700;
+  color: var(--navy);
+}
+.monthly-saving {
+  display: block;
+  color: var(--green);
+  font-weight: 700;
+  font-size: 11px;
+  margin-top: 8px;
+  line-height: 1.45;
+}
+.dark .btn.secondary {
+  color: #fff;
+  border-color: #a5b4c4;
+}
+@media (max-width: 760px) {
+  .package-guide-grid { grid-template-columns: 1fr; }
+  .package-guide-card { padding: 25px; }
+}

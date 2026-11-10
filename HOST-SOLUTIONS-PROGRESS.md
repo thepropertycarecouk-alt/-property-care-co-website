@@ -39,3 +39,12 @@
 - Deployed directory page HTTP 200 with all intended CSP/noindex/nosniff/referrer headers verified after matcher fix.
 - Handoff rewritten as authoritative snapshot with exact resumption steps, tests, limits, configuration blockers and approvals. Current documentation-only commit does not alter deployed application code.
 - Production untouched; no live charging or outgoing development/customer messages. PR remains draft.
+
+## Continued implementation — owner preview enhancements
+- Recovered and read PLAN, PROGRESS, HANDOFF and INTEGRATION on feature/host-solutions-complete at 7499126f9bd891fe0709fdcbb90f2673902c4e55; draft PR #16 and Vercel deployment history verified.
+- Added detailed Direct Booking and Portfolio Pro commercial explanations, covering actual scope, eligibility and non-guarantees.
+- Added explicit green £5/month savings under each promotional monthly rate.
+- Added standalone AI assistant purchase-review journey (£150 setup / £20 monthly), separate from consultation. All checkout controls remain disabled; no setup charge or subscription can be created by this preview.
+- Added a deterministic source safety/regression test to protect AI review, package guide, maintenance savings and co-hosting's consultation-only policy.
+- Source files committed via connected GitHub tools; run deployed build and inspect READY before calling this verified. Old preview remains reference until new deployment succeeds.
+- No production files, Stripe products, live charges, Vercel configuration, or outgoing messages changed.

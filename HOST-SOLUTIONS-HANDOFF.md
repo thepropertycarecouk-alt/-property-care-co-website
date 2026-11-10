@@ -44,3 +44,9 @@ VAT treatment; lifetime versus defined term for £5/month discount; deposit/fina
 
 ## Commit mechanics in this environment
 Git clone/fetch works; shell push has no credential. Use GitHub create_tree with current tree, create_commit with branch head, then update_ref with expected_sha. Verify success before claiming saved. Fetch remote and align local with git add + git reset --soft FETCH_HEAD only after verifying same contents. Never force overwrite.
+
+## 10 November continuation — new review milestone
+- Latest previous verified branch head before edit: 7499126f9bd891fe0709fdcbb90f2673902c4e55. Fetch current branch/PR #16 for this milestone's exact SHA.
+- Added a detailed Direct Booking vs Portfolio Pro benefits guide at #package-guide; standalone AI purchase preview dialog; and green £5 monthly-saving messages. No integration was unlocked.
+- Added an automated source-safety test in tests/host-solutions.test.mjs. Run `node --test tests/host-solutions.test.mjs` once a Node environment with dependencies is available; do not assert it passed without running it.
+- New preview URL and deployment verification must be recorded after deployment. Earlier READY preview URL remains above until then. Do not merge or enable transactions.

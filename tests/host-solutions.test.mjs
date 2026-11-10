@@ -1,4 +1,5 @@
 import test from "node:test";
+import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { priceFor, packages } from "../public/host-solutions/catalog.js";
 import { validateBrief } from "../lib/host-solutions/consultation.js";
@@ -188,4 +189,22 @@ test("webhook signature rejects tampering and unsigned requests", async () => {
   const res = response();
   await webhook({ method: "POST", headers: {} }, res);
   assert.equal(res.code, 400);
+});
+
+test("Host Solutions package explanations, AI purchase review and safety gates render in source", () => {
+  const html = readFileSync(new URL("../public/host-solutions/index.html", import.meta.url), "utf8");
+  const js = readFileSync(new URL("../public/host-solutions/app.js", import.meta.url), "utf8");
+  const css = readFileSync(new URL("../public/host-solutions/styles.css", import.meta.url), "utf8");
+  assert.match(html, /id="package-guide"/);
+  assert.match(html, /Enquiries designed for contractors and companies/);
+  assert.match(html, /Standard AI booking assistant included/);
+  assert.match(html, /id="ai-review-dialog"/);
+  assert.match(html, /£150/);
+  assert.match(html, /£20\/month/);
+  assert.match(html, /<button class="btn" type="button" disabled>Stripe checkout unavailable<\/button>/);
+  assert.match(js, /monthly-saving/);
+  assert.match(css, /\.package-guide-grid/);
+  assert.match(html, /Payments and enquiry delivery are disabled pending/);
+  const cohost = html.split('id="cohosting"')[1].split('id="process"')[0];
+  assert.doesNotMatch(cohost, /data-checkout|Stripe|Pay £99 Deposit/);
 });

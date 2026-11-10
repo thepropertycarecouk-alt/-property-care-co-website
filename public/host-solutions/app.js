@@ -4,7 +4,7 @@ const prices = packages.map((p) => priceFor(p.id));
 $("#pricing").innerHTML = prices
   .map(
     (p, i) =>
-      `<article class="price-card ${i === 1 ? "recommended" : ""}">${i === 1 ? '<span class="badge">RECOMMENDED</span>' : ""}<h3>${p.name}</h3><p class="tag">${p.tag}</p><div class="price-line">${p.promo ? `<del>${money(p.build)}</del>` : ""}<strong>${money(p.total)}</strong></div>${p.promo ? `<p class="save">You save ${money(p.build - p.total)} · 25%</p>` : ""}<p class="oneoff">One-off website build</p><div class="monthly">${p.promo ? `<del>${money(p.monthly)}</del>` : ""}<strong>${money(p.maintenance)}</strong> / month<small>Website maintenance · ${p.promo ? "introductory term awaiting approval" : "standard rate"}</small></div><ul class="checklist">${p.features.map((f) => `<li>${f}</li>`).join("")}</ul>${i === 1 ? '<p class="fine">Optional AI: £75 setup + £10/month.<br>No automatic charge after the trial.</p>' : i === 2 ? '<p class="fine">Standard AI included.<br>Fair-use allowance agreed before purchase.</p>' : '<p class="fine">AI trial expires without charges.<br>Paid continuation is optional.</p>'}<button class="btn" type="button" data-checkout="${p.id}">Pay £99 Deposit</button><a class="btn secondary" href="#consultation">Talk to Us First</a><p class="balance">Then ${money(p.balance)} remaining on your build.</p></article>`,
+      `<article class="price-card ${i === 1 ? "recommended" : ""}">${i === 1 ? '<span class="badge">RECOMMENDED</span>' : ""}<h3>${p.name}</h3><p class="tag">${p.tag}</p><div class="price-line">${p.promo ? `<del>${money(p.build)}</del>` : ""}<strong>${money(p.total)}</strong></div>${p.promo ? `<p class="save">You save ${money(p.build - p.total)} · 25%</p>` : ""}<p class="oneoff">One-off website build</p><div class="monthly">${p.promo ? `<del>${money(p.monthly)}</del>` : ""}<strong>${money(p.maintenance)}</strong> / month<small>Website maintenance · ${p.promo ? "introductory term awaiting approval" : "standard rate"}</small>${p.promo ? '<span class="monthly-saving">You save £5/month · promotional duration to be confirmed</span>' : ""}</div><ul class="checklist">${p.features.map((f) => `<li>${f}</li>`).join("")}</ul>${i === 1 ? '<p class="fine">Optional AI: £75 setup + £10/month.<br>No automatic charge after the trial.</p>' : i === 2 ? '<p class="fine">Standard AI included.<br>Fair-use allowance agreed before purchase.</p>' : '<p class="fine">AI trial expires without charges.<br>Paid continuation is optional.</p>'}<button class="btn" type="button" data-checkout="${p.id}">Pay £99 Deposit</button><a class="btn secondary" href="#consultation">Talk to Us First</a><p class="balance">Then ${money(p.balance)} remaining on your build.</p></article>`,
   )
   .join("");
 if (!prices[0].promo) {
@@ -407,6 +407,23 @@ $("#restart-brief").addEventListener("click", () => {
   form.hidden = false;
   $("#form-success").hidden = true;
   showStep(0);
+});
+const aiDialog = $("#ai-review-dialog");
+let aiOpener;
+$("#ai-review-open").addEventListener("click", (event) => {
+  aiOpener = event.currentTarget;
+  aiDialog.showModal();
+});
+$("#close-ai-review").addEventListener("click", () => aiDialog.close());
+aiDialog.addEventListener("close", () => aiOpener?.focus());
+$("#ai-review-consult").addEventListener("click", () => {
+  aiDialog.close();
+  location.hash = "consultation";
+  form.hidden = false;
+  $("#form-success").hidden = true;
+  form.elements.service.value = "Standalone AI assistant";
+  showStep(0);
+  form.elements.business.focus();
 });
 document.querySelectorAll("[data-interest]").forEach((a) =>
   a.addEventListener("click", () => {
