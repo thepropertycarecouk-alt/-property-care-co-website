@@ -14,3 +14,12 @@
 - Full build and JS syntax check passed. Existing build mutates old HTML to add navigation; restored those generated source changes to avoid unrelated diffs.
 - Local preview http://127.0.0.1:4173/host-solutions/ renders and exposes expected prices/sections in browser. Visual/interaction QA in progress.
 - No requests sent by consultation/demo; no payment API calls. VAT/discount term/fair-use and other commercial approval gates remain explicit.
+
+## Milestone 3 — protected integration foundations and QA
+- Website milestone committed remotely at 94292712c7f18e2c6d4b1e4a4939d4963237ca5c.
+- Added Stripe SDK, test-only deposit/status/webhook adapters, cookie-bound verification, Redis durable event recording/idempotency and origin/rate protections. These are deliberately closed by unapproved commercial flags and absent credentials.
+- Added gated lead endpoint with bounded validation, consent/honeypot, rate limit, Turnstile verification and fixed-recipient notification. Frontend remains local simulation; no email was sent.
+- Added integration instructions and draft Stripe catalogue. Subscriptions/portal/receipts lifecycle and real sandbox end-to-end remain outstanding; do not claim checkout works.
+- 11 automated tests passed, 0 failed. Includes exact monetary values, boundary expiry, invalid package, live/prod rejection, approval gate, deposit vs subscription separation, paid-session rules, lead validation, origin/body, disabled endpoints and webhook signature tampering.
+- Browser: desktop rendered; Direct Booking review totals correct; Escape closes modal; missing field blocked; all form steps/review/confirmation passed with fictional data; scripted contractor scenario passed. Mobile 390px frame (375px content) and tablet 768px inspected. Mobile comparison switches to Portfolio Pro and shows correct features. Mobile document width equals viewport, no horizontal page overflow. Native physical iOS/Safari not tested.
+- Replaced unsupported diagonal-arrow glyphs; corrected unavailable-feature success colour; tightened phone validation.

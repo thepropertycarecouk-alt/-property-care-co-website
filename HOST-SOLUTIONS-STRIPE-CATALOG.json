@@ -1,0 +1,47 @@
+{
+  "status": "draft-not-created-in-Stripe",
+  "currency": "gbp",
+  "vat": "awaiting-owner-approval",
+  "monthlyOfferDuration": "awaiting-owner-approval",
+  "depositPence": 9900,
+  "packages": [
+    {
+      "id": "starter",
+      "name": "Starter",
+      "oneOffBuildPence": 39900,
+      "openingBuildPence": 29925,
+      "standardMonthlyPence": 1900,
+      "openingMonthlyPence": 1400
+    },
+    {
+      "id": "direct",
+      "name": "Direct Booking",
+      "oneOffBuildPence": 65000,
+      "openingBuildPence": 48750,
+      "standardMonthlyPence": 3900,
+      "openingMonthlyPence": 3400
+    },
+    {
+      "id": "portfolio",
+      "name": "Portfolio Pro",
+      "oneOffBuildPence": 99500,
+      "openingBuildPence": 74625,
+      "standardMonthlyPence": 5500,
+      "openingMonthlyPence": 5000
+    }
+  ],
+  "ai": [
+    {
+      "id": "standalone",
+      "setupPence": 15000,
+      "monthlyPence": 2000
+    },
+    {
+      "id": "direct-addon",
+      "setupPence": 7500,
+      "monthlyPence": 1000
+    }
+  ],
+  "subscriptionStart": "separately-agreed-and-authorised",
+  "financeMethods": "excluded; verify payment method configuration"
+}
