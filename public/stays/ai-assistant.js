@@ -1,0 +1,111 @@
+/* PCCO Stays AI Booking Assistant (preview-only until approved).
+   Real conversational intelligence: /api/stays-ai → server-side language model.
+   Enquiry submission is intentionally DISABLED in preview to protect production data. */
+(() => {
+  'use strict';
+  const params = new URLSearchParams(location.search);
+  const PREVIEW = params.get('ai_preview') === '1';
+  if (!PREVIEW) return;
+  const css = `
+    .pcco-ai-launch{position:fixed;left:18px;bottom:18px;z-index:9990;display:flex;align-items:center;gap:9px;padding:12px 17px;border:1px solid #c99e51;border-radius:50px;background:#021b3c;color:#fff;box-shadow:0 8px 30px #01152c50;font:600 14px Arial,sans-serif;cursor:pointer}
+    .pcco-ai-launch:hover{background:#123456}.pcco-ai-launch:focus-visible,.pcco-ai-panel :focus-visible{outline:3px solid #c99e51;outline-offset:3px}
+    .pcco-ai-panel{position:fixed;left:18px;bottom:79px;width:min(410px,calc(100vw - 32px));height:min(670px,calc(100dvh - 112px));z-index:9991;border:1px solid #c8d0d4;border-radius:15px;background:#fff;box-shadow:0 18px 55px #01152c45;overflow:hidden;display:flex;flex-direction:column;color:#172e3d;font:14px/1.5 Arial,sans-serif}
+    .pcco-ai-panel[hidden]{display:none!important}.pcco-ai-header{padding:15px 16px;background:#021b3c;color:#fff;display:flex;align-items:center;gap:10px}
+    .pcco-ai-header strong{font:600 16px Arial,sans-serif}.pcco-ai-header small{display:block;color:#e3d1b4;font-size:11px}.pcco-ai-header button{margin-left:auto;color:white;border:0;background:none;font-size:25px;cursor:pointer;line-height:1}
+    .pcco-ai-preview{padding:7px 14px;background:#fbf1da;font-size:11px;color:#654b23;border-bottom:1px solid #e4d6b4}
+    .pcco-ai-messages{padding:16px 14px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;background:#fbfaf7}
+    .pcco-ai-bubble{padding:11px 13px;border-radius:12px;max-width:87%;white-space:pre-wrap;word-break:break-word}
+    .pcco-ai-bubble.assistant{background:#fff;border:1px solid #e5e7eb;align-self:flex-start}.pcco-ai-bubble.user{background:#e7eef6;align-self:flex-end}
+    .pcco-ai-actions{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid #eee}
+    .pcco-ai-actions button{font-size:12px;color:#021b3c;background:#fff;border:1px solid #d5c49e;border-radius:18px;padding:7px 10px;cursor:pointer}
+    .pcco-ai-send{padding:12px;background:white;border-top:1px solid #e4e4e4;display:flex;gap:7px}
+    .pcco-ai-send textarea{flex:1;resize:none;min-height:42px;max-height:100px;border:1px solid #c9ced4;border-radius:9px;padding:9px;font:14px Arial,sans-serif;line-height:1.4}
+    .pcco-ai-send button,.pcco-ai-submit{background:#021b3c;color:white;border:0;border-radius:9px;padding:9px 13px;font:600 13px Arial,sans-serif;cursor:pointer}
+    .pcco-ai-send button:disabled,.pcco-ai-submit:disabled{opacity:.55;cursor:default}
+    .pcco-ai-foot{font-size:10px;padding:8px 13px;color:#5e6875;background:white;line-height:1.4}
+    .pcco-ai-review{overflow:auto;flex:1;background:#fbfaf7;padding:13px;display:grid;grid-template-columns:1fr 1fr;gap:9px;align-content:start}
+    .pcco-ai-review[hidden]{display:none}.pcco-ai-review h3,.pcco-ai-review p,.pcco-ai-wide{grid-column:1/-1}
+    .pcco-ai-review h3{font:600 17px Arial;margin:0}.pcco-ai-review p{font-size:12px;margin:0 0 6px}
+    .pcco-ai-review label{font-size:12px;font-weight:600;display:flex;flex-direction:column;gap:4px}
+    .pcco-ai-review input{padding:9px 8px;border:1px solid #c9ced4;border-radius:7px;width:100%;background:white;font:13px Arial}
+    .pcco-ai-review .pcco-ai-check{display:flex;flex-direction:row;align-items:flex-start;font-weight:400}
+    .pcco-ai-check input{width:auto;margin-top:3px}.pcco-ai-review .pcco-ai-submit{grid-column:1/-1}
+    .pcco-ai-error{grid-column:1/-1;color:#99332d;font-size:12px}
+    @media(max-width:640px){.pcco-ai-launch{left:10px;bottom:10px;padding:11px 14px}.pcco-ai-panel{left:8px;bottom:63px;width:calc(100vw - 16px);height:min(640px,calc(100dvh - 76px))}}
+  `;
+  const style=document.createElement('style');style.textContent=css;document.head.append(style);
+  const launch=document.createElement('button');
+  launch.type='button';launch.className='pcco-ai-launch';launch.setAttribute('aria-label','Open PCCO AI Booking Assistant');
+  launch.setAttribute('aria-expanded','false');launch.textContent='✦ Ask PCCO AI';
+  const panel=document.createElement('section');panel.className='pcco-ai-panel';panel.hidden=true;panel.setAttribute('aria-label','PCCO AI Booking Assistant');
+  panel.innerHTML=`
+    <div class="pcco-ai-header"><span aria-hidden="true" style="font-size:23px">✦</span><div><strong>PCCO Stays Assistant</strong><small>AI-powered booking enquiries</small></div><button type="button" class="pcco-ai-close" aria-label="Close assistant">×</button></div>
+    <div class="pcco-ai-preview">Private preview — no enquiries are submitted or emailed.</div>
+    <div class="pcco-ai-messages" aria-live="polite" aria-relevant="additions text"></div>
+    <div class="pcco-ai-actions"><button type="button" data-ask="We need contractor accommodation.">Contractors</button><button type="button" data-ask="I'm looking for family or relocation accommodation.">Family / relocation</button><button type="button" data-ask="I need accommodation for a work trip.">Corporate stay</button><button type="button" class="pcco-ai-review-open">Review enquiry</button></div>
+    <form class="pcco-ai-send"><textarea rows="2" maxlength="1500" aria-label="Message the PCCO AI Assistant" placeholder="Tell me where and when you need to stay…" required></textarea><button type="submit">Send</button></form>
+    <form class="pcco-ai-review" hidden><h3>Review your accommodation request</h3><p>Check or correct your details before submitting. We confirm prices and availability separately.</p>
+      <label>Full name *<input name="name" maxlength="100" autocomplete="name" required></label>
+      <label>Email *<input type="email" name="email" maxlength="160" autocomplete="email" required></label>
+      <label>Phone *<input type="tel" name="phone" maxlength="40" autocomplete="tel" required></label>
+      <label>Location *<input name="location" maxlength="300" required></label>
+      <label>Stay purpose<input name="purpose" maxlength="120"></label>
+      <label>Arrival<input name="arrival" maxlength="70" placeholder="Exact or approximate"></label>
+      <label>Checkout<input name="departure" maxlength="70"></label>
+      <label>Duration<input name="duration" maxlength="100"></label>
+      <label>Guests<input name="guests" maxlength="30"></label>
+      <label>Bedrooms<input name="bedrooms" maxlength="70"></label>
+      <label>Separate beds<input name="beds" maxlength="100"></label>
+      <label>Parking<input name="parking" maxlength="100"></label>
+      <label>Budget<input name="budget" maxlength="120"></label>
+      <label class="pcco-ai-wide">Additional requirements<input name="notes" maxlength="250"></label>
+      <label class="pcco-ai-check pcco-ai-wide"><input type="checkbox" name="consent" required> <span>I agree that PCCO may use the details I provide to respond to my enquiry. I understand AI processes chat messages and no booking is confirmed by this chat.</span></label>
+      <div class="pcco-ai-error" role="alert" hidden></div>
+      <button type="button" class="pcco-ai-back pcco-ai-wide">← Back to chat</button>
+      <button type="submit" class="pcco-ai-submit" disabled>Test preview — submission disabled</button>
+    </form>
+    <div class="pcco-ai-foot">You are chatting with AI. Replies may be inaccurate; do not share sensitive information. For urgent help call <a href="tel:+447411251361" style="text-decoration:underline">07411 251361</a>. <a href="#enquire" class="pcco-ai-existing" style="text-decoration:underline">Use standard enquiry form</a>.</div>
+  `;
+  document.body.append(launch,panel);
+  const $=selector=>panel.querySelector(selector);
+  const messages=$('.pcco-ai-messages'),typing=$('.pcco-ai-send textarea'),send=$('.pcco-ai-send button');
+  const review=$('.pcco-ai-review'),chat=$('.pcco-ai-send'),actions=$('.pcco-ai-actions');
+  const history=[];let latestLead={},working=false;
+  function bubble(role,text){const node=document.createElement('div');node.className='pcco-ai-bubble '+role;node.textContent=text;messages.append(node);messages.scrollTop=messages.scrollHeight;return node;}
+  bubble('assistant','Welcome to PCCO Stays! I can help with contractor accommodation, business travel, family visits or relocation. Tell me what you need, or ask me anything about our service.');
+  function toggle(force){const open=typeof force==='boolean'?force:panel.hidden;panel.hidden=!open;launch.setAttribute('aria-expanded',String(open));if(open)typing.focus();else launch.focus();}
+  launch.addEventListener('click',()=>toggle());
+  $('.pcco-ai-close').addEventListener('click',()=>toggle(false));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!panel.hidden)toggle(false)});
+  async function talk(text){
+    text=text.trim();if(!text||working)return;
+    working=true;send.disabled=true;typing.disabled=true;actions.querySelectorAll('button').forEach(b=>b.disabled=true);
+    bubble('user',text);history.push({role:'user',content:text});
+    const waiting=bubble('assistant','Thinking…');
+    try{
+      const response=await fetch('/api/stays-ai',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({messages:history}),signal:AbortSignal.timeout(25000)});
+      const payload=await response.json().catch(()=>({}));
+      if(!response.ok)throw new Error(payload.error||'The AI assistant is unavailable.');
+      if(typeof payload.reply!=='string')throw new Error('Unexpected AI response');
+      waiting.textContent=payload.reply;
+      history.push({role:'assistant',content:payload.reply});
+      latestLead=payload.lead||{};
+      // Limit conversation history submitted to the model to control cost and latency.
+      if(history.length>22)history.splice(0,history.length-22);
+    }catch(err){
+      waiting.textContent=(err instanceof Error?err.message:'Connection problem')+' You can also use the standard enquiry form or call PCCO.';
+      history.pop();
+    }finally{
+      working=false;send.disabled=false;typing.disabled=false;actions.querySelectorAll('button').forEach(b=>b.disabled=false);typing.focus();messages.scrollTop=messages.scrollHeight;
+    }
+  }
+  chat.addEventListener('submit',e=>{e.preventDefault();const value=typing.value;typing.value='';talk(value)});
+  typing.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(!working)chat.requestSubmit();}});
+  actions.querySelectorAll('[data-ask]').forEach(btn=>btn.addEventListener('click',()=>talk(btn.dataset.ask)));
+  function openReview(){for(const input of review.querySelectorAll('input[name]')){if(input.type!=='checkbox')input.value=latestLead[input.name]||'';}messages.hidden=true;actions.hidden=true;chat.hidden=true;review.hidden=false;review.querySelector('input[name="name"]').focus();}
+  function closeReview(){review.hidden=true;messages.hidden=false;actions.hidden=false;chat.hidden=false;typing.focus();}
+  $('.pcco-ai-review-open').addEventListener('click',openReview);
+  $('.pcco-ai-back').addEventListener('click',closeReview);
+  review.addEventListener('submit',e=>{e.preventDefault(); /* Preview: deliberately no network request or production enquiry */});
+  $('.pcco-ai-existing').addEventListener('click',()=>toggle(false));
+})();
