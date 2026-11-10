@@ -1,1 +1,16 @@
-try{const response=await fetch('/api/host-payment-status',{credentials:'same-origin',cache:'no-store'});const data=await response.json();if(!response.ok||!data.paid)throw Error();document.getElementById('title').textContent='Test deposit verified.';document.getElementById('status').textContent='Your £99 test deposit is recorded. The next step is to confirm your requirements and scope. No real charge has been made.';document.getElementById('onboarding').hidden=false;}catch{document.getElementById('title').textContent='Payment not verified.';document.getElementById('status').textContent='We cannot confirm a successful test payment for this browser. Checkout is currently closed pending configuration and approval. No project has been started.';}
+try {
+  const response = await fetch("/api/host-payment-status", {
+    credentials: "same-origin",
+    cache: "no-store",
+  });
+  const data = await response.json();
+  if (!response.ok || !data.paid) throw Error();
+  document.getElementById("title").textContent = "Test deposit verified.";
+  document.getElementById("status").textContent =
+    "Your £99 test deposit is recorded. The next step is to confirm your requirements and scope. No real charge has been made.";
+  document.getElementById("onboarding").hidden = false;
+} catch {
+  document.getElementById("title").textContent = "Payment not verified.";
+  document.getElementById("status").textContent =
+    "We cannot confirm a successful test payment for this browser. Checkout is currently closed pending configuration and approval. No project has been started.";
+}

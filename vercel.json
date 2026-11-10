@@ -30,7 +30,7 @@
   ],
   "headers": [
     {
-      "source": "/host-solutions/:path*",
+      "source": "/host-solutions(.*)",
       "headers": [
         {
           "key": "X-Robots-Tag",

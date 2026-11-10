@@ -23,3 +23,12 @@
 - 11 automated tests passed, 0 failed. Includes exact monetary values, boundary expiry, invalid package, live/prod rejection, approval gate, deposit vs subscription separation, paid-session rules, lead validation, origin/body, disabled endpoints and webhook signature tampering.
 - Browser: desktop rendered; Direct Booking review totals correct; Escape closes modal; missing field blocked; all form steps/review/confirmation passed with fictional data; scripted contractor scenario passed. Mobile 390px frame (375px content) and tablet 768px inspected. Mobile comparison switches to Portfolio Pro and shows correct features. Mobile document width equals viewport, no horizontal page overflow. Native physical iOS/Safari not tested.
 - Replaced unsupported diagonal-arrow glyphs; corrected unavailable-feature success colour; tightened phone validation.
+
+## Milestone 4 — first deployed preview
+- Integration milestone saved: 28b2c03d52ad56856695c9faf0e2bc93acffdf37.
+- Draft PR: https://github.com/thepropertycarecouk-alt/-property-care-co-website/pull/16 (do not merge).
+- Vercel READY staging/preview: https://pcc-live-site-260825-e3u0yf2x9-thepropertycarecouk-4795.vercel.app/host-solutions/ ; deployment dpl_9BhQL6CpJVp6dWRufuYFZmYZjRCo, source 28b2c03d52ad56856695c9faf0e2bc93acffdf37.
+- Authenticated deployed-page checks: page, JS and confirmation route HTTP 200; checkout GET HTTP 405 with no-store/nosniff. Browser access requires existing Vercel login; deployment protection unchanged. Visual QA performed against identical local source.
+- First API deployment attempt rejected target=preview (400); corrected to Vercel API target=staging and succeeded. No production deployment attempted.
+- Found header route matcher did not cover directory pages on first deployment (JS had CSP but page did not). Changed matcher to /host-solutions(.*); must verify in next preview. Form/checkout remain disabled independently.
+- Saved actual local pricing screenshot docs/host-solutions/pricing-preview.png. Reformatted source for maintainability.

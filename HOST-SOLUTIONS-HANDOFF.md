@@ -10,3 +10,9 @@ Use git log for this document's commit SHA; every handoff records last verified 
 Milestone 2: page implemented in public/host-solutions/{index.html,styles.css,app.js,catalog.js}. Prior verified remote commit 21e47ab14b5d5e2bab883d4cbf2dba93d3bf3fe6. Build and syntax passed. Browser preview started via sites-preview; QA underway. Next: security/payment/lead adapters and tests, visual/interaction QA, Vercel preview and draft PR. Shell Git push is unauthenticated: use GitHub create_tree/create_commit/update_ref with expected SHA, then git fetch/reset --soft only after confirming matching trees. No credentials are needed in checkout.
 
 Milestone 3: See HOST-SOLUTIONS-INTEGRATION.md for precise config and remaining work. 11 unit tests passed, 0 failed; desktop/form/demo/mobile comparison checked. Code still cannot accept live keys or run checkout in production. No external messages/payments. Next: deploy this branch to Vercel PREVIEW only, verify build/runtime and create draft PR. Then record deployment URL + SHA. Production approval still absent.
+
+Draft PR #16: https://github.com/thepropertycarecouk-alt/-property-care-co-website/pull/16
+First verified deployed source: 28b2c03d52ad56856695c9faf0e2bc93acffdf37
+First preview: https://pcc-live-site-260825-e3u0yf2x9-thepropertycarecouk-4795.vercel.app/host-solutions/ (Vercel login required).
+Production custom domain remains attached to production; main still bcd3ab9 at PR creation. No merge, promotion, live charge or message.
+Latest follow-up: corrected directory security-header matcher after deployment observation; formatted new files. Next verify updated deployment, then use integration checklist for remaining blocked work. Current code/demo and form review are reviewable; **not launch-ready for payments or lead delivery**.
