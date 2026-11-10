@@ -48,8 +48,9 @@ export default async function handler(req,res) {
         method:'POST',
         headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
         body:JSON.stringify({
-          model:process.env.PCCO_AI_MODEL || 'gpt-4.1-mini',
+          model:process.env.PCCO_AI_MODEL || 'gpt-6-luna',
           instructions,input,
+          reasoning:{effort:'none'},
           text:{format:{type:'json_schema',name:'pcco_booking_assistant',strict:true,schema}},
           max_output_tokens:650,
           store:false
