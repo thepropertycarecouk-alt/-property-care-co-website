@@ -411,3 +411,18 @@ test("verified Stripe event sends one internal alert with provider idempotency",
     for(const [k,v] of Object.entries(map))if(v===undefined)delete process.env[k];else process.env[k]=v;
   }
 });
+
+test("Host Solutions is discoverable with canonical metadata and current offer banner", () => {
+  const sitemap=readFileSync(new URL("../api/sitemap.js",import.meta.url),"utf8");
+  const html=readFileSync(new URL("../public/host-solutions/index.html",import.meta.url),"utf8");
+  const js=readFileSync(new URL("../public/host-solutions/app.js",import.meta.url),"utf8");
+  const partner=readFileSync(new URL("../public/partners/index.html",import.meta.url),"utf8");
+  const landlord=readFileSync(new URL("../public/landlords/index.html",import.meta.url),"utf8");
+  assert.match(sitemap,/host-solutions\//);
+  assert.match(html,/rel="canonical" href="https:\/\/www\.thepropertycareco\.co\.uk\/host-solutions\//);
+  assert.match(html,/property="og:title"/);
+  assert.match(html,/id="site-offer-bar"/);
+  assert.match(js,/site-offer-bar"\)\.textContent/);
+  assert.match(partner,/href="\/host-solutions\//);
+  assert.match(landlord,/href="\/host-solutions\//);
+});

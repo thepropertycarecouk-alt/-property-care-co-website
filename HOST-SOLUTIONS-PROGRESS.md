@@ -96,3 +96,6 @@
 
 ## Secure lead form and Stripe payment-event notification milestone — 10 Nov 2026
 Implemented signed expiring form challenge, fixed business-recipient Resend adapter, client-side delivery/fallback logic, webhook signature verification, allowlisted payment IDs and product IDs, and explicit no-customer-email safeguards. New automated regression tests use fixtures and never send emails. Activation requires Vercel secrets and live Stripe webhook destination. Infrastructure limitation: new Vercel private Blob storage creation was forbidden by team permissions; use provider idempotency and Stripe Dashboard rather than claiming complete persistent event deduplication.
+
+## SEO and expired-offer presentation QA — 10 November 2026
+Added Host Solutions to the dynamic sitemap, canonical and social-preview metadata, links from partner/landlord navigation, evergreen no-JavaScript package prices, and a date-aware top banner to stop advertising 2026 discounts in 2027. Checkout already selects standard-price Stripe links after the deadline. Keep manual deactivation of the 2026 links on the operational checklist.
