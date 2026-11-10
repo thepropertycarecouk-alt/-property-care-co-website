@@ -34,4 +34,4 @@ Retain buildless HTML/CSS/JS public directory and Vercel Node APIs. Isolate asse
 2. Implement page, pricing/comparisons, complete content, guided consultation, safe demo and checkout review; commit.
 3. Add isolated test-only server payment foundations and validation/security tests; commit.
 4. Build, responsive desktop/mobile/keyboard QA, verify old routes unchanged, deploy Vercel preview, draft PR; record SHA/URL/test results and blockers.
-Launch requires owner signoff on finished preview, VAT, monthly offer duration, payment schedule/refunds, AI fair use, maintenance allowances, support/cancellation/design revision terms, lead privacy/retention, real Stripe test end-to-end and live activation. Navigation/SEO launch changes only after approval.
+Launch requires owner signoff on finished preview, verified Stripe Tax registration (website pricing is already VAT-inclusive), monthly offer duration, payment schedule/refunds, AI fair use, maintenance allowances, support/cancellation/design revision terms, lead privacy/retention, real Stripe test end-to-end and live activation. Navigation/SEO launch changes only after approval.

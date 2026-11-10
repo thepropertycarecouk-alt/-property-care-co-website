@@ -5,9 +5,9 @@ Updated 10 November 2026. This is an implementation preview, NOT payment/lead-la
 - Repository: https://github.com/thepropertycarecouk-alt/-property-care-co-website
 - Branch: feature/host-solutions-complete
 - Draft PR: https://github.com/thepropertycarecouk-alt/-property-care-co-website/pull/16
-- Latest deployed implementation SHA: 760968588758699d320a346cf6b08c9e0bfa748c (application code last changed at bdef3853f4b900f2d950ea432e0ead7bef0237ac)
+- Latest deployed application SHA: 585b07e60479ba4d71927f4e75497e112276e559
 - Latest handoff commit: use the GitHub branch head / git log -1 (this document cannot contain its own hash).
-- Working Vercel preview: https://pcc-live-site-260825-gsytn9w92-thepropertycarecouk-4795.vercel.app/host-solutions/
+- Working Vercel preview: https://pcc-live-site-260825-it53a22d4-thepropertycarecouk-4795.vercel.app/host-solutions/
 - Deployment: dpl_3x5Grmh6VPTn1sy36TPfUvP1HZp2, READY, target staging (Vercel API name for this non-production deployment).
 - Vercel project pcc-live-site-260825 / prj_32BDhNcZMrqs2JvLGZiAl5FdlFW8, team team_dQ4Q5IIRCbOwBlQxQYUlILTA.
 - Vercel authentication remains enabled. Owner must sign in to view; no protection disabled. Authenticated connector verified deployed page HTTP 200 and CSP, noindex/nofollow, nosniff and referrer policy.
@@ -52,7 +52,7 @@ Git clone/fetch works; shell push has no credential. Use GitHub create_tree with
 - New preview URL and deployment verification must be recorded after deployment. Earlier READY preview URL remains above until then. Do not merge or enable transactions.
 
 ## Preview QA status following 10 November continuation
-- Latest deployment source bdef3853f4b900f2d950ea432e0ead7bef0237ac, READY, target staging: https://pcc-live-site-260825-gsytn9w92-thepropertycarecouk-4795.vercel.app/host-solutions/ (dpl_3x5Grmh6VPTn1sy36TPfUvP1HZp2).
+- Latest deployment source bdef3853f4b900f2d950ea432e0ead7bef0237ac, READY, target staging: https://pcc-live-site-260825-it53a22d4-thepropertycarecouk-4795.vercel.app/host-solutions/ (dpl_3x5Grmh6VPTn1sy36TPfUvP1HZp2).
 - Authenticated Vercel fetch confirmed /host-solutions/, app.js, styles.css and confirmation page HTTP 200. The route has CSP, X-Robots-Tag noindex/nofollow and X-Content-Type-Options nosniff. Checkout GET returned 405, as expected. JavaScript syntax parsing passed (module import excluded; no application code executed).
 - Added a PR-only GitHub Actions QA workflow to run npm ci, node --check, the automated tests and npm run build without secrets. Its passing status is **not verified** yet: check GitHub Actions/PR checks before claiming tests passed.
 - No browser interaction or physical-device QA of this newest visual change has been completed. Previous browser QA and the existing 11 tests belong to the earlier milestone. Recheck new desktop/mobile package guide and AI modal before release.
@@ -64,7 +64,7 @@ Git clone/fetch works; shell push has no credential. Use GitHub create_tree with
 ## Final verified check — 10 November 2026
 - Branch application/CI ref: 760968588758699d320a346cf6b08c9e0bfa748c. Documentation-only commit follows; to obtain exact current SHA read draft PR #16 head.
 - GitHub Actions run 42869096698: SUCCESS, 12 automated tests passed, 0 failed; npm ci, browser JS syntax check and npm run build all passed. https://github.com/thepropertycarecouk-alt/-property-care-co-website/actions/runs/42869096698
-- Latest verified preview for this ref: https://pcc-live-site-260825-gsytn9w92-thepropertycarecouk-4795.vercel.app/host-solutions/ (dpl_3x5Grmh6VPTn1sy36TPfUvP1HZp2, READY, non-production).
+- Latest verified preview for this ref: https://pcc-live-site-260825-it53a22d4-thepropertycarecouk-4795.vercel.app/host-solutions/ (dpl_3x5Grmh6VPTn1sy36TPfUvP1HZp2, READY, non-production).
 - Authenticated Vercel responses: main Host Solutions page, app.js and catalogue all HTTP 200; route contains expected package guide and AI purchase dialog and remains noindex. Consultation GET returns 405 and delivery remains disabled.
 - Remaining critical blockers: owner approvals listed above, TEST Stripe/Redis/Webhook environment configuration, subscription/payment lifecycle, production-quality lead delivery, real sandbox E2E and physical mobile/keyboard browser checks. Keep both payments and real lead submissions closed until explicit approval and verification.
 - Next chat: read the entire PLAN, PROGRESS, HANDOFF and INTEGRATION; retrieve current draft PR #16 head and latest deployment, confirm no newer work, then advance only the unfinished gates on the branch. Never merge into main without explicit user approval.
@@ -82,3 +82,9 @@ Git clone/fetch works; shell push has no credential. Use GitHub create_tree with
 ## Deposit UI integrated behind readiness gate
 - On clicking a website package, the modal obtains public checkout readiness. Only when backend is enabled can the visitor agree to £99 VAT-inclusive deposit terms and open Stripe-hosted Checkout. A verified Stripe URL and server-side price protect the handoff; no recurring subscription begins automatically.
 - No live payment setting enabled or production deployment performed. Stripe Tax and Stripe secrets are still missing, and refund/payment/monthly terms are not approved. This remains a private preview until launch-ready.
+
+## Latest independently verified run (post VAT and Stripe code)
+- 10 November 2026 commit 585b07e60479ba4d71927f4e75497e112276e559: GitHub Actions run 42874592607 SUCCESS; 13 automated tests passed, none failed; syntax and build passed.
+- Vercel preview dpl_49CWYuJFFoSVkTqebn4udgp5vg2s READY: https://pcc-live-site-260825-it53a22d4-thepropertycarecouk-4795.vercel.app/host-solutions/ . Authenticated GET /host-solutions/, app.js, catalog.js and confirmation 200; /api/host-checkout-config returns {enabled:false,depositPence:9900,vatIncluded:true}; GET /api/host-checkout 405. Security headers/noindex preserved.
+- No live purchase, subscription, Stripe product/link, or tax registration was created. Production remains main. Code is strictly closed until user-provided verified tax settings, commercial terms and secure server environment configuration.
+- Documentation-only commit after this entry must be looked up from live branch HEAD for exact SHA.

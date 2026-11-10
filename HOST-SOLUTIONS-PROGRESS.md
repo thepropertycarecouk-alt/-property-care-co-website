@@ -75,3 +75,8 @@
 ## Checkout frontend milestone
 - Added secure £99 deposit review-to-Stripe flow, explicit agreement checkbox and fail-closed readiness check. No independent client-side price or automatic subscription. Other packages' price values unchanged.
 - CI/preview checks required after this source commit. Do not merge or enable without payment and tax setup.
+
+## Verification of VAT-inclusive price and gated Checkout implementation
+- Source code revision 585b07e60479ba4d71927f4e75497e112276e559 verified by CI run 42874592607 (13 passed/0 failed, npm build passed).
+- Vercel preview https://pcc-live-site-260825-it53a22d4-thepropertycarecouk-4795.vercel.app/host-solutions/ READY; page/assets/confirmation 200, checkout configuration 200 disabled, checkout GET 405. Explicitly no real payments available.
+- Updated HOST-SOLUTIONS-STRIPE-CATALOG.json with approved VAT-inclusive website prices and missing Stripe Tax setup. All payment keys are still unconfigured and no accounts/charges were mutated.

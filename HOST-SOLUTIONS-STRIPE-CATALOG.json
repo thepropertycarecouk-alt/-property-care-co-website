@@ -1,7 +1,7 @@
 {
   "status": "draft-not-created-in-Stripe",
   "currency": "gbp",
-  "vat": "awaiting-owner-approval",
+  "vat": "website-build-deposit-maintenance-inclusive-approved-2026-11-10",
   "monthlyOfferDuration": "awaiting-owner-approval",
   "depositPence": 9900,
   "packages": [
@@ -43,5 +43,22 @@
     }
   ],
   "subscriptionStart": "separately-agreed-and-authorised",
-  "financeMethods": "excluded; verify payment method configuration"
+  "financeMethods": "excluded; verify payment method configuration",
+  "standaloneAiVat": "awaiting-owner-confirmation",
+  "stripeTax": {
+    "status": "pending",
+    "missing": [
+      "head_office",
+      "confirmed-registration-jurisdiction"
+    ],
+    "registeredJurisdictions": 0,
+    "automaticTaxNotReady": true
+  },
+  "paymentReady": false,
+  "stripeConnection": {
+    "mode": "live",
+    "productsCreated": false,
+    "linksCreated": false,
+    "vercelCredentialsConfigured": false
+  }
 }
