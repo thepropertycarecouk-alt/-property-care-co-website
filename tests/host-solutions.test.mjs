@@ -234,7 +234,7 @@ test("Host Solutions package explanations, AI purchase review and safety gates r
   assert.match(html, /The displayed website prices are final/);
   assert.match(html, /id="checkout-pay" disabled/);
   assert.match(html, /id="checkout-acceptance"/);
-  assert.match(js, /depositLinks/);
+  assert.match(js, /depositLinkFor/);
   assert.match(js, /Continue to Stripe/);
   const cohost = html.split('id="cohosting"')[1].split('id="process"')[0];
   assert.doesNotMatch(cohost, /data-checkout|Stripe|Pay £99 Deposit/);
