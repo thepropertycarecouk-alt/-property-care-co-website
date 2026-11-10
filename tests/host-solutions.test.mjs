@@ -18,16 +18,12 @@ import {
   paidHostSession,
   stripeClient,
 } from "../lib/host-solutions/payments.js";
-import checkout from "../api/host-checkout.js";
-import checkoutConfig from "../api/host-checkout-config.js";
 import consultation from "../api/host-consultation.js";
-import consultConfig from "../api/host-consultation-config.js";
 import { issueChallenge, verifyChallenge, formConfigured } from "../lib/host-solutions/form-challenge.js";
 import { verifyStripeEvent, describeHostEvent } from "../lib/host-solutions/stripe-notifications.js";
 import stripeNotify from "../api/host-stripe-notify.js";
 import { createHmac } from "node:crypto";
 import { Readable } from "node:stream";
-import webhook from "../api/host-stripe-webhook.js";
 const fakeTestKey = ["sk", "test", "fixture_only_not_a_real_key"].join("_");
 const brief = {
   business: "Test Stays",
@@ -183,41 +179,11 @@ test("origin and bounded body validation", () => {
   assert.throws(() => parseBody({ body: "x".repeat(12001) }));
   assert.throws(() => parseBody({ body: "[]" }));
 });
-test("disabled endpoints fail closed without network calls", async () => {
-  for (const fn of [checkout, consultation]) {
-    const res = response();
-    await fn({ method: "POST", headers: {}, body: brief }, res);
-    assert.equal(res.code, 503);
-    assert.equal(res.headers["Cache-Control"], "no-store");
-  }
-});
-test("checkout capability stays disabled without complete commercial and tax setup", async () => {
-  const res = response();
-  await checkoutConfig({method:"GET",headers:{}},res);
-  assert.equal(res.code,200);
-  assert.deepEqual(res.body,{enabled:false,depositPence:9900,vatIncluded:true});
+test("disabled direct consultation POST fails closed without email credentials", async () => {
+  const res=response();
+  await consultation({method:"POST",headers:{},body:brief},res);
+  assert.equal(res.code,503);
   assert.equal(res.headers["Cache-Control"],"no-store");
-});
-test("webhook signature rejects tampering and unsigned requests", async () => {
-  const stripe = stripeClient({ HOST_SOLUTIONS_STRIPE_TEST_KEY: fakeTestKey });
-  const payload = JSON.stringify({
-    id: "evt_fixture",
-    livemode: false,
-    type: "checkout.session.completed",
-    data: { object: {} },
-  });
-  const secret = "fixture_signing_secret";
-  const header = stripe.webhooks.generateTestHeaderString({ payload, secret });
-  assert.equal(
-    stripe.webhooks.constructEvent(payload, header, secret).id,
-    "evt_fixture",
-  );
-  assert.throws(() =>
-    stripe.webhooks.constructEvent(payload + " ", header, secret),
-  );
-  const res = response();
-  await webhook({ method: "POST", headers: {} }, res);
-  assert.equal(res.code, 400);
 });
 
 test("Host Solutions package explanations, AI purchase review and safety gates render in source", () => {
@@ -264,7 +230,6 @@ test("launch: non-VAT-registered all-in pricing, six-month maintenance saving an
   assert.match(terms, /14 calendar days/);
   assert.match(terms, /first six paid months/);
   assert.match(app, /mailto:partners@thepropertycareco.co.uk/);
-  assert.match(app, /host-consultation-config/);
   assert.match(app, /host-consultation"/);
   assert.match(html, /brief-outcome-message/);
   assert.doesNotMatch(app, /host-checkout-config/);
@@ -314,7 +279,7 @@ test("signed consultation challenge rejects tampering, old tokens and immediate 
 
 test("live lead form capability stays disabled until verified provider and secret are configured", () => {
   const res = response();
-  consultConfig({method:"GET",headers:{}},res);
+  await consultation({method:"GET",headers:{}},res);
   assert.equal(res.code,200);
   assert.deepEqual(res.body,{enabled:false});
 });

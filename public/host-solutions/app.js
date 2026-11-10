@@ -437,7 +437,7 @@ form.addEventListener("submit", async (e) => {
   button.textContent = "Sending securely…";
   let delivered = false;
   try {
-    const check = await fetch("/api/host-consultation-config", {
+    const check = await fetch("/api/host-consultation", {
       method: "GET", credentials: "same-origin", cache: "no-store",
     });
     const configuration = check.ok ? await check.json() : { enabled: false };
