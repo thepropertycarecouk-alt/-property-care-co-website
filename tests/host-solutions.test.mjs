@@ -277,7 +277,7 @@ test("signed consultation challenge rejects tampering, old tokens and immediate 
   assert.equal(formConfigured({}),false);
 });
 
-test("live lead form capability stays disabled until verified provider and secret are configured", () => {
+test("live lead form capability stays disabled until verified provider and secret are configured", async () => {
   const res = response();
   await consultation({method:"GET",headers:{}},res);
   assert.equal(res.code,200);
