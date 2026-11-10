@@ -93,3 +93,6 @@
 - Returning customer who placed 2026 website order can receive six-month maintenance saving when activated after Dec 2026, via private coupon 7mhUyUIW. Initial coupon PCCO6 still expires 31 Dec.
 - Checkout remains Stripe-hosted and does not start services or maintenance automatically from deposit/setup payments. No real card transaction test performed. Website consultation is email draft via visitor's client, and emails, webhooks and provisioning remain manual/pending credentials.
 - Current project source in GitHub main after passing PR checks/merging, see operational runbook for account IDs and launch tasks.
+
+## Secure lead form and Stripe payment-event notification milestone — 10 Nov 2026
+Implemented signed expiring form challenge, fixed business-recipient Resend adapter, client-side delivery/fallback logic, webhook signature verification, allowlisted payment IDs and product IDs, and explicit no-customer-email safeguards. New automated regression tests use fixtures and never send emails. Activation requires Vercel secrets and live Stripe webhook destination. Infrastructure limitation: new Vercel private Blob storage creation was forbidden by team permissions; use provider idempotency and Stripe Dashboard rather than claiming complete persistent event deduplication.

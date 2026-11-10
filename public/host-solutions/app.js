@@ -404,7 +404,7 @@ form.querySelectorAll("[data-next]").forEach((b) =>
 form
   .querySelectorAll("[data-back]")
   .forEach((b) => b.addEventListener("click", () => showStep(step - 1)));
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
   if (step < 3) {
     if (validate(step)) {
@@ -427,14 +427,55 @@ form.addEventListener("submit", (e) => {
     .join("\n");
   const mailto = "mailto:partners@thepropertycareco.co.uk?subject=" +
     encodeURIComponent("Host Solutions enquiry — " + form.elements.business.value) +
-    "&body=" + encodeURIComponent("Hello PCCO,\n\nI'd like to arrange a consultation.\n\n" + details + "\n\nKind regards,\n" + form.elements.name.value);
+    "&body=" + encodeURIComponent("Hello PCCO,\n\nI'd like to arrange a consultation.\n\n" + details +
+      "\n\nKind regards,\n" + form.elements.name.value);
   $("#send-brief-email").href = mailto;
   $("#copy-brief").dataset.brief = "PCCO Host Solutions enquiry\n\n" + details;
+  const button = form.querySelector('[data-step="3"] [type="submit"]');
+  if (button.disabled) return;
+  button.disabled = true;
+  button.textContent = "Sending securely…";
+  let delivered = false;
+  try {
+    const check = await fetch("/api/host-consultation-config", {
+      method: "GET", credentials: "same-origin", cache: "no-store",
+    });
+    const configuration = check.ok ? await check.json() : { enabled: false };
+    if (configuration.enabled) {
+      // Allows the signed anti-spam form challenge to mature before submission.
+      await new Promise((resolve) => setTimeout(resolve, 1900));
+      const payload = Object.fromEntries(Object.keys(labels)
+        .map((key) => [key, form.elements[key].value]));
+      payload.consent = form.elements.consent.checked;
+      payload.company_fax = form.elements.company_fax.value;
+      const sent = await fetch("/api/host-consultation", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const result = await sent.json();
+      delivered = sent.ok && result.received === true;
+    }
+  } catch {
+    delivered = false;
+  } finally {
+    button.disabled = false;
+    button.textContent = "Send my consultation request →";
+  }
   form.hidden = true;
   $("#form-success").hidden = false;
-  $("#step-label").textContent = "Ready to send by email";
+  $("#step-label").textContent = delivered ? "Request received" : "Send by email";
+  $("#brief-outcome-label").textContent = delivered ? "Successfully submitted" : "Email fallback";
+  $("#brief-outcome-title").textContent = delivered ? "Thank you — we've received your enquiry." : "Your email is prepared.";
+  $("#brief-outcome-message").textContent = delivered
+    ? "Your consultation request has been accepted for delivery to PCCO. Our team will respond within 24 hours."
+    : "We could not confirm delivery through this website. No submission has been recorded here. Please open the prepared email and press Send in your email app.";
+  $("#brief-outcome-help").textContent = delivered
+    ? "For anything urgent, contact partners@thepropertycareco.co.uk."
+    : "If your email app is unavailable, copy the brief and send it manually to partners@thepropertycareco.co.uk.";
+  $("#send-brief-email").hidden = delivered;
+  $("#copy-brief").hidden = delivered;
   $("#form-success").focus();
-  window.location.assign(mailto);
 });
 $("#copy-brief").addEventListener("click", async () => {
   try {

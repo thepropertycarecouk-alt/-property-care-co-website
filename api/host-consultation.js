@@ -1,83 +1,62 @@
-import {
-  json,
-  requireOrigin,
-  parseBody,
-  rateLimit,
-} from "../lib/host-solutions/security.js";
+import { json, requireOrigin, parseBody } from "../lib/host-solutions/security.js";
 import { validateBrief } from "../lib/host-solutions/consultation.js";
+import { formConfigured, verifyChallenge, readCookie } from "../lib/host-solutions/form-challenge.js";
+
+// This route delivers only an explicitly requested consultation to the fixed PCCO mailbox.
+// No customer marketing or automatic customer confirmation is sent.
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return json(res, 405, { error: "Method not allowed" });
   }
-  // Explicit delivery gate: not set during development. Frontend stays local preview.
-  if (process.env.HOST_SOLUTIONS_LEADS_ENABLED !== "approved")
-    return json(res, 503, { error: "Preview only. No enquiry was sent." });
+  if (!formConfigured())
+    return json(res, 503, { error: "Direct enquiry delivery is unavailable. Please use email." });
+  let brief, challenge;
   try {
     requireOrigin(req);
-  } catch {
-    return json(res, 403, { error: "Request not permitted" });
-  }
-  let data, brief;
-  try {
-    data = parseBody(req);
+    const data = parseBody(req);
     brief = validateBrief(data);
+    challenge = verifyChallenge(
+      readCookie(req.headers.cookie, "hs_form"),
+      process.env.HOST_SOLUTIONS_FORM_SIGNING_SECRET,
+    );
   } catch {
-    return json(res, 400, { error: "Please check your details and consent." });
+    return json(res, 400, { error: "Please refresh the form, check your details and try again." });
   }
+
+  const nameMap = {
+    business: "Host / company", properties: "Properties", audience: "Main audience",
+    website: "Website / listing", service: "Service", style: "Design style",
+    colours: "Brand colours", goals: "Goals", integrations: "Integrations",
+    notes: "Other information", name: "Contact name", email: "Contact email",
+    phone: "Telephone / WhatsApp", contact: "Preferred contact method",
+  };
+  const body = Object.entries(nameMap)
+    .map(([key, label]) => label + ": " + (brief[key] || "Not supplied"))
+    .join("\n") +
+    "\n\nConsent: visitor explicitly requested a consultation and follow-up only. No marketing consent." +
+    "\nSubmission: PCCO Host Solutions secure web form.";
+
   try {
-    await rateLimit(req, "lead");
-    if (
-      !process.env.HOST_SOLUTIONS_TURNSTILE_SECRET ||
-      !process.env.HOST_SOLUTIONS_RESEND_KEY ||
-      !process.env.HOST_SOLUTIONS_EMAIL_FROM ||
-      typeof data.challenge !== "string"
-    )
-      throw Error();
-    const challenge = await fetch(
-      "https://challenges.cloudflare.com/turnstile/v0/siteverify",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          secret: process.env.HOST_SOLUTIONS_TURNSTILE_SECRET,
-          response: data.challenge,
-        }),
-        signal: AbortSignal.timeout(8000),
-      },
-    ).then((r) => r.json());
-    if (
-      !challenge.success ||
-      challenge.hostname !==
-        new URL(process.env.HOST_SOLUTIONS_ORIGIN).hostname ||
-      challenge.action !== "host-consultation"
-    )
-      return json(res, 400, {
-        error: "Please complete the spam-prevention check.",
-      });
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${process.env.HOST_SOLUTIONS_RESEND_KEY}`,
+        Authorization: "Bearer " + process.env.HOST_SOLUTIONS_RESEND_KEY,
         "Content-Type": "application/json",
+        "Idempotency-Key": "pcco-host-lead-" + challenge.nonce,
       },
       body: JSON.stringify({
         from: process.env.HOST_SOLUTIONS_EMAIL_FROM,
         to: ["partners@thepropertycareco.co.uk"],
-        subject: "PCCO Host Solutions consultation request",
         reply_to: brief.email,
-        text:
-          Object.entries(brief)
-            .map(([k, v]) => `${k}: ${v}`)
-            .join("\n") + "\nConsent: request follow-up only; no marketing.",
+        subject: "PCCO Host Solutions — consultation enquiry",
+        text: body,
       }),
       signal: AbortSignal.timeout(10000),
     });
-    if (!response.ok) throw Error();
+    if (!response.ok) throw Error("Email delivery provider unavailable");
     return json(res, 200, { received: true });
   } catch {
-    return json(res, 503, {
-      error: "Your request could not be delivered. Please try again later.",
-    });
+    return json(res, 503, { error: "Your enquiry could not be delivered. Please use the prepared email link." });
   }
 }
