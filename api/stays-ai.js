@@ -2,6 +2,18 @@
 // Never expose the model API key in browser code.
 const headers = {'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'};
 const sendJSON = (res,status,payload)=>{ for(const [key,value] of Object.entries(headers))res.setHeader(key,value);return res.status(status).json(payload); };
+// A basic per-instance abuse throttle. This is an initial safeguard, not a
+// globally shared rate limit across Vercel instances. Add WAF/central limits.
+const recentCalls=new Map();
+function allowRequest(ip){
+  const now=Date.now(),windowMs=10*60*1000,limit=12;
+  if(recentCalls.size>500)for(const [key,entry] of recentCalls)if(now-entry.start>windowMs)recentCalls.delete(key);
+  const entry=recentCalls.get(ip);
+  if(!entry||now-entry.start>windowMs){recentCalls.set(ip,{start:now,count:1});return true;}
+  if(entry.count>=limit)return false;
+  entry.count++;
+  return true;
+}
 const fields = ['purpose','location','arrival','departure','duration','guests','bedrooms','beds','parking','budget','name','email','phone','notes'];
 const schema = {
   type:'object',
@@ -27,9 +39,12 @@ export default async function handler(req,res) {
   if (!contentType.includes('application/json')) return sendJSON(res,415,{error:'JSON required'});
   const origin = req.headers.origin || '';
   const permitted = /^https:\/\/(?:www\.)?thepropertycareco\.co\.uk$/.test(origin) ||
-    /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin) ||
+    /^https:\/\/pcc-live-site-260825-[a-z0-9-]+-thepropertycarecouk-4795\.vercel\.app$/.test(origin) ||
     /^http:\/\/localhost(?::\d+)?$/.test(origin);
-  if (origin && !permitted) return sendJSON(res,403,{error:'Origin not allowed'});
+  if (!permitted) return sendJSON(res,403,{error:'Origin not allowed'});
+  // Vercel sets x-forwarded-for; cap abusive repeated messages per instance.
+  const ip=String(req.headers['x-forwarded-for']||req.headers['x-real-ip']||'unknown').split(',')[0].trim().slice(0,80);
+  if(!allowRequest(ip))return sendJSON(res,429,{error:'Too many chat requests. Please wait a few minutes or contact PCCO directly.'});
   const key=process.env.OPENAI_API_KEY;
   if (!key) return sendJSON(res,503,{error:'The AI assistant is awaiting secure API configuration.'});
   const messages = req.body?.messages;
