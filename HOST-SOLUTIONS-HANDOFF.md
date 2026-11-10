@@ -1,3 +1,6 @@
+# Durable internal Stripe alerts — 10 Nov 2026
+Stripe Host Solutions webhook now uses a private database event claim/delivered ledger with a 90-day retention period. This prevents recurring alerts from Stripe retries beyond the email provider's 24-hour idempotency window. Payments, refunds, subscriptions and the existing cleaning webhook remain untouched. Run tests and verify live webhook configuration after deployment. See docs/host-solutions/lead-and-payment-notifications.md.
+
 # November 2026 final audit — secure, durable form rate limiting
 Host Solutions uses an isolated Supabase private schema with single-use signed form challenges, per-IP quotas and 48-hour cleanup. Existing PCCO production data/tables were not modified. Vercel production credentials are sensitive. The website offers a manual email fallback if the limiter is unreachable. The assistant did not send an external test email or payment transaction without customer approval.
 
