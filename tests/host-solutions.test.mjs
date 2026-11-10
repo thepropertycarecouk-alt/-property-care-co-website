@@ -20,6 +20,7 @@ import {
 } from "../lib/host-solutions/payments.js";
 import consultation from "../api/host-consultation.js";
 import { issueChallenge, verifyChallenge, formConfigured } from "../lib/host-solutions/form-challenge.js";
+import { consumeLeadNonce, rateLimiterHealthy } from "../lib/host-solutions/lead-throttle.js";
 import { verifyStripeEvent, describeHostEvent } from "../lib/host-solutions/stripe-notifications.js";
 import stripeNotify from "../api/host-stripe-notify.js";
 import { createHmac } from "node:crypto";
@@ -327,17 +328,22 @@ test("production lead configuration requires all security settings", () => {
     HOST_SOLUTIONS_ORIGIN:"https://www.thepropertycareco.co.uk",
     HOST_SOLUTIONS_RESEND_KEY:"re_fixture_key_not_real",
     HOST_SOLUTIONS_FORM_SIGNING_SECRET:"a".repeat(64),
+    HOST_SOLUTIONS_RATE_LIMIT_SECRET:"b".repeat(64),
+    HOST_SOLUTIONS_SUPABASE_URL:"https://pgbwbklqvyyzipbxcdvx.supabase.co",
+    HOST_SOLUTIONS_SUPABASE_ANON_KEY:"eyJ"+"x".repeat(140),
     HOST_SOLUTIONS_EMAIL_FROM:"PCCO Host Solutions <partners@thepropertycareco.co.uk>",
   };
   assert.equal(formConfigured(fixture),true);
   assert.equal(formConfigured({...fixture,HOST_SOLUTIONS_ORIGIN:"https://evil.example"}),false);
   assert.equal(formConfigured({...fixture,VERCEL_ENV:"preview"}),false);
   assert.equal(formConfigured({...fixture,HOST_SOLUTIONS_RESEND_KEY:undefined}),false);
+  assert.equal(formConfigured({...fixture,HOST_SOLUTIONS_RATE_LIMIT_SECRET:undefined}),false);
+  assert.equal(formConfigured({...fixture,HOST_SOLUTIONS_SUPABASE_URL:"https://evil.example"}),false);
 });
 
 test("signed customer enquiry delivers only to the verified PCCO inbox in mock", async () => {
   const originalFetch=global.fetch;
-  const names=["VERCEL_ENV","HOST_SOLUTIONS_LEADS_ENABLED","HOST_SOLUTIONS_ORIGIN","HOST_SOLUTIONS_RESEND_KEY","HOST_SOLUTIONS_FORM_SIGNING_SECRET","HOST_SOLUTIONS_EMAIL_FROM"];
+  const names=["VERCEL_ENV","HOST_SOLUTIONS_LEADS_ENABLED","HOST_SOLUTIONS_ORIGIN","HOST_SOLUTIONS_RESEND_KEY","HOST_SOLUTIONS_FORM_SIGNING_SECRET","HOST_SOLUTIONS_EMAIL_FROM","HOST_SOLUTIONS_RATE_LIMIT_SECRET","HOST_SOLUTIONS_SUPABASE_ANON_KEY","HOST_SOLUTIONS_SUPABASE_URL"];
   const prior=Object.fromEntries(names.map(k=>[k,process.env[k]]));
   let sent=null;
   try {
@@ -346,14 +352,19 @@ test("signed customer enquiry delivers only to the verified PCCO inbox in mock",
       HOST_SOLUTIONS_ORIGIN:"https://www.thepropertycareco.co.uk",
       HOST_SOLUTIONS_RESEND_KEY:"re_fixture_key_not_real",
       HOST_SOLUTIONS_FORM_SIGNING_SECRET:"a".repeat(64),
+      HOST_SOLUTIONS_RATE_LIMIT_SECRET:"b".repeat(64),
+      HOST_SOLUTIONS_SUPABASE_ANON_KEY:"eyJ"+"x".repeat(140),
+      HOST_SOLUTIONS_SUPABASE_URL:"https://pgbwbklqvyyzipbxcdvx.supabase.co",
       HOST_SOLUTIONS_EMAIL_FROM:"PCCO Host Solutions <partners@thepropertycareco.co.uk>",
     });
     global.fetch=async (url,options)=>{
+      if(String(url).endsWith("/rest/v1/rpc/pcco_hs_form_throttle"))
+        return {ok:true,status:200,json:async()=>true};
       sent={url,options};
       return {ok:true,status:200,json:async()=>({id:"email_fixture"})};
     };
     const cookie=issueChallenge(process.env.HOST_SOLUTIONS_FORM_SIGNING_SECRET,Date.now()-2300,"b".repeat(32));
-    const req={method:"POST",headers:{origin:process.env.HOST_SOLUTIONS_ORIGIN,cookie:"hs_form="+cookie},body:brief};
+    const req={method:"POST",headers:{origin:process.env.HOST_SOLUTIONS_ORIGIN,cookie:"hs_form="+cookie,"x-real-ip":"203.0.113.5"},body:brief};
     const res=response();
     await consultation(req,res);
     assert.equal(res.code,200);
@@ -425,4 +436,51 @@ test("Host Solutions is discoverable with canonical metadata and current offer b
   assert.match(js,/site-offer-bar"\)\.textContent/);
   assert.match(partner,/href="\/host-solutions\//);
   assert.match(landlord,/href="\/host-solutions\//);
+});
+
+test("durable form limiter sends hashed identifiers only and fails closed", async () => {
+  const originalFetch=global.fetch;
+  const env={
+    HOST_SOLUTIONS_RATE_LIMIT_SECRET:"1".repeat(64),
+    HOST_SOLUTIONS_SUPABASE_ANON_KEY:"eyJ"+"x".repeat(140),
+    HOST_SOLUTIONS_SUPABASE_URL:"https://pgbwbklqvyyzipbxcdvx.supabase.co",
+  };
+  let call;
+  try {
+    global.fetch=async (url,options)=>{call={url,options};return {ok:true,json:async()=>true};};
+    assert.equal(await consumeLeadNonce({headers:{"x-real-ip":"198.51.100.40"}},"c".repeat(32),env),true);
+    assert.match(call.url,/supabase.co\/rest\/v1\/rpc\/pcco_hs_form_throttle$/);
+    const request=JSON.parse(call.options.body);
+    assert.match(request.p_nonce_hash,/^[a-f0-9]{64}$/);
+    assert.match(request.p_requester_hash,/^[a-f0-9]{64}$/);
+    assert.equal(JSON.stringify(request).includes("198.51.100.40"),false);
+    assert.equal(JSON.stringify(request).includes("c".repeat(32)),false);
+    global.fetch=async ()=>({ok:true,json:async()=>false});
+    assert.equal(await consumeLeadNonce({headers:{"x-real-ip":"198.51.100.40"}},"c".repeat(32),env),false);
+    await assert.rejects(()=>consumeLeadNonce({headers:{}},"c".repeat(32),env),/Trusted visitor address/);
+  } finally { global.fetch=originalFetch; }
+});
+
+test("consultation readiness is verified against the private limiter without consuming nonces", async () => {
+  const old=global.fetch;
+  const env={
+    HOST_SOLUTIONS_RATE_LIMIT_SECRET:"1".repeat(64),
+    HOST_SOLUTIONS_SUPABASE_ANON_KEY:"eyJ"+"x".repeat(140),
+    HOST_SOLUTIONS_SUPABASE_URL:"https://pgbwbklqvyyzipbxcdvx.supabase.co",
+  };
+  let called=null;
+  try {
+    global.fetch=async (url,options)=>{
+      called={url,options};
+      return {ok:true,json:async()=>true};
+    };
+    assert.equal(await rateLimiterHealthy(env),true);
+    assert.match(called.url,/\/rest\/v1\/rpc\/pcco_hs_form_health$/);
+    assert.deepEqual(JSON.parse(called.options.body),{p_secret:"1".repeat(64)});
+    global.fetch=async()=>({ok:true,json:async()=>false});
+    assert.equal(await rateLimiterHealthy(env),false);
+    global.fetch=async()=>{throw Error("offline")};
+    assert.equal(await rateLimiterHealthy(env),false);
+    assert.equal(await rateLimiterHealthy({...env,HOST_SOLUTIONS_SUPABASE_URL:"https://invalid.example"}),false);
+  } finally {global.fetch=old;}
 });
