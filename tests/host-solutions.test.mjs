@@ -226,6 +226,10 @@ test("Host Solutions package explanations, AI purchase review and safety gates r
   assert.match(js, /monthly-saving/);
   assert.match(css, /\.package-guide-grid/);
   assert.match(html, /Payments and enquiry delivery are disabled pending/);
+  assert.match(html, /id="checkout-pay" disabled/);
+  assert.match(html, /id="checkout-acceptance" hidden/);
+  assert.match(js, /host-checkout-config/);
+  assert.match(js, /Continue to Stripe/);
   const cohost = html.split('id="cohosting"')[1].split('id="process"')[0];
   assert.doesNotMatch(cohost, /data-checkout|Stripe|Pay £99 Deposit/);
 });

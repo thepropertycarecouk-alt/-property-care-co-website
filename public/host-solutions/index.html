@@ -985,17 +985,21 @@
         </p>
         <p class="fine">Part of your build price. Not an extra fee.</p>
         <dl class="checkout-breakdown" id="checkout-breakdown"></dl>
-        <p class="checkout-notice">
+        <p class="checkout-notice" id="checkout-notice">
           <strong>Payments are not open in this preview.</strong> Monthly discount duration, final payment schedule, refund policy and payment infrastructure must be approved first. Website prices include VAT. No card details are collected here.
         </p>
+        <label class="consent" id="checkout-acceptance" hidden>
+          <input type="checkbox" id="checkout-terms" /><span>I understand the £99 payment is a VAT-inclusive deposit credited against the displayed build price. No maintenance or AI subscription starts with this deposit. I agree to the published website deposit and cancellation terms.</span>
+        </label>
+        <p class="error" id="checkout-error" role="alert" hidden></p>
         <p class="fine" style="margin-top: 16px">
           Maintenance and any optional AI service require separate agreement.
           Your project only starts after requirements and scope have been
           confirmed.
         </p>
         <div class="actions">
-          <button class="btn" disabled type="button">
-            Stripe test checkout unavailable</button
+          <button class="btn" id="checkout-pay" disabled type="button">
+            Secure checkout unavailable</button
           ><button class="btn secondary" type="button" id="checkout-consult">
             Talk to Us First
           </button>

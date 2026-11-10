@@ -214,9 +214,51 @@ document.querySelectorAll("[data-checkout]").forEach((b) =>
     ]
       .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`)
       .join("");
+    $("#checkout-terms").checked = false;
+    $("#checkout-pay").dataset.package = p.id;
+    $("#checkout-pay").textContent = "Secure checkout unavailable";
+    $("#checkout-pay").disabled = true;
+    $("#checkout-error").hidden = true;
+    $("#checkout-acceptance").hidden = true;
     dialog.showModal();
+    fetch("/api/host-checkout-config", { cache: "no-store" })
+      .then((res) => res.ok ? res.json() : { enabled: false })
+      .then((state) => {
+        if (!dialog.open || !state.enabled || state.depositPence !== 9900 || state.vatIncluded !== true) return;
+        $("#checkout-acceptance").hidden = false;
+        $("#checkout-notice").textContent = "Your £99 deposit includes VAT and is credited against your build. The secure Stripe payment does not start a maintenance or AI subscription. Review the published terms before paying.";
+        $("#checkout-pay").textContent = "Continue to Stripe · £99";
+        $("#checkout-pay").disabled = !$("#checkout-terms").checked;
+      })
+      .catch(() => {});
+
   }),
 );
+$("#checkout-terms").addEventListener("change", (event) => {
+  $("#checkout-pay").disabled = !event.target.checked || $("#checkout-acceptance").hidden;
+});
+$("#checkout-pay").addEventListener("click", async () => {
+  const button = $("#checkout-pay");
+  if (button.disabled || !dialog.open || !$("#checkout-terms").checked) return;
+  button.disabled = true;
+  $("#checkout-error").hidden = true;
+  try {
+    const response = await fetch("/api/host-checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "same-origin",
+      cache: "no-store",
+      body: JSON.stringify({ package: button.dataset.package, acceptTerms: true }),
+    });
+    const data = await response.json();
+    if (!response.ok || !/^https:\/\/checkout\.stripe\.com\//.test(data.url)) throw Error();
+    window.location.assign(data.url);
+  } catch {
+    $("#checkout-error").textContent = "Secure checkout is unavailable. No payment was taken here. Please use Talk to Us First.";
+    $("#checkout-error").hidden = false;
+    button.disabled = false;
+  }
+});
 $("#close-checkout").addEventListener("click", () => dialog.close());
 dialog.addEventListener("close", () => opener?.focus());
 $("#checkout-consult").addEventListener("click", () => {

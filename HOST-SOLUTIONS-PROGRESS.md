@@ -71,3 +71,7 @@
 ## Continued secure Checkout implementation
 - Implemented production/test separated Stripe client selection and VAT-inclusive £99 deposit with automatic tax and secure webhook/status verification. Added public checkout configuration API that returns enabled:false while gated. New tests added for environment/key separation, correct VAT treatment and fail-closed readiness.
 - No transaction, live setting, or production deployment enabled. Run CI and preview before treating this as validated.
+
+## Checkout frontend milestone
+- Added secure £99 deposit review-to-Stripe flow, explicit agreement checkbox and fail-closed readiness check. No independent client-side price or automatic subscription. Other packages' price values unchanged.
+- CI/preview checks required after this source commit. Do not merge or enable without payment and tax setup.
