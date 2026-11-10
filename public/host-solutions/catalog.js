@@ -1,6 +1,9 @@
-// Exact-pence prices. Website builds, deposits and maintenance include VAT; other sales terms await approval.
+// Exact-pence final prices: PCCO is not VAT-registered and no VAT is charged.
 export const deadline = "2026-12-31T23:59:59.999Z"; // GMT at promotion expiry
-export const websiteVatIncluded = true;
+export const vatCharged = false;
+export const monthlyDiscountMonths = 6;
+export const depositRefundDays = 14;
+export const aiFairUse = Object.freeze({ standaloneReplies: 1000, directAddonReplies: 500, portfolioReplies: 500, trialReplies: 50 });
 export const packages = [
   {
     id: "starter",
@@ -88,7 +91,7 @@ export function priceFor(id, now = new Date()) {
 }
 export const launchTerms = {
   vatApproved: true,
-  monthlyTermApproved: false,
-  paymentPolicyApproved: false,
-  fairUseApproved: false,
+  monthlyTermApproved: true,
+  paymentPolicyApproved: true,
+  fairUseApproved: true,
 };

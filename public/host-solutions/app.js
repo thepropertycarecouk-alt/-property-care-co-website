@@ -1,10 +1,11 @@
 import { packages, priceFor, money } from "./catalog.js";
+import { depositLinks } from "./deposit-links.js";
 const $ = (s) => document.querySelector(s);
 const prices = packages.map((p) => priceFor(p.id));
 $("#pricing").innerHTML = prices
   .map(
     (p, i) =>
-      `<article class="price-card ${i === 1 ? "recommended" : ""}">${i === 1 ? '<span class="badge">RECOMMENDED</span>' : ""}<h3>${p.name}</h3><p class="tag">${p.tag}</p><div class="price-line">${p.promo ? `<del>${money(p.build)}</del>` : ""}<strong>${money(p.total)}</strong></div>${p.promo ? `<p class="save">You save ${money(p.build - p.total)} · 25%</p>` : ""}<p class="oneoff">One-off website build · VAT included</p><div class="monthly">${p.promo ? `<del>${money(p.monthly)}</del>` : ""}<strong>${money(p.maintenance)}</strong> / month<small>Website maintenance · VAT included · ${p.promo ? "introductory term awaiting approval" : "standard rate"}</small>${p.promo ? '<span class="monthly-saving">You save £5/month · promotional duration to be confirmed</span>' : ""}</div><ul class="checklist">${p.features.map((f) => `<li>${f}</li>`).join("")}</ul>${i === 1 ? '<p class="fine">Optional AI: £75 setup + £10/month.<br>No automatic charge after the trial.</p>' : i === 2 ? '<p class="fine">Standard AI included.<br>Fair-use allowance agreed before purchase.</p>' : '<p class="fine">AI trial expires without charges.<br>Paid continuation is optional.</p>'}<button class="btn" type="button" data-checkout="${p.id}">Pay £99 Deposit</button><a class="btn secondary" href="#consultation">Talk to Us First</a><p class="balance">Then ${money(p.balance)} remaining on your build.</p></article>`,
+      `<article class="price-card ${i === 1 ? "recommended" : ""}">${i === 1 ? '<span class="badge">RECOMMENDED</span>' : ""}<h3>${p.name}</h3><p class="tag">${p.tag}</p><div class="price-line">${p.promo ? `<del>${money(p.build)}</del>` : ""}<strong>${money(p.total)}</strong></div>${p.promo ? `<p class="save">You save ${money(p.build - p.total)} · 25%</p>` : ""}<p class="oneoff">One-off website build · no VAT added</p><div class="monthly">${p.promo ? `<del>${money(p.monthly)}</del>` : ""}<strong>${money(p.maintenance)}</strong> / month<small>Website maintenance · no VAT added · ${p.promo ? "first 6 paid months" : "standard rate"}</small>${p.promo ? '<span class="monthly-saving">You save £5/month · for the first 6 paid months</span>' : ""}</div><ul class="checklist">${p.features.map((f) => `<li>${f}</li>`).join("")}</ul>${i === 1 ? '<p class="fine">Optional AI: £75 setup + £10/month.<br>No automatic charge after the trial.</p>' : i === 2 ? '<p class="fine">Standard AI included.<br>500 AI replies/month.</p>' : '<p class="fine">AI trial expires without charges.<br>Paid continuation is optional.</p>'}<button class="btn" type="button" data-checkout="${p.id}">Pay £99 Deposit</button><a class="btn secondary" href="#consultation">Talk to Us First</a><p class="balance">Then ${money(p.balance)} remaining on your build.</p></article>`,
   )
   .join("");
 if (!prices[0].promo) {
@@ -199,9 +200,9 @@ document.querySelectorAll("[data-checkout]").forEach((b) =>
     $("#checkout-title").textContent = p.name;
     $("#checkout-breakdown").innerHTML = [
       ["Website build · one-off", money(p.total)],
-      ["Deposit today (when checkout opens)", money(p.deposit)],
+      ["Deposit today by Stripe", money(p.deposit)],
       ["Remaining build balance", money(p.balance)],
-      ["Maintenance · separately authorised", money(p.maintenance) + "/month"],
+      ["Maintenance · separate agreement", money(p.maintenance) + "/month for 6 months, then " + money(p.monthly) + "/month"],
       [
         "Optional AI",
         p.id === "direct"
@@ -210,54 +211,37 @@ document.querySelectorAll("[data-checkout]").forEach((b) =>
             ? "Standard AI included"
             : "£150 setup + £20/month",
       ],
-      ["Website price and deposit VAT", "Included — no VAT added"],
+      ["VAT", "No VAT charged"],
+      ["Deposit refund", "Full refund available within 14 days"],
     ]
       .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`)
       .join("");
     $("#checkout-terms").checked = false;
     $("#checkout-pay").dataset.package = p.id;
-    $("#checkout-pay").textContent = "Secure checkout unavailable";
-    $("#checkout-pay").disabled = true;
     $("#checkout-error").hidden = true;
-    $("#checkout-acceptance").hidden = true;
+    $("#checkout-notice").textContent =
+      "You will pay £99 through Stripe (no VAT added). The full deposit is credited against your build and is refundable on request within 14 days. No subscription starts with your deposit.";
+    $("#checkout-pay").textContent = p.promo ? "Continue to Stripe · £99" : "Opening offer ended";
+    $("#checkout-pay").disabled = true;
     dialog.showModal();
-    fetch("/api/host-checkout-config", { cache: "no-store" })
-      .then((res) => res.ok ? res.json() : { enabled: false })
-      .then((state) => {
-        if (!dialog.open || !state.enabled || state.depositPence !== 9900 || state.vatIncluded !== true) return;
-        $("#checkout-acceptance").hidden = false;
-        $("#checkout-notice").textContent = "Your £99 deposit includes VAT and is credited against your build. The secure Stripe payment does not start a maintenance or AI subscription. Review the published terms before paying.";
-        $("#checkout-pay").textContent = "Continue to Stripe · £99";
-        $("#checkout-pay").disabled = !$("#checkout-terms").checked;
-      })
-      .catch(() => {});
-
   }),
 );
 $("#checkout-terms").addEventListener("change", (event) => {
-  $("#checkout-pay").disabled = !event.target.checked || $("#checkout-acceptance").hidden;
+  const id = $("#checkout-pay").dataset.package;
+  $("#checkout-pay").disabled = !event.target.checked || !priceFor(id).promo;
 });
-$("#checkout-pay").addEventListener("click", async () => {
+$("#checkout-pay").addEventListener("click", () => {
   const button = $("#checkout-pay");
   if (button.disabled || !dialog.open || !$("#checkout-terms").checked) return;
-  button.disabled = true;
-  $("#checkout-error").hidden = true;
-  try {
-    const response = await fetch("/api/host-checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "same-origin",
-      cache: "no-store",
-      body: JSON.stringify({ package: button.dataset.package, acceptTerms: true }),
-    });
-    const data = await response.json();
-    if (!response.ok || !/^https:\/\/checkout\.stripe\.com\//.test(data.url)) throw Error();
-    window.location.assign(data.url);
-  } catch {
-    $("#checkout-error").textContent = "Secure checkout is unavailable. No payment was taken here. Please use Talk to Us First.";
+  const p = priceFor(button.dataset.package);
+  const url = depositLinks[p.id];
+  if (!p.promo || !url || !/^https:\/\/book\.stripe\.com\/[A-Za-z0-9]+$/.test(url)) {
+    $("#checkout-error").textContent = "Deposit checkout is unavailable. No payment has been taken. Please contact our team.";
     $("#checkout-error").hidden = false;
-    button.disabled = false;
+    return;
   }
+  button.disabled = true;
+  window.location.assign(url);
 });
 $("#close-checkout").addEventListener("click", () => dialog.close());
 dialog.addEventListener("close", () => opener?.focus());
@@ -439,10 +423,27 @@ form.addEventListener("submit", (e) => {
   }
   if (form.elements.company_fax.value)
     return error("Please reload and try again.");
+  const details = Object.entries(labels)
+    .map(([key, label]) => label + ": " + (form.elements[key].value || "Not supplied"))
+    .join("\n");
+  const mailto = "mailto:partners@thepropertycareco.co.uk?subject=" +
+    encodeURIComponent("Host Solutions enquiry — " + form.elements.business.value) +
+    "&body=" + encodeURIComponent("Hello PCCO,\n\nI'd like to arrange a consultation.\n\n" + details + "\n\nKind regards,\n" + form.elements.name.value);
+  $("#send-brief-email").href = mailto;
+  $("#copy-brief").dataset.brief = "PCCO Host Solutions enquiry\n\n" + details;
   form.hidden = true;
   $("#form-success").hidden = false;
-  $("#step-label").textContent = "Preview complete";
+  $("#step-label").textContent = "Ready to send by email";
   $("#form-success").focus();
+  window.location.assign(mailto);
+});
+$("#copy-brief").addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText($("#copy-brief").dataset.brief || "");
+    $("#copy-brief").textContent = "Copied — paste into an email";
+  } catch {
+    $("#copy-brief").textContent = "Copy unavailable — use email";
+  }
 });
 $("#restart-brief").addEventListener("click", () => {
   form.reset();
