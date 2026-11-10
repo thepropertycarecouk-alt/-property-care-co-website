@@ -1,6 +1,6 @@
 /* PCCO Stays AI Booking Assistant (preview-only until approved).
    Real conversational intelligence: /api/stays-ai → server-side language model.
-   Enquiry submission is intentionally DISABLED in preview to protect production data. */
+   Preview test submissions use PCCO's existing accommodation enquiry endpoint only after visitor consent. */
 (() => {
   'use strict';
   const params = new URLSearchParams(location.search);
@@ -16,7 +16,7 @@
     .pcco-ai-messages{padding:16px 14px;flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;background:#fbfaf7}
     .pcco-ai-bubble{padding:11px 13px;border-radius:12px;max-width:87%;white-space:pre-wrap;word-break:break-word}
     .pcco-ai-bubble.assistant{background:#fff;border:1px solid #e5e7eb;align-self:flex-start}.pcco-ai-bubble.user{background:#e7eef6;align-self:flex-end}
-    .pcco-ai-inline-review{align-self:flex-start;background:#021b3c;color:white;border:1px solid #c99e51;border-radius:9px;padding:10px 14px;font:600 13px Arial,sans-serif;cursor:pointer}.pcco-ai-inline-review:hover{background:#123456}
+    .pcco-ai-match-note{font-size:12px;line-height:1.5;color:#5d6672;border:1px solid #eee3cc;border-radius:9px;background:#fff9eb;padding:10px 12px;align-self:stretch}.pcco-ai-match-list{display:flex;flex-direction:column;gap:10px;width:100%}.pcco-ai-match-card{display:flex;gap:10px;padding:9px;background:white;border:1px solid #e1e5e9;border-radius:10px;max-width:100%}.pcco-ai-match-card img{width:88px;height:90px;object-fit:cover;border-radius:7px;flex:none}.pcco-ai-match-card-body{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}.pcco-ai-match-card strong{font-size:13px;line-height:1.35}.pcco-ai-match-card small{font-size:11px;color:#536577;line-height:1.4}.pcco-ai-match-card a{font-size:12px;color:#06457a;text-decoration:underline}.pcco-ai-match-card button{margin-top:4px;padding:6px 9px;border-radius:7px;background:#fff;border:1px solid #c9a563;color:#021b3c;font:600 11px Arial,sans-serif;cursor:pointer}.pcco-ai-match-card button[aria-pressed=true]{background:#eaf1e1;border-color:#779c63}.pcco-ai-preview-warning{grid-column:1/-1;background:#fff5d9;padding:9px;border-radius:7px;color:#5c4521;font-size:12px}.pcco-ai-feedback{grid-column:1/-1;font-size:12px}.pcco-ai-inline-review{align-self:flex-start;background:#021b3c;color:white;border:1px solid #c99e51;border-radius:9px;padding:10px 14px;font:600 13px Arial,sans-serif;cursor:pointer}.pcco-ai-inline-review:hover{background:#123456}
     .pcco-ai-actions{display:flex;gap:6px;flex-wrap:wrap;padding:8px 12px;border-top:1px solid #eee}
     .pcco-ai-actions button{font-size:12px;color:#021b3c;background:#fff;border:1px solid #d5c49e;border-radius:18px;padding:7px 10px;cursor:pointer}
     .pcco-ai-send{padding:12px;background:white;border-top:1px solid #e4e4e4;display:flex;gap:7px}
@@ -41,11 +41,11 @@
   const panel=document.createElement('section');panel.className='pcco-ai-panel';panel.hidden=true;panel.setAttribute('aria-label','PCCO AI Booking Assistant');
   panel.innerHTML=`
     <div class="pcco-ai-header"><span aria-hidden="true" style="font-size:23px">✦</span><div><strong>PCCO Stays Assistant</strong><small>AI-powered booking enquiries</small></div><button type="button" class="pcco-ai-close" aria-label="Close assistant">×</button></div>
-    <div class="pcco-ai-preview">Private preview — no enquiries are submitted or emailed.</div>
+    <div class="pcco-ai-preview">Private test — property availability unconfirmed. Only pressing Send Enquiry submits a real enquiry.</div>
     <div class="pcco-ai-messages" aria-live="polite" aria-relevant="additions text"></div>
-    <div class="pcco-ai-actions"><button type="button" data-ask="We need contractor accommodation.">Contractors</button><button type="button" data-ask="I'm looking for family or relocation accommodation.">Family / relocation</button><button type="button" data-ask="I need accommodation for a work trip.">Corporate stay</button><button type="button" class="pcco-ai-review-open">Review &amp; confirm</button></div>
+    <div class="pcco-ai-actions"><button type="button" data-ask="We need contractor accommodation.">Contractors</button><button type="button" data-ask="I'm looking for family or relocation accommodation.">Family / relocation</button><button type="button" data-ask="I need accommodation for a work trip.">Corporate stay</button><button type="button" class="pcco-ai-properties-open">Find properties</button><button type="button" class="pcco-ai-review-open">Review &amp; confirm</button></div>
     <form class="pcco-ai-send"><textarea rows="2" maxlength="1500" aria-label="Message the PCCO AI Assistant" placeholder="Tell me where and when you need to stay…" required></textarea><button type="submit">Send</button></form>
-    <form class="pcco-ai-review" hidden><h3>Review &amp; confirm your enquiry</h3><p>Your chat has pre-filled these details. Check or correct them here. In the live version you will be able to send this directly to PCCO; no enquiry is sent from this private preview.</p>
+    <form class="pcco-ai-review" hidden><h3>Review &amp; confirm your enquiry</h3><p>Your chat has pre-filled these details. Check or correct them, then send directly to PCCO. Prices, suitability and availability will be confirmed separately.</p><p class="pcco-ai-preview-warning">PRIVATE TEST: Clicking Send Enquiry will send a genuine enquiry to stays@thepropertycareco.co.uk. Please use test contact details you control.</p><p class="pcco-ai-wide pcco-ai-selected-summary" hidden></p>
       <label>Full name *<input name="name" maxlength="100" autocomplete="name" required></label>
       <label>Email *<input type="email" name="email" maxlength="160" autocomplete="email" required></label>
       <label>Phone *<input type="tel" name="phone" maxlength="40" autocomplete="tel" required></label>
@@ -63,7 +63,7 @@
       <label class="pcco-ai-check pcco-ai-wide"><input type="checkbox" name="consent" required> <span>I agree that PCCO may use the details I provide to respond to my enquiry. I understand AI processes chat messages and no booking is confirmed by this chat.</span></label>
       <div class="pcco-ai-error" role="alert" hidden></div>
       <button type="button" class="pcco-ai-back pcco-ai-wide">← Back to chat</button>
-      <button type="submit" class="pcco-ai-submit" disabled>Send Enquiry — available after approval</button>
+      <div class="pcco-ai-feedback" role="status" hidden></div><button type="submit" class="pcco-ai-submit">Send Enquiry</button>
     </form>
     <div class="pcco-ai-foot">You are chatting with AI. Replies may be inaccurate; do not share sensitive information. For urgent help call <a href="tel:+447411251361" style="text-decoration:underline">07411 251361</a>. <a href="#enquire" class="pcco-ai-existing" style="text-decoration:underline">Use standard enquiry form</a>.</div>
   `;
