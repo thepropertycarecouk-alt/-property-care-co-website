@@ -57,3 +57,8 @@
 
 ## QA workflow runner setup repair
 - First Actions run 42868934910 failed during runner setup: invalid checkout action SHA (not an application/test failure). Log showed "Unable to resolve action". Corrected checkout to the known v4.2.2 commit 11bd71901bbe5b1630ceea73d27597364c9af683. Recheck new PR CI run before claiming tests passed.
+
+## Verified CI and latest preview
+- Corrected setup pin and validated run 42869096698 on commit 760968588758699d320a346cf6b08c9e0bfa748c: 12/12 tests PASS, JavaScript syntax PASS, build PASS.
+- Auto-generated Vercel preview from that commit READY: https://pcc-live-site-260825-gsytn9w92-thepropertycarecouk-4795.vercel.app/host-solutions/ (dpl_3x5Grmh6VPTn1sy36TPfUvP1HZp2). Authenticated page/assets/canonical preview security checked.
+- This final documentation update changes no application, financial, production or lead-sending code.
