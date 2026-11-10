@@ -27,7 +27,7 @@ export default async function handler(req,res) {
   if (!contentType.includes('application/json')) return sendJSON(res,415,{error:'JSON required'});
   const origin = req.headers.origin || '';
   const permitted = /^https:\/\/(?:www\.)?thepropertycareco\.co\.uk$/.test(origin) ||
-    /^https:\/[a-z0-9-]+\.vercel\.app$/.test(origin) ||
+    /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin) ||
     /^http:\/\/localhost(?::\d+)?$/.test(origin);
   if (origin && !permitted) return sendJSON(res,403,{error:'Origin not allowed'});
   const key=process.env.OPENAI_API_KEY;
