@@ -25,3 +25,6 @@ Before activation: approve privacy notice/data retention/contact processing; add
 
 ## Branch QA automation added during continuation
 A GitHub Actions workflow under .github/workflows/host-solutions-preview-qa.yml checks pull requests into main for changes under Host Solutions. It installs dependencies with scripts disabled, validates JavaScript syntax, runs the Node test suite and builds the site. It uses no application secrets, payment tokens or live deployment operations. Consult PR checks to verify run outcome; the existence of a workflow does not prove tests passed.
+
+## New owner-approved tax display
+All quoted website build totals, monthly maintenance rates and the £99 deposit are VAT-inclusive. Do not add VAT on top. The 25% opening discount lasts until 31 December 2026 inclusive. Standalone AI VAT not yet confirmed. Stripe Tax remains pending/head-office missing, no registrations — never treat customer-facing VAT inclusion as proof of Stripe Tax compliance.

@@ -68,3 +68,8 @@ Git clone/fetch works; shell push has no credential. Use GitHub create_tree with
 - Authenticated Vercel responses: main Host Solutions page, app.js and catalogue all HTTP 200; route contains expected package guide and AI purchase dialog and remains noindex. Consultation GET returns 405 and delivery remains disabled.
 - Remaining critical blockers: owner approvals listed above, TEST Stripe/Redis/Webhook environment configuration, subscription/payment lifecycle, production-quality lead delivery, real sandbox E2E and physical mobile/keyboard browser checks. Keep both payments and real lead submissions closed until explicit approval and verification.
 - Next chat: read the entire PLAN, PROGRESS, HANDOFF and INTEGRATION; retrieve current draft PR #16 head and latest deployment, confirm no newer work, then advance only the unfinished gates on the branch. Never merge into main without explicit user approval.
+
+## 10 November 2026 — user VAT and offer confirmation
+- Owner confirms website builds, £99 deposit and monthly maintenance amounts are VAT-INCLUSIVE; no tax added to displayed website prices. The 25% one-off build offer expires 31 December 2026. Price arithmetic has not changed.
+- Connected Stripe account is The Property Care Co. live account (acct_1U1mpNAuxFu0m9QL). Its Stripe Tax settings are pending (missing head_office) with no tax registrations. Only OPENAI_API_KEY present in Vercel env; Stripe payment keys not installed. Production payments are blocked while setup and monthly discount duration, deposit refund/balance policy and fair-use terms await approval.
+- Do not merge, publish or charge until safe payment and email paths have been verified. Continue from latest PR head; no Stripe products or payment links exist at inspection.

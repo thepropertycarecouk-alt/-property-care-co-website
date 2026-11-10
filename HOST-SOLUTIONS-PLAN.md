@@ -14,7 +14,7 @@ All build fees one-off. Opening offer through 31 December 2026 inclusive, Europe
 |Starter|£399|£299.25|£99.75 (25%)|£19|£14|£99|£200.25|
 |Direct Booking (recommended)|£650|£487.50|£162.50 (25%)|£39|£34|£99|£388.50|
 |Portfolio Pro|£995|£746.25|£248.75 (25%)|£55|£50|£99|£647.25|
-Original prices struck through immediately next to prominent offers; green saving. Deposit part of total. After deadline restore standard pricing and balances. VAT treatment NOT yet approved. £5 monthly discount duration NOT yet approved (lifetime versus defined term). Never silently select either; payment gate stays closed pending both.
+Original prices struck through immediately next to prominent offers; green saving. Deposit part of total. After deadline restore standard pricing and balances. Website package build/deposit/monthly prices approved VAT-INCLUSIVE on 10 November 2026. £5 monthly discount duration NOT yet approved (lifetime versus defined term). Never silently select either; payment gate stays closed pending both.
 
 Starter: up to five listings; mobile branded accommodation site; photos/descriptions/amenities; contact/enquiry forms; WhatsApp link; basic SEO/analytics; hosting/SSL; onboarding/handover; 14-day opt-in AI trial, no automatic paid continuation.
 Direct Booking: all Starter; five designed property pages; galleries; mobile enquiries; contractor/corporate journeys; search/filter; direct booking enquiries; supported booking-engine/channel-manager standard setup; notifications; guest information and digital guide; location SEO; Search Console; analytics; launch consultation/training. Optional AI £75 setup + £10/month, explicitly agreed after trial.

@@ -1,5 +1,6 @@
-// Shared, exact-pence commercial catalogue. Terms require owner approval before sale.
-export const deadline = "2026-12-31T23:59:59.999Z";
+// Exact-pence prices. Website builds, deposits and maintenance include VAT; other sales terms await approval.
+export const deadline = "2026-12-31T23:59:59.999Z"; // GMT at promotion expiry
+export const websiteVatIncluded = true;
 export const packages = [
   {
     id: "starter",
@@ -86,7 +87,7 @@ export function priceFor(id, now = new Date()) {
   };
 }
 export const launchTerms = {
-  vatApproved: false,
+  vatApproved: true,
   monthlyTermApproved: false,
   paymentPolicyApproved: false,
   fairUseApproved: false,

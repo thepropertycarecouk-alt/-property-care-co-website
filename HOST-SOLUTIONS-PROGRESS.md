@@ -62,3 +62,8 @@
 - Corrected setup pin and validated run 42869096698 on commit 760968588758699d320a346cf6b08c9e0bfa748c: 12/12 tests PASS, JavaScript syntax PASS, build PASS.
 - Auto-generated Vercel preview from that commit READY: https://pcc-live-site-260825-gsytn9w92-thepropertycarecouk-4795.vercel.app/host-solutions/ (dpl_3x5Grmh6VPTn1sy36TPfUvP1HZp2). Authenticated page/assets/canonical preview security checked.
 - This final documentation update changes no application, financial, production or lead-sending code.
+
+## 10 November — VAT-inclusive pricing milestone
+- User approved website build/maintenance/deposit prices inclusive of VAT, and 25% build promotion until 31 December 2026. Updated catalogue gate and customer-facing pricing disclosures.
+- Stripe LIVE account inspected read-only: 0 existing products, 0 payment links, 0 tax registrations, tax.settings.status=pending because head_office is absent. Vercel env has no Stripe or Redis credentials. No Stripe objects created or payments enabled.
+- Running CI, then advancing gated payment architecture; production remains on main pending safe end-to-end verification.
