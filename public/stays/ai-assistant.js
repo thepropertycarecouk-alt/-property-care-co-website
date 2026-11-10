@@ -4,7 +4,8 @@
 (() => {
   'use strict';
   const params = new URLSearchParams(location.search);
-  const PREVIEW = params.get('ai_preview') === '1';
+  const LIVE = /^(?:www\.)?thepropertycareco\.co\.uk$/i.test(location.hostname);
+  const PREVIEW = params.get('ai_preview') === '1' || LIVE;
   if (!PREVIEW) return;
   const css = `
     .pcco-ai-launch{position:fixed;left:18px;bottom:18px;z-index:9990;display:flex;align-items:center;gap:9px;padding:12px 17px;border:1px solid #c99e51;border-radius:50px;background:#021b3c;color:#fff;box-shadow:0 8px 30px #01152c50;font:600 14px Arial,sans-serif;cursor:pointer}
@@ -41,11 +42,11 @@
   const panel=document.createElement('section');panel.className='pcco-ai-panel';panel.hidden=true;panel.setAttribute('aria-label','PCCO AI Booking Assistant');
   panel.innerHTML=`
     <div class="pcco-ai-header"><span aria-hidden="true" style="font-size:23px">✦</span><div><strong>PCCO Stays Assistant</strong><small>AI-powered booking enquiries</small></div><button type="button" class="pcco-ai-close" aria-label="Close assistant">×</button></div>
-    <div class="pcco-ai-preview">Private test — property availability unconfirmed. Only pressing Send Enquiry submits a real enquiry.</div>
+    <div class="pcco-ai-preview">Property availability and prices are subject to confirmation. Chat messages are processed by AI.</div>
     <div class="pcco-ai-messages" aria-live="polite" aria-relevant="additions text"></div>
     <div class="pcco-ai-actions"><button type="button" data-ask="We need contractor accommodation.">Contractors</button><button type="button" data-ask="I'm looking for family or relocation accommodation.">Family / relocation</button><button type="button" data-ask="I need accommodation for a work trip.">Corporate stay</button><button type="button" class="pcco-ai-properties-open">Find properties</button><button type="button" class="pcco-ai-review-open">Review &amp; confirm</button></div>
     <form class="pcco-ai-send"><textarea rows="2" maxlength="1500" aria-label="Message the PCCO AI Assistant" placeholder="Tell me where and when you need to stay…" required></textarea><button type="submit">Send</button></form>
-    <form class="pcco-ai-review" hidden><h3>Review &amp; confirm your enquiry</h3><p>Your chat has pre-filled these details. Check or correct them, then send directly to PCCO. Prices, suitability and availability will be confirmed separately.</p><p class="pcco-ai-preview-warning">PRIVATE TEST: Clicking Send Enquiry will send a genuine enquiry to stays@thepropertycareco.co.uk. Please use test contact details you control.</p><p class="pcco-ai-wide pcco-ai-selected-summary" hidden></p>
+    <form class="pcco-ai-review" hidden><h3>Review &amp; confirm your enquiry</h3><p>Your chat has pre-filled these details. Check or correct them, then send directly to PCCO. Prices, suitability and availability will be confirmed separately.</p><p class="pcco-ai-preview-warning">Only press Send Enquiry once you have checked your details. This sends a real accommodation enquiry to PCCO Stays.</p><p class="pcco-ai-wide pcco-ai-selected-summary" hidden></p>
       <label>Full name *<input name="name" maxlength="100" autocomplete="name" required></label>
       <label>Email *<input type="email" name="email" maxlength="160" autocomplete="email" required></label>
       <label>Phone *<input type="tel" name="phone" maxlength="40" autocomplete="tel" required></label>
@@ -243,7 +244,7 @@
     const stay=[arrive?'Arrival: '+arrive:'',depart?'Departure: '+depart:'',duration?'Duration: '+duration:''].filter(Boolean).join('; ')||'Dates to be confirmed';
     const chosen=[...selectedProperties.values()];
     const brief=[
-      'SOURCE: PCCO AI CHATBOT — PRIVATE TEST',
+      'SOURCE: PCCO AI CHATBOT',
       'PURPOSE: '+String(values.purpose||'Not specified'),
       'LOCATION: '+locationRequired,
       'DATES: '+stay,
@@ -259,7 +260,7 @@
     ].join('\n');
     const payload={
       enquiry_type:'need_accommodation',
-      source:'website_ai_preview',
+      source:'website_ai',
       full_name:fullName,email,phone,location_required:locationRequired,
       check_in_date:/^\d{4}-\d{2}-\d{2}$/.test(arrive)?arrive:null,
       stay_length:stay.slice(0,120),guest_count:parsedCount(values.guests),
