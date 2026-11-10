@@ -90,7 +90,7 @@
     box.hidden=false;box.textContent='Properties selected for enquiry: '+[...selectedProperties.values()].map(p=>p.name).join('; ');
   }
   function showStatus(text){return bubble('assistant',text);}
-  const parsedCount=value=>{const n=Number(String(value||'').match(/\d+/)?.[0]);return Number.isInteger(n)&&n>0&&n<=5000?n:null;};
+  const parsedCount=value=>{const text=String(value||'');const adults=text.match(/(\d+)\s*adults?/i),children=text.match(/(\d+)\s*(?:children|kids|child)/i);const n=adults&&children?Number(adults[1])+Number(children[1]):Number(text.match(/\d+/)?.[0]);return Number.isInteger(n)&&n>0&&n<=5000?n:null;};
   const hasParking=p=>{const cat=String(p.parking_category||'').toLowerCase(),info=String(p.parking||'').toLowerCase();if(cat==='none'||/\b(no parking|parking unavailable|no on-site parking)\b/.test(info))return false;return ['free','paid','parking','yes','available','street','permit','private','driveway','garage','included'].includes(cat)||/\b(parking|driveway|garage|permit)\b/.test(info);};
   
   function bubble(role,text){const node=document.createElement('div');node.className='pcco-ai-bubble '+role;node.textContent=text;messages.append(node);messages.scrollTop=messages.scrollHeight;return node;}
