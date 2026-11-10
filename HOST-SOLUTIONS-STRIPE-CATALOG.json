@@ -1,5 +1,5 @@
 {
-  "status": "live-payment-links-active",
+  "status": "live-deposit-ai-setup-and-opt-in-subscriptions-configured",
   "currency": "gbp",
   "vat": "no-vat-charged-merchant-not-vat-registered",
   "monthlyOfferDuration": "first-six-paid-months-then-normal",
@@ -56,7 +56,12 @@
     "payoutsEnabled": true,
     "linksCreated": true,
     "approach": "Stripe-hosted active card-only Payment Links; no server API keys necessary",
-    "testPaymentPerformed": false
+    "testPaymentPerformed": false,
+    "aiSetupActive": true,
+    "monthlyProductsCreated": true,
+    "customerPortalCreated": true,
+    "automaticSubscriptionsOnDeposit": false,
+    "recurringSubscriptionsActivated": 0
   },
   "depositRefundDays": 14,
   "aiFairUse": {
@@ -84,5 +89,83 @@
       "url": "https://book.stripe.com/4gM3cu93L94ygV7dKB3VC02",
       "depositPence": 9900
     }
+  ],
+  "aiSetupPaymentLinks": [
+    {
+      "plan": "standalone",
+      "stripeId": "plink_1UaLZLAuxFu0m9QLvgHSvNbU",
+      "url": "https://buy.stripe.com/eVq28qa7PcgK7kxayp3VC03",
+      "setupPence": 15000,
+      "publishedOnWebsite": true
+    },
+    {
+      "plan": "direct-addon",
+      "stripeId": "plink_1UaLZNAuxFu0m9QLrHPQNQSL",
+      "setupPence": 7500,
+      "publishedOnWebsite": false
+    }
+  ],
+  "monthlyProducts": [
+    {
+      "plan": "standalone-ai",
+      "product": "prod_VbYdMrhpfwwYGD",
+      "price": "price_1UaLX4AuxFu0m9QLBLo1vMvu",
+      "amountPence": 2000,
+      "link": "plink_1UaLZyAuxFu0m9QLKw75zXuy"
+    },
+    {
+      "plan": "direct-ai",
+      "product": "prod_VbYeeAYgyPeANP",
+      "price": "price_1UaLX8AuxFu0m9QL7sxu3y6z",
+      "amountPence": 1000,
+      "link": "plink_1UaLa1AuxFu0m9QLwy8Vo5b6"
+    },
+    {
+      "plan": "starter-maintenance",
+      "product": "prod_VbYeuyG3GEQMxQ",
+      "price": "price_1UaLXAAuxFu0m9QLC3wGALzP",
+      "amountPence": 1900,
+      "link": "plink_1UaLa3AuxFu0m9QLOODhCsVG"
+    },
+    {
+      "plan": "direct-maintenance",
+      "product": "prod_VbYeNcN2XZjt5y",
+      "price": "price_1UaLXCAuxFu0m9QLo2abkAvS",
+      "amountPence": 3900,
+      "link": "plink_1UaLa5AuxFu0m9QLGFsj3M5Z"
+    },
+    {
+      "plan": "portfolio-maintenance",
+      "product": "prod_VbYe28pSqI57zR",
+      "price": "price_1UaLXDAuxFu0m9QL2oq4NUyk",
+      "amountPence": 5500,
+      "link": "plink_1UaLa7AuxFu0m9QL7BSOglp8"
+    }
+  ],
+  "maintenanceDiscount": {
+    "couponId": "R0MnZOnN",
+    "code": "PCCO6",
+    "promoId": "promo_1UaLXrAuxFu0m9QL4M5zavWF",
+    "amountOffPence": 500,
+    "months": 6,
+    "eligibleOnlyOnMaintenance": true,
+    "expiresOn": "2026-12-31",
+    "autoApplies": false,
+    "note": "Use a prefilled promotion code on the private subscription Payment Link and verify it appears in Stripe's order summary before asking customer to subscribe."
+  },
+  "portal": {
+    "id": "bpc_1UaLYhAuxFu0m9QLLzbH2kpf",
+    "url": "https://billing.stripe.com/p/login/8x2cN4cfXgx05cp7md3VC00",
+    "loginEnabled": true,
+    "canCancel": true,
+    "default": false
+  },
+  "importantLimitations": [
+    "A live end-to-end payment has not been performed.",
+    "Recurring links are not displayed on the website; share only when service is approved and ready.",
+    "Website consultation currently drafts email using visitor's email application and does not auto-send to PCCO.",
+    "Automatic revenue reconciliation/webhook and email notifications are not configured on this Vercel project.",
+    "The intro discount requires applying coupon PCCO6 at subscription signup; no automatic default coupon is present on recurring Stripe Payment Links.",
+    "Deposit links remain active after the date unless manually disabled in Stripe."
   ]
 }

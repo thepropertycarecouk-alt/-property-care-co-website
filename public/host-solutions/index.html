@@ -892,7 +892,7 @@
             <a href="/">PCCO Stays</a><a href="/partners/">Partners</a
             ><a href="#consultation">Contact</a>
           </div>
-          <p><a href="/host-solutions/terms/">Deposit and cancellation terms</a></p>
+          <p><a href="/host-solutions/terms/">Deposit and cancellation terms</a> · <a href="https://billing.stripe.com/p/login/8x2cN4cfXgx05cp7md3VC00" rel="noopener noreferrer">Manage monthly billing</a></p>
         </div>
       </div>
     </footer>
@@ -952,10 +952,12 @@
           <div><dt>Initial setup and first month</dt><dd>Charged separately under agreed terms</dd></div>
           <div><dt>Conversation allowance</dt><dd>1,000 replies/month</dd></div>
         </dl>
-        <p class="checkout-notice"><strong>Standalone AI is arranged through consultation.</strong> £150 setup + £20/month includes 1,000 text replies/month. Activation and monthly billing require a separate agreement. No automatic overage charges.</p>
-        <p class="fine" style="margin-top:16px">Your assistant can collect enquiries and make suggestions using available, approved property data. It does not guarantee availability or book a property automatically.</p>
+        <p class="checkout-notice"><strong>Set up your own AI assistant.</strong> £150 is a one-time setup payment collected securely by Stripe. Once the scope and launch are agreed, the optional £20/month service is activated separately through its own subscription checkout. No subscription or automatic overage charge starts with this setup payment.</p>
+        <p class="fine" style="margin-top:16px">Your assistant can collect enquiries and make suggestions using available, approved property data. It does not guarantee availability or book a property automatically. Please confirm requirements and any custom integrations with us before paying.</p>
+        <label class="consent" id="ai-setup-acceptance"><input id="ai-setup-terms" type="checkbox" /><span>I understand I am paying £150 once for setup. Any £20/month subscription is separate and begins only after I authorise it. I agree to the <a href="/host-solutions/terms/" target="_blank" rel="noopener noreferrer">service and payment terms</a>.</span></label>
+        <p class="error" id="ai-setup-error" role="alert" hidden></p>
         <div class="actions">
-          <button class="btn" type="button" disabled>Stripe checkout unavailable</button>
+          <button class="btn" type="button" id="ai-setup-pay" disabled>Pay £150 setup securely</button>
           <button class="btn secondary" type="button" id="ai-review-consult">Talk to Us First</button>
         </div>
       </div>
