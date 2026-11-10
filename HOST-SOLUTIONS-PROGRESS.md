@@ -54,3 +54,6 @@
 - URL: https://pcc-live-site-260825-bpt46p5uv-thepropertycarecouk-4795.vercel.app/host-solutions/
 - Authenticated HTTP checks: website, JS, CSS, confirmation 200; checkout GET 405; HTML contains package guide and standalone AI dialog. Security headers include CSP/noindex/nosniff.
 - JavaScript syntax parsed successfully without execution. New browser functional testing and Node test suite execution pending; CI checks added on draft PR, status not yet verified.
+
+## QA workflow runner setup repair
+- First Actions run 42868934910 failed during runner setup: invalid checkout action SHA (not an application/test failure). Log showed "Unable to resolve action". Corrected checkout to the known v4.2.2 commit 11bd71901bbe5b1630ceea73d27597364c9af683. Recheck new PR CI run before claiming tests passed.

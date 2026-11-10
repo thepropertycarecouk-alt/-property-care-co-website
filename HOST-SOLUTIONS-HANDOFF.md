@@ -58,3 +58,5 @@ Git clone/fetch works; shell push has no credential. Use GitHub create_tree with
 - No browser interaction or physical-device QA of this newest visual change has been completed. Previous browser QA and the existing 11 tests belong to the earlier milestone. Recheck new desktop/mobile package guide and AI modal before release.
 - The connected sandbox does not support cloning this repository directly; connected GitHub write APIs were used. Branch ref moved with a non-forced fast-forward check.
 - Resume: inspect the latest PR head, run/inspect CI, visually review the new package guide and AI review modal on mobile, then address missing Stripe TEST, approved commercial terms, form privacy/delivery, subscriptions and cancellation lifecycle. Keep production untouched.
+
+- CI runner setup incident: run 42868934910 failed before executing code because the initial checkout pin was mistyped. Repaired the pin in a follow-up commit; inspect the next workflow run's steps and logs. No production impact.
