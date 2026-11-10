@@ -1,5 +1,5 @@
 import { packages, priceFor, money } from "./catalog.js";
-import { depositLinks } from "./deposit-links.js";
+import { depositLinkFor } from "./deposit-links.js";
 import { standaloneAiSetupLink } from "./stripe-links.js";
 const $ = (s) => document.querySelector(s);
 const prices = packages.map((p) => priceFor(p.id));
@@ -221,21 +221,20 @@ document.querySelectorAll("[data-checkout]").forEach((b) =>
     $("#checkout-error").hidden = true;
     $("#checkout-notice").textContent =
       "You will pay £99 through Stripe. The full deposit is credited against your build and is refundable on request within 14 days. No subscription starts with your deposit.";
-    $("#checkout-pay").textContent = p.promo ? "Continue to Stripe · £99" : "Opening offer ended";
+    $("#checkout-pay").textContent = "Continue to Stripe · £99";
     $("#checkout-pay").disabled = true;
     dialog.showModal();
   }),
 );
 $("#checkout-terms").addEventListener("change", (event) => {
-  const id = $("#checkout-pay").dataset.package;
-  $("#checkout-pay").disabled = !event.target.checked || !priceFor(id).promo;
+  $("#checkout-pay").disabled = !event.target.checked;
 });
 $("#checkout-pay").addEventListener("click", () => {
   const button = $("#checkout-pay");
   if (button.disabled || !dialog.open || !$("#checkout-terms").checked) return;
   const p = priceFor(button.dataset.package);
-  const url = depositLinks[p.id];
-  if (!p.promo || !url || !/^https:\/\/book\.stripe\.com\/[A-Za-z0-9]+$/.test(url)) {
+  const url = depositLinkFor(p.id, p.promo);
+  if (!url || !/^https:\/\/(?:book|buy)\.stripe\.com\/[A-Za-z0-9]+$/.test(url)) {
     $("#checkout-error").textContent = "Deposit checkout is unavailable. No payment has been taken. Please contact our team.";
     $("#checkout-error").hidden = false;
     return;

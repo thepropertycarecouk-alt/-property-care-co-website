@@ -86,3 +86,10 @@
 - 3 Stripe-hosted active £99 card-only one-time deposit links created on connected LIVE PCCO account, verified with line-item reads, no automatic tax, no subscriptions. No site secrets needed for links. All IDs and URLs recorded in Stripe catalog JSON.
 - Website code updated to replace obsolete preview/test-only checkout frontend with secure direct Payment Link handoff and consent. Free consultation form now only composes email; customer must send. AI remains demo only, fair use set at 1000 standalone/500 Direct/500 Portfolio/50 trial monthly replies.
 - Verification and production deployment pending. Do not claim charges have occurred or automated maintenance/AI is active.
+
+## 10 November 2026 — completed Stripe hosted payment catalogue and year-end follow-through
+- Connected live Stripe products/prices: standalone AI setup £150, Direct AI setup £75, respective opt-in monthly £20/£10, optional site maintenance standard £19/£39/£55, six-month £5 coupon PCCO6, separate Host Solutions billing portal.
+- Payment Links: 3 intro £99 deposits remain, 3 new standard £99 deposits activate on website after 31 Dec, 3 discounted build balance links for use post-contract, 2 AI setup and 5 monthly subscription links (monthly intentionally not public).
+- Returning customer who placed 2026 website order can receive six-month maintenance saving when activated after Dec 2026, via private coupon 7mhUyUIW. Initial coupon PCCO6 still expires 31 Dec.
+- Checkout remains Stripe-hosted and does not start services or maintenance automatically from deposit/setup payments. No real card transaction test performed. Website consultation is email draft via visitor's client, and emails, webhooks and provisioning remain manual/pending credentials.
+- Current project source in GitHub main after passing PR checks/merging, see operational runbook for account IDs and launch tasks.
