@@ -23,6 +23,7 @@ import { issueChallenge, verifyChallenge, formConfigured } from "../lib/host-sol
 import { consumeLeadNonce, rateLimiterHealthy } from "../lib/host-solutions/lead-throttle.js";
 import { verifyStripeEvent, describeHostEvent } from "../lib/host-solutions/stripe-notifications.js";
 import stripeNotify from "../api/host-stripe-notify.js";
+import { claimStripeAlert, markStripeAlertDelivered } from "../lib/host-solutions/notice-ledger.js";
 import { createHmac } from "node:crypto";
 import { Readable } from "node:stream";
 const fakeTestKey = ["sk", "test", "fixture_only_not_a_real_key"].join("_");
@@ -387,6 +388,9 @@ test("verified Stripe event sends one internal alert with provider idempotency",
     secret:process.env.HOST_SOLUTIONS_STRIPE_NOTIFY_SECRET,
     key:process.env.HOST_SOLUTIONS_RESEND_KEY,
     from:process.env.HOST_SOLUTIONS_EMAIL_FROM,
+    rateSecret:process.env.HOST_SOLUTIONS_RATE_LIMIT_SECRET,
+    anonKey:process.env.HOST_SOLUTIONS_SUPABASE_ANON_KEY,
+    supabaseUrl:process.env.HOST_SOLUTIONS_SUPABASE_URL,
   };
   const originalFetch=global.fetch;
   const secret="whsec_test_fixture_not_real";
@@ -401,7 +405,18 @@ test("verified Stripe event sends one internal alert with provider idempotency",
     process.env.HOST_SOLUTIONS_STRIPE_NOTIFY_SECRET=secret;
     process.env.HOST_SOLUTIONS_RESEND_KEY="re_fixture_key_not_real";
     process.env.HOST_SOLUTIONS_EMAIL_FROM="PCCO Host Solutions <partners@thepropertycareco.co.uk>";
-    global.fetch=async (url,options)=>{send={url,options};return {ok:true};};
+    process.env.HOST_SOLUTIONS_RATE_LIMIT_SECRET="1".repeat(64);
+    process.env.HOST_SOLUTIONS_SUPABASE_ANON_KEY="eyJ"+"x".repeat(140);
+    process.env.HOST_SOLUTIONS_SUPABASE_URL="https://pgbwbklqvyyzipbxcdvx.supabase.co";
+    const calls=[];
+    global.fetch=async (url,options)=>{
+      calls.push({url,options});
+      if(String(url).endsWith("/pcco_hs_event_claim"))
+        return {ok:true,json:async()=> "claimed"};
+      if(String(url).endsWith("/pcco_hs_event_mark_delivered"))
+        return {ok:true,json:async()=>true};
+      send={url,options};return {ok:true};
+    };
     const req=Readable.from([body]);
     req.method="POST";req.headers={"stripe-signature":signature};
     const res=response();
@@ -411,6 +426,23 @@ test("verified Stripe event sends one internal alert with provider idempotency",
     assert.deepEqual(payload.to,["partners@thepropertycareco.co.uk"]);
     assert.equal(payload.subject,"PCCO Host Solutions — payment received");
     assert.equal(send.options.headers["Idempotency-Key"],"pcco-host-stripe-evt_TESTALERT");
+    assert.equal(calls.filter(c=>c.url.endsWith("/pcco_hs_event_claim")).length,1);
+    assert.equal(calls.filter(c=>c.url.endsWith("/pcco_hs_event_mark_delivered")).length,1);
+    const firstPayload=JSON.parse(calls[0].options.body);
+    assert.match(firstPayload.p_event_hash,/^[a-f0-9]{64}$/);
+    assert.equal(JSON.stringify(firstPayload).includes("evt_TESTALERT"),false);
+
+    // Stripe delivery retries after a recorded success must not resend email.
+    let unexpectedSend=false;
+    global.fetch=async (url,options)=>{
+      if(String(url).endsWith("/pcco_hs_event_claim"))
+        return {ok:true,json:async()=>"done"};
+      unexpectedSend=true;return {ok:true,json:async()=>true};
+    };
+    const retry=Readable.from([body]);retry.method="POST";retry.headers={"stripe-signature":signature};
+    const ack=response();await stripeNotify(retry,ack);
+    assert.equal(ack.code,200);
+    assert.equal(unexpectedSend,false);
   } finally {
     global.fetch=originalFetch;
     const map={
@@ -418,6 +450,9 @@ test("verified Stripe event sends one internal alert with provider idempotency",
       HOST_SOLUTIONS_STRIPE_NOTIFY_SECRET:priorEnv.secret,
       HOST_SOLUTIONS_RESEND_KEY:priorEnv.key,
       HOST_SOLUTIONS_EMAIL_FROM:priorEnv.from,
+      HOST_SOLUTIONS_RATE_LIMIT_SECRET:priorEnv.rateSecret,
+      HOST_SOLUTIONS_SUPABASE_ANON_KEY:priorEnv.anonKey,
+      HOST_SOLUTIONS_SUPABASE_URL:priorEnv.supabaseUrl,
     };
     for(const [k,v] of Object.entries(map))if(v===undefined)delete process.env[k];else process.env[k]=v;
   }
@@ -483,4 +518,26 @@ test("consultation readiness is verified against the private limiter without con
     assert.equal(await rateLimiterHealthy(env),false);
     assert.equal(await rateLimiterHealthy({...env,HOST_SOLUTIONS_SUPABASE_URL:"https://invalid.example"}),false);
   } finally {global.fetch=old;}
+});
+
+test("Stripe ledger forbids unsigned event identifiers and unsafe configuration", async () => {
+  const fakeEnv={
+    HOST_SOLUTIONS_RATE_LIMIT_SECRET:"1".repeat(64),
+    HOST_SOLUTIONS_SUPABASE_ANON_KEY:"eyJ"+"x".repeat(140),
+    HOST_SOLUTIONS_SUPABASE_URL:"https://pgbwbklqvyyzipbxcdvx.supabase.co",
+  };
+  await assert.rejects(()=>claimStripeAlert("evt_bad--id",fakeEnv),/Invalid Stripe event identifier/);
+  await assert.rejects(()=>claimStripeAlert("evt_TEST",{...fakeEnv,HOST_SOLUTIONS_RATE_LIMIT_SECRET:"wrong"}),/unavailable/);
+  const before=global.fetch;
+  try{
+    let rpcCalls=0;
+    global.fetch=async (url,options)=>{
+      rpcCalls++;
+      return {ok:true,json:async()=>url.endsWith("pcco_hs_event_claim")?"claimed":true};
+    };
+    const cl=await claimStripeAlert("evt_TEST123",fakeEnv);
+    assert.match(cl.hash,/^[a-f0-9]{64}$/);
+    await markStripeAlertDelivered(cl.hash,fakeEnv);
+    assert.equal(rpcCalls,2);
+  }finally{global.fetch=before;}
 });

@@ -1,5 +1,6 @@
 import { json } from "../lib/host-solutions/security.js";
 import { verifyStripeEvent, describeHostEvent } from "../lib/host-solutions/stripe-notifications.js";
+import { claimStripeAlert, markStripeAlertDelivered } from "../lib/host-solutions/notice-ledger.js";
 
 export const config = { api: { bodyParser: false } };
 
@@ -36,6 +37,9 @@ export default async function handler(req, res) {
   if (!notice) return json(res, 200, { received: true });
 
   try {
+    const claimed = await claimStripeAlert(event.id);
+    if (claimed.state === "done") return json(res, 200, {received:true});
+    if (claimed.state !== "claimed") return json(res, 503, {error:"Event already processing; retry"});
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -52,10 +56,11 @@ export default async function handler(req, res) {
       signal: AbortSignal.timeout(10000),
     });
     if (!response.ok) throw Error("Email provider unavailable");
+    await markStripeAlertDelivered(claimed.hash);
     return json(res, 200, { received: true });
   } catch {
-    // Stripe retries non-2xx deliveries; Resend idempotency protects duplicate
-    // emails for 24h. Stripe remains the source of truth for payments.
+    // Stripe retries non-2xx responses; the private ledger grants one active
+    // delivery lease and records completed internal alerts for 90 days.
     return json(res, 503, { error: "Notification not delivered; retry" });
   }
 }

@@ -102,3 +102,6 @@ Added Host Solutions to the dynamic sitemap, canonical and social-preview metada
 
 ## Durable form anti-spam audit — 10 November 2026
 Created and tested isolated private Supabase credential-checked nonce and per-IP rate limiter, 5/hour and 15/day. Vercel production env configured for server-only RPC. Updated consultation endpoint to consume one-time nonce before sending email and fail closed on database failure. Regression tested using mocks. No financial transactions or unreviewed emails sent.
+
+## Durable Stripe event alert deduplication
+Added isolated Supabase ledger and secret-verified claim/mark RPCs, with five-minute lease for processing, 90-day event history and no personal data stored. Hooked notification webhook to the durable ledger, fail-closed with Stripe retry. Tests simulate first success, retry and invalid key without actually emailing anyone or charging a card.
