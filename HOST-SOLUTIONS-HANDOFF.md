@@ -1,0 +1,8 @@
+# Recoverable handoff
+Read HOST-SOLUTIONS-PLAN.md and HOST-SOLUTIONS-PROGRESS.md before editing.
+Repo: https://github.com/thepropertycarecouk-alt/-property-care-co-website
+Branch: feature/host-solutions-complete. Base prototype: 950baab. Main at inspection: bcd3ab9.
+Vercel project: pcc-live-site-260825; project ID prj_32BDhNcZMrqs2JvLGZiAl5FdlFW8; team team_dQ4Q5IIRCbOwBlQxQYUlILTA.
+Next: implement /host-solutions/ with isolated assets, retaining reviewed prototype progressive form concepts. npm run build. npm run dev serves public on 4173 (static only, no APIs).
+Critical: preview only; no merge/promotion/live Stripe/customer email. Current connected Stripe account is live-only; need TEST credentials and approved terms to exercise payments. Owner has not approved VAT or monthly discount term. Do not invent these decisions.
+Use git log for this document's commit SHA; every handoff records last verified prior milestone SHA to avoid self-referential hashes. No preview/PR yet.
