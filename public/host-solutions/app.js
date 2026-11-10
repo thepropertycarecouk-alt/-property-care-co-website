@@ -5,7 +5,7 @@ const prices = packages.map((p) => priceFor(p.id));
 $("#pricing").innerHTML = prices
   .map(
     (p, i) =>
-      `<article class="price-card ${i === 1 ? "recommended" : ""}">${i === 1 ? '<span class="badge">RECOMMENDED</span>' : ""}<h3>${p.name}</h3><p class="tag">${p.tag}</p><div class="price-line">${p.promo ? `<del>${money(p.build)}</del>` : ""}<strong>${money(p.total)}</strong></div>${p.promo ? `<p class="save">You save ${money(p.build - p.total)} · 25%</p>` : ""}<p class="oneoff">One-off website build · no VAT added</p><div class="monthly">${p.promo ? `<del>${money(p.monthly)}</del>` : ""}<strong>${money(p.maintenance)}</strong> / month<small>Website maintenance · no VAT added · ${p.promo ? "first 6 paid months" : "standard rate"}</small>${p.promo ? '<span class="monthly-saving">You save £5/month · for the first 6 paid months</span>' : ""}</div><ul class="checklist">${p.features.map((f) => `<li>${f}</li>`).join("")}</ul>${i === 1 ? '<p class="fine">Optional AI: £75 setup + £10/month.<br>No automatic charge after the trial.</p>' : i === 2 ? '<p class="fine">Standard AI included.<br>500 AI replies/month.</p>' : '<p class="fine">AI trial expires without charges.<br>Paid continuation is optional.</p>'}<button class="btn" type="button" data-checkout="${p.id}">Pay £99 Deposit</button><a class="btn secondary" href="#consultation">Talk to Us First</a><p class="balance">Then ${money(p.balance)} remaining on your build.</p></article>`,
+      `<article class="price-card ${i === 1 ? "recommended" : ""}">${i === 1 ? '<span class="badge">RECOMMENDED</span>' : ""}<h3>${p.name}</h3><p class="tag">${p.tag}</p><div class="price-line">${p.promo ? `<del>${money(p.build)}</del>` : ""}<strong>${money(p.total)}</strong></div>${p.promo ? `<p class="save">You save ${money(p.build - p.total)} · 25%</p>` : ""}<p class="oneoff">One-off website build · final price</p><div class="monthly">${p.promo ? `<del>${money(p.monthly)}</del>` : ""}<strong>${money(p.maintenance)}</strong> / month<small>Website maintenance · ${p.promo ? "first 6 paid months" : "standard rate"}</small>${p.promo ? '<span class="monthly-saving">You save £5/month · for the first 6 paid months</span>' : ""}</div><ul class="checklist">${p.features.map((f) => `<li>${f}</li>`).join("")}</ul>${i === 1 ? '<p class="fine">Optional AI: £75 setup + £10/month.<br>No automatic charge after the trial.</p>' : i === 2 ? '<p class="fine">Standard AI included.<br>500 AI replies/month.</p>' : '<p class="fine">AI trial expires without charges.<br>Paid continuation is optional.</p>'}<button class="btn" type="button" data-checkout="${p.id}">Pay £99 Deposit</button><a class="btn secondary" href="#consultation">Talk to Us First</a><p class="balance">Then ${money(p.balance)} remaining on your build.</p></article>`,
   )
   .join("");
 if (!prices[0].promo) {
@@ -211,7 +211,6 @@ document.querySelectorAll("[data-checkout]").forEach((b) =>
             ? "Standard AI included"
             : "£150 setup + £20/month",
       ],
-      ["VAT", "No VAT charged"],
       ["Deposit refund", "Full refund available within 14 days"],
     ]
       .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`)
@@ -220,7 +219,7 @@ document.querySelectorAll("[data-checkout]").forEach((b) =>
     $("#checkout-pay").dataset.package = p.id;
     $("#checkout-error").hidden = true;
     $("#checkout-notice").textContent =
-      "You will pay £99 through Stripe (no VAT added). The full deposit is credited against your build and is refundable on request within 14 days. No subscription starts with your deposit.";
+      "You will pay £99 through Stripe. The full deposit is credited against your build and is refundable on request within 14 days. No subscription starts with your deposit.";
     $("#checkout-pay").textContent = p.promo ? "Continue to Stripe · £99" : "Opening offer ended";
     $("#checkout-pay").disabled = true;
     dialog.showModal();

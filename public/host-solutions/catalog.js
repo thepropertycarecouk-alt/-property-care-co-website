@@ -1,4 +1,4 @@
-// Exact-pence final prices: PCCO is not VAT-registered and no VAT is charged.
+// Exact-pence customer-facing final prices; do not add costs to advertised totals.
 export const deadline = "2026-12-31T23:59:59.999Z"; // GMT at promotion expiry
 export const vatCharged = false;
 export const monthlyDiscountMonths = 6;
