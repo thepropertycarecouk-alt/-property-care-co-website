@@ -151,7 +151,9 @@
     "eligibleOnlyOnMaintenance": true,
     "expiresOn": "2026-12-31",
     "autoApplies": false,
-    "note": "Use a prefilled promotion code on the private subscription Payment Link and verify it appears in Stripe's order summary before asking customer to subscribe."
+    "note": "Use a prefilled promotion code on the private subscription Payment Link and verify it appears in Stripe's order summary before asking customer to subscribe.",
+    "grandfatheredCoupon": "7mhUyUIW",
+    "grandfatheredCouponUsage": "For customers ordering the opening offer by 31 Dec but starting maintenance after 31 Dec. Apply only by approved private invoice/subscription setup in Stripe, not as public promo code."
   },
   "portal": {
     "id": "bpc_1UaLYhAuxFu0m9QLLzbH2kpf",
@@ -167,5 +169,51 @@
     "Automatic revenue reconciliation/webhook and email notifications are not configured on this Vercel project.",
     "The intro discount requires applying coupon PCCO6 at subscription signup; no automatic default coupon is present on recurring Stripe Payment Links.",
     "Deposit links remain active after the date unless manually disabled in Stripe."
+  ],
+  "standardDepositLinks": [
+    {
+      "id": "starter",
+      "stripeId": "plink_1UaLj9AuxFu0m9QLT1urHfSp",
+      "buildPence": 39900,
+      "depositPence": 9900,
+      "balancePence": 30000,
+      "visibleFrom": "2027-01-01"
+    },
+    {
+      "id": "direct",
+      "stripeId": "plink_1UaLjBAuxFu0m9QLYmHDFIsO",
+      "buildPence": 65000,
+      "depositPence": 9900,
+      "balancePence": 55100,
+      "visibleFrom": "2027-01-01"
+    },
+    {
+      "id": "portfolio",
+      "stripeId": "plink_1UaLjDAuxFu0m9QLtn87ucAb",
+      "buildPence": 99500,
+      "depositPence": 9900,
+      "balancePence": 89600,
+      "visibleFrom": "2027-01-01"
+    }
+  ],
+  "remainingBuildBalanceLinks": [
+    {
+      "id": "starter",
+      "stripeId": "plink_1UaLhSAuxFu0m9QLoikN9xkG",
+      "amountPence": 20025,
+      "private": true
+    },
+    {
+      "id": "direct",
+      "stripeId": "plink_1UaLhUAuxFu0m9QLGqaXP0Xm",
+      "amountPence": 38850,
+      "private": true
+    },
+    {
+      "id": "portfolio",
+      "stripeId": "plink_1UaLhWAuxFu0m9QLTbMizBpK",
+      "amountPence": 64725,
+      "private": true
+    }
   ]
 }

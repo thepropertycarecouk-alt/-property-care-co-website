@@ -1,4 +1,17 @@
-# PCCO Host Solutions — current handoff
+# PCCO Host Solutions — current operational handoff
+Updated 10 November 2026. Production is LIVE at https://www.thepropertycareco.co.uk/host-solutions/. GitHub main has been released through PR #16, #17 and #18. The primary operational guide is docs/host-solutions/stripe-billing-operations.md, followed by the historical notes below.
+
+## Current verified state (supersedes older preview notes)
+- The three website £99 one-time Stripe deposit links are live and working through Stripe-hosted checkout. A separate standalone AI £150 one-time setup link is now customer-facing after checkbox agreement. Separate monthly subscription links for AI and the three website maintenance tiers are prepared and live in Stripe but are only offered after client-specific scope and activation agreement.
+- New standalone Host Solutions Stripe customer billing portal has login, invoices, card update and cancellation at paid-period end. Existing PCCO cleaning-plan portal was not changed.
+- 25% website build promotion ends 31 Dec 2026. The website dynamically selects the right three **standard** £99 deposit Stripe links after the offer, keeping standard totals and balances accurate. 2026 promotional links must still be manually disabled after the deadline.
+- Discount £5 for six maintenance months: Stripe coupon R0MnZOnN and public code PCCO6 expire 31 Dec. A private grandfathering coupon 7mhUyUIW exists for 2026 customers whose service starts later. All subscriptions require customer opt-in; coupon application must be verified at Stripe Checkout.
+- Separate links for remaining 2026 build balances (£200.25/£388.50/£647.25) are stored in Stripe, not published directly on the website.
+- Stripe live API keys, webhooks and Redis are NOT configured in Vercel; Stripe-hosted links work independently of those. Web-form consultation opens the visitor's email app; it is NOT auto delivered. No live card test payment/refund has been run and no automated provisioning exists. Claims of 100% end-to-end verified payment are NOT justified.
+- Website/customer pages must not use the phrase the owner asked to remove; keep final-price messaging and no unwanted extra charge disclosure. Existing partner and website routes are unchanged.
+- For exact latest main SHA, read GitHub main after merging this branch. Code and price catalogue are saved in GitHub, not just chat.
+
+## Historical project handoff
 Updated 10 November 2026. This is an implementation preview, NOT payment/lead-launch ready.
 
 ## Repository and review

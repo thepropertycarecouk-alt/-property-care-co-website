@@ -2,7 +2,7 @@ import test from "node:test";
 import { readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import { priceFor, packages, vatCharged, monthlyDiscountMonths, depositRefundDays, aiFairUse } from "../public/host-solutions/catalog.js";
-import { depositLinks } from "../public/host-solutions/deposit-links.js";
+import { depositLinks, standardDepositLinks, depositLinkFor } from "../public/host-solutions/deposit-links.js";
 import { standaloneAiSetupLink, customerBillingPortalLink } from "../public/host-solutions/stripe-links.js";
 import { validateBrief } from "../lib/host-solutions/consultation.js";
 import {
@@ -234,7 +234,7 @@ test("Host Solutions package explanations, AI purchase review and safety gates r
   assert.match(html, /The displayed website prices are final/);
   assert.match(html, /id="checkout-pay" disabled/);
   assert.match(html, /id="checkout-acceptance"/);
-  assert.match(js, /depositLinks/);
+  assert.match(js, /depositLinkFor/);
   assert.match(js, /Continue to Stripe/);
   const cohost = html.split('id="cohosting"')[1].split('id="process"')[0];
   assert.doesNotMatch(cohost, /data-checkout|Stripe|Pay £99 Deposit/);
@@ -261,6 +261,7 @@ test("launch: non-VAT-registered all-in pricing, six-month maintenance saving an
   assert.doesNotMatch(app, /host-checkout-config/);
   assert.doesNotMatch(config, /noindex, nofollow/);
   for (const id of ["starter","direct","portfolio"]) assert.match(depositLinks[id], /^https:\/\/book\.stripe\.com\/[A-Za-z0-9]+$/);
+  for (const id of ["starter","direct","portfolio"]) assert.match(standardDepositLinks[id], /^https:\/\/buy\.stripe\.com\/[A-Za-z0-9]+$/);
 });
 
 test("standalone AI setup is one-time and links only to approved Stripe hosts", () => {
@@ -272,4 +273,20 @@ test("standalone AI setup is one-time and links only to approved Stripe hosts", 
   const terms = readFileSync(new URL("../public/host-solutions/terms/index.html", import.meta.url), "utf8");
   assert.match(terms, /Cancellation takes effect at the end/);
   assert.match(terms, /£5 off for the first six monthly billing periods/);
+});
+
+test("post-offer checkout uses standard Stripe deposit links and correct remaining balances", () => {
+  for (const [id,balance] of [["starter",30000],["direct",55100],["portfolio",89600]]) {
+    const intro = priceFor(id,new Date("2026-12-31T23:59:59.999Z"));
+    const standard = priceFor(id,new Date("2027-01-01T00:00:00Z"));
+    assert.equal(depositLinkFor(id,intro.promo),depositLinks[id]);
+    assert.equal(depositLinkFor(id,standard.promo),standardDepositLinks[id]);
+    assert.equal(standard.deposit,9900);
+    assert.equal(standard.balance,balance);
+    assert.equal(standard.deposit+standard.balance,standard.total);
+  }
+  assert.equal(depositLinkFor("unknown",true),null);
+  const source=readFileSync(new URL("../public/host-solutions/app.js",import.meta.url),"utf8");
+  assert.match(source,/depositLinkFor\(p.id, p.promo\)/);
+  assert.doesNotMatch(source,/Opening offer ended";/);
 });
