@@ -25,7 +25,7 @@
   min-height:36px;padding:7px 14px;border-radius:30px;
   background:#f9f6f0;color:#021b3c;font-size:12px;font-weight:700;
 }
-.host-solutions-promo-action span[aria-hidden]{font-size:17px;line-height:1}
+.host-solutions-promo-arrow{display:block;flex:0 0 17px;width:17px;height:17px}
 .host-solutions-promo:hover{box-shadow:0 10px 22px rgba(2,27,60,.19);transform:translateY(-1px)}
 .host-solutions-promo:focus-visible{outline:3px solid #b68c49;outline-offset:4px}
 @media(max-width:640px){
